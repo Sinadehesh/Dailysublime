@@ -1,557 +1,1287 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daily Sublime – A daily practice of noticing, anchored in art</title>
-    <meta name="description" content="Train attention without the therapy-speak. A daily 2–7 minute perceptual practice anchored in iconic painters. Build a quiet collection of taste and perception.">
-    
-    <!-- Open Graph -->
-    <meta property="og:title" content="Daily Sublime – A daily practice of noticing, anchored in art">
-    <meta property="og:description" content="Train attention without the therapy-speak. A daily perceptual practice anchored in iconic painters.">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://dailysublime.com">
-    <meta property="og:image" content="Gemini_Generated_Image_qyvgxoqyvg.jpg">
-    
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@300;400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-    
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        'brand-black': '#1A1614',
-                        'brand-white': '#F7F4F0',
-                        'brand-gold': '#C9A870',
-                        'brand-burgundy': '#5D3A3A',
-                        'brand-divider': '#E5DFD6',
-                        'brand-text-secondary': '#5A5550',
-                    },
-                    fontFamily: {
-                        'serif': ['Fraunces', 'Georgia', 'serif'],
-                        'sans': ['Inter', 'system-ui', 'sans-serif'],
-                    },
-                }
-            }
-        }
-    </script>
-    
-    <style>
-        @media (prefers-reduced-motion: reduce) {
-            *, *::before, *::after {
-                animation-duration: 0.01ms !important;
-                animation-iteration-count: 1 !important;
-                transition-duration: 0.01ms !important;
-            }
-        }
-        
-        .sample-expanded {
-            max-height: 2000px;
-            transition: max-height 500ms ease-in-out;
-        }
-        
-        .sample-collapsed {
-            max-height: 400px;
-            overflow: hidden;
-        }
-        
-        .hero-overlay {
-            background: linear-gradient(to bottom, rgba(26, 22, 20, 0.75), rgba(26, 22, 20, 0.85));
-        }
-        
-        .image-banner {
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .image-banner img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 400ms ease;
-        }
-        
-        .image-banner:hover img {
-            transform: scale(1.02);
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daily Sublime – A daily reset for attention</title>
+  <style>
+    :root {
+      --color-bg: #0B0B0D;
+      --color-surface: #111114;
+      --color-text-primary: #F2E9D8;
+      --color-text-secondary: #B9B1A3;
+      --color-accent: #C8A24A;
+      --color-accent-hover: #B08F3E;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background-color: var(--color-bg);
+      color: var(--color-text-primary);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    h1, h2, h3 {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-weight: 500;
+      line-height: 1.2;
+    }
+
+    /* Header */
+    .site-header {
+      background-color: var(--color-bg);
+      border-bottom: 1px solid rgba(200, 162, 74, 0.15);
+      padding: 20px 24px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .site-logo {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 24px;
+      color: var(--color-text-primary);
+      text-decoration: none;
+      letter-spacing: 0.02em;
+    }
+
+    .header-cta {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--color-bg);
+      background-color: var(--color-accent);
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background-color 0.2s ease;
+    }
+
+    .header-cta:hover {
+      background-color: var(--color-accent-hover);
+    }
+
+    /* Section 1: A daily reset for attention */
+    #daily-reset {
+      background-color: var(--color-bg);
+      padding: 96px 24px;
+    }
+
+    .reset-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 56px;
+      align-items: center;
+    }
+
+    .reset-content {
+      max-width: 540px;
+    }
+
+    .reset-headline {
+      font-size: 46px;
+      margin: 0 0 28px 0;
+      letter-spacing: -0.01em;
+    }
+
+    .reset-body {
+      font-size: 17px;
+      line-height: 1.6;
+      margin: 0 0 32px 0;
+      max-width: 60ch;
+    }
+
+    .reset-bullets {
+      list-style: none;
+      margin: 0 0 24px 0;
+    }
+
+    .reset-bullets li {
+      font-size: 16px;
+      line-height: 1.65;
+      margin-bottom: 14px;
+      padding-left: 24px;
+      position: relative;
+    }
+
+    .reset-bullets li::before {
+      content: '—';
+      position: absolute;
+      left: 0;
+      color: var(--color-accent);
+    }
+
+    .reset-trust {
+      font-size: 14px;
+      color: var(--color-text-secondary);
+      margin: 0 0 36px 0;
+    }
+
+    .reset-actions {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+
+    .reset-cta {
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--color-bg);
+      background-color: var(--color-accent);
+      border: none;
+      padding: 15px 32px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.2s ease, transform 0.1s ease;
+      letter-spacing: -0.01em;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .reset-cta:hover {
+      background-color: var(--color-accent-hover);
+    }
+
+    .reset-cta:focus {
+      outline: 2px solid var(--color-accent);
+      outline-offset: 3px;
+    }
+
+    .reset-cta:active {
+      transform: translateY(1px);
+    }
+
+    .reset-link {
+      font-size: 15px;
+      color: var(--color-text-secondary);
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: color 0.2s ease, border-color 0.2s ease;
+      padding-bottom: 2px;
+    }
+
+    .reset-link:hover {
+      color: var(--color-text-primary);
+      border-bottom-color: var(--color-accent);
+    }
+
+    .reset-link:focus {
+      outline: 2px solid var(--color-accent);
+      outline-offset: 3px;
+      border-radius: 2px;
+    }
+
+    .reset-banner {
+      position: relative;
+      background-color: var(--color-surface);
+      background-image: var(--artwork-image, none);
+      background-size: cover;
+      background-position: center;
+      border-radius: 18px;
+      border: 1px solid var(--color-accent);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      height: 300px;
+      display: flex;
+      align-items: flex-end;
+      padding: 20px;
+    }
+
+    .banner-caption {
+      font-size: 12px;
+      color: var(--color-text-secondary);
+      letter-spacing: 0.02em;
+    }
+
+    /* Section 2: What you get, daily */
+    #what-you-get {
+      background-color: var(--color-bg);
+      padding: 96px 24px;
+      border-top: 1px solid rgba(200, 162, 74, 0.12);
+    }
+
+    .what-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 64px;
+      align-items: start;
+    }
+
+    .what-intro h2 {
+      font-size: 42px;
+      margin-bottom: 24px;
+      letter-spacing: -0.01em;
+    }
+
+    .what-intro p {
+      font-size: 17px;
+      line-height: 1.65;
+      color: var(--color-text-secondary);
+      max-width: 48ch;
+    }
+
+    .feature-cards {
+      display: grid;
+      gap: 20px;
+    }
+
+    .feature-card {
+      background-color: var(--color-surface);
+      border: 1px solid rgba(200, 162, 74, 0.2);
+      border-radius: 12px;
+      padding: 24px;
+    }
+
+    .feature-card h3 {
+      font-size: 20px;
+      color: var(--color-accent);
+      margin-bottom: 8px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      font-weight: 600;
+    }
+
+    .feature-card p {
+      font-size: 15px;
+      color: var(--color-text-secondary);
+      line-height: 1.6;
+    }
+
+    .feature-note {
+      font-size: 14px;
+      color: var(--color-text-secondary);
+      margin-top: 28px;
+      font-style: italic;
+    }
+
+    /* Section 3: By day 30 */
+    #by-day-30 {
+      background-color: var(--color-bg);
+      padding: 96px 24px;
+      border-top: 1px solid rgba(200, 162, 74, 0.12);
+    }
+
+    .day30-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .day30-header {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    .day30-header h2 {
+      font-size: 42px;
+      margin-bottom: 20px;
+      letter-spacing: -0.01em;
+    }
+
+    .day30-header p {
+      font-size: 17px;
+      line-height: 1.65;
+      color: var(--color-text-secondary);
+      max-width: 62ch;
+      margin: 0 auto;
+    }
+
+    .outcomes-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 32px;
+    }
+
+    .outcome-item {
+      background-color: var(--color-surface);
+      border: 1px solid rgba(200, 162, 74, 0.15);
+      border-radius: 10px;
+      padding: 28px;
+    }
+
+    .outcome-item h3 {
+      font-size: 22px;
+      margin-bottom: 10px;
+      color: var(--color-text-primary);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      font-weight: 600;
+    }
+
+    .outcome-item p {
+      font-size: 15px;
+      color: var(--color-text-secondary);
+      line-height: 1.6;
+    }
+
+    /* Section 4: How it works */
+    #how-it-works {
+      background-color: var(--color-bg);
+      padding: 96px 24px;
+      border-top: 1px solid rgba(200, 162, 74, 0.12);
+    }
+
+    .how-container {
+      max-width: 900px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .how-container h2 {
+      font-size: 42px;
+      margin-bottom: 56px;
+      letter-spacing: -0.01em;
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 40px;
+      margin-bottom: 40px;
+    }
+
+    .step {
+      text-align: center;
+    }
+
+    .step-number {
+      display: inline-block;
+      width: 48px;
+      height: 48px;
+      line-height: 48px;
+      border-radius: 50%;
+      background-color: var(--color-surface);
+      border: 1px solid var(--color-accent);
+      color: var(--color-accent);
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+
+    .step h3 {
+      font-size: 20px;
+      margin-bottom: 12px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      font-weight: 600;
+    }
+
+    .step p {
+      font-size: 15px;
+      color: var(--color-text-secondary);
+      line-height: 1.6;
+    }
+
+    .constraint-line {
+      font-size: 16px;
+      color: var(--color-accent);
+      font-style: italic;
+      margin-top: 48px;
+      margin-bottom: 20px;
+    }
+
+    .how-supporting {
+      font-size: 16px;
+      color: var(--color-text-secondary);
+      line-height: 1.65;
+      max-width: 54ch;
+      margin: 0 auto 32px;
+    }
+
+    /* Section 5: Pricing */
+    #pricing {
+      background-color: var(--color-bg);
+      padding: 96px 24px;
+      border-top: 1px solid rgba(200, 162, 74, 0.12);
+    }
+
+    .pricing-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .pricing-header {
+      text-align: center;
+      margin-bottom: 56px;
+    }
+
+    .pricing-header h2 {
+      font-size: 42px;
+      margin-bottom: 16px;
+      letter-spacing: -0.01em;
+    }
+
+    .pricing-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+      margin-bottom: 32px;
+    }
+
+    .pricing-card {
+      background-color: var(--color-surface);
+      border: 1px solid rgba(200, 162, 74, 0.2);
+      border-radius: 12px;
+      padding: 36px;
+      position: relative;
+    }
+
+    .pricing-card.highlight {
+      border: 2px solid var(--color-accent);
+    }
+
+    .pricing-badge {
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: var(--color-accent);
+      color: var(--color-bg);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 16px;
+      border-radius: 12px;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+
+    .pricing-card h3 {
+      font-size: 24px;
+      margin-bottom: 8px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      font-weight: 600;
+    }
+
+    .pricing-card .price {
+      font-size: 36px;
+      font-weight: 700;
+      color: var(--color-accent);
+      margin-bottom: 20px;
+      font-family: 'Cormorant Garamond', Georgia, serif;
+    }
+
+    .pricing-card ul {
+      list-style: none;
+      margin-bottom: 28px;
+    }
+
+    .pricing-card li {
+      font-size: 15px;
+      color: var(--color-text-secondary);
+      margin-bottom: 12px;
+      padding-left: 20px;
+      position: relative;
+    }
+
+    .pricing-card li::before {
+      content: '✓';
+      position: absolute;
+      left: 0;
+      color: var(--color-accent);
+    }
+
+    .pricing-card .pricing-trust {
+      font-size: 13px;
+      color: var(--color-text-secondary);
+      margin-top: 16px;
+      font-style: italic;
+    }
+
+    .pricing-card button {
+      width: 100%;
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--color-bg);
+      background-color: var(--color-accent);
+      border: none;
+      padding: 14px 24px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+
+    .pricing-card button:hover {
+      background-color: var(--color-accent-hover);
+    }
+
+    .pricing-faq-link {
+      text-align: center;
+      margin-top: 32px;
+    }
+
+    .pricing-faq-link a {
+      font-size: 15px;
+      color: var(--color-text-secondary);
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: color 0.2s ease, border-color 0.2s ease;
+    }
+
+    .pricing-faq-link a:hover {
+      color: var(--color-text-primary);
+      border-bottom-color: var(--color-accent);
+    }
+
+    /* Section 6: Sample edition */
+    #sample-edition {
+      background-color: var(--color-bg);
+      padding: 96px 24px;
+      border-top: 1px solid rgba(200, 162, 74, 0.12);
+    }
+
+    .sample-container {
+      max-width: 800px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .sample-container h2 {
+      font-size: 42px;
+      margin-bottom: 48px;
+      letter-spacing: -0.01em;
+    }
+
+    .edition-preview {
+      background-color: var(--color-surface);
+      border: 1px solid var(--color-accent);
+      border-radius: 16px;
+      padding: 40px;
+      margin-bottom: 36px;
+    }
+
+    .edition-image {
+      width: 100%;
+      height: 240px;
+      background-color: rgba(200, 162, 74, 0.08);
+      border-radius: 12px;
+      margin-bottom: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-text-secondary);
+      font-size: 14px;
+    }
+
+    .edition-painter {
+      font-size: 18px;
+      color: var(--color-accent);
+      margin-bottom: 20px;
+      font-weight: 600;
+    }
+
+    .edition-lines {
+      text-align: left;
+      max-width: 56ch;
+      margin: 0 auto;
+    }
+
+    .edition-lines p {
+      font-size: 15px;
+      color: var(--color-text-secondary);
+      line-height: 1.7;
+      margin-bottom: 12px;
+    }
+
+    .sample-cta {
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--color-bg);
+      background-color: var(--color-accent);
+      border: none;
+      padding: 14px 32px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .sample-cta:hover {
+      background-color: var(--color-accent-hover);
+    }
+
+    /* Section 7: FAQ */
+    #faq {
+      background-color: var(--color-bg);
+      padding: 96px 24px;
+      border-top: 1px solid rgba(200, 162, 74, 0.12);
+    }
+
+    .faq-container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .faq-container h2 {
+      font-size: 42px;
+      margin-bottom: 48px;
+      text-align: center;
+      letter-spacing: -0.01em;
+    }
+
+    .faq-item {
+      background-color: var(--color-surface);
+      border: 1px solid rgba(200, 162, 74, 0.15);
+      border-radius: 10px;
+      margin-bottom: 16px;
+      overflow: hidden;
+    }
+
+    .faq-question {
+      width: 100%;
+      text-align: left;
+      background: none;
+      border: none;
+      color: var(--color-text-primary);
+      font-size: 18px;
+      font-weight: 600;
+      padding: 24px 28px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: color 0.2s ease;
+    }
+
+    .faq-question:hover {
+      color: var(--color-accent);
+    }
+
+    .faq-question:focus {
+      outline: 2px solid var(--color-accent);
+      outline-offset: -2px;
+    }
+
+    .faq-icon {
+      font-size: 24px;
+      transition: transform 0.3s ease;
+      color: var(--color-accent);
+    }
+
+    .faq-item.open .faq-icon {
+      transform: rotate(45deg);
+    }
+
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease, padding 0.3s ease;
+    }
+
+    .faq-item.open .faq-answer {
+      max-height: 500px;
+      padding: 0 28px 24px 28px;
+    }
+
+    .faq-answer p {
+      font-size: 15px;
+      color: var(--color-text-secondary);
+      line-height: 1.7;
+    }
+
+    /* Section 8: Final conversion */
+    #final-conversion {
+      background-color: var(--color-bg);
+      padding: 110px 24px;
+      border-top: 1px solid rgba(200, 162, 74, 0.12);
+      text-align: center;
+    }
+
+    .final-container {
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .final-container h2 {
+      font-size: 48px;
+      margin-bottom: 28px;
+      letter-spacing: -0.01em;
+    }
+
+    .final-container p {
+      font-size: 18px;
+      line-height: 1.7;
+      color: var(--color-text-secondary);
+      margin-bottom: 40px;
+      max-width: 58ch;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .final-actions {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 24px;
+      flex-wrap: wrap;
+      margin-bottom: 56px;
+    }
+
+    .final-cta {
+      font-size: 17px;
+      font-weight: 500;
+      color: var(--color-bg);
+      background-color: var(--color-accent);
+      border: none;
+      padding: 16px 40px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .final-cta:hover {
+      background-color: var(--color-accent-hover);
+    }
+
+    .final-link {
+      font-size: 16px;
+      color: var(--color-text-secondary);
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: color 0.2s ease, border-color 0.2s ease;
+    }
+
+    .final-link:hover {
+      color: var(--color-text-primary);
+      border-bottom-color: var(--color-accent);
+    }
+
+    /* Footer */
+    .site-footer {
+      background-color: var(--color-bg);
+      border-top: 1px solid rgba(200, 162, 74, 0.12);
+      padding: 48px 24px 32px;
+    }
+
+    .footer-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .footer-brand {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 28px;
+      margin-bottom: 16px;
+    }
+
+    .footer-email {
+      font-size: 15px;
+      color: var(--color-text-secondary);
+      margin-bottom: 24px;
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 28px;
+      margin-bottom: 24px;
+    }
+
+    .footer-links a {
+      font-size: 14px;
+      color: var(--color-text-secondary);
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    .footer-links a:hover {
+      color: var(--color-text-primary);
+    }
+
+    .footer-copyright {
+      font-size: 13px;
+      color: var(--color-text-secondary);
+    }
+
+    /* Mobile sticky CTA */
+    .mobile-sticky-cta {
+      display: none;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background-color: var(--color-surface);
+      border-top: 1px solid var(--color-accent);
+      padding: 16px 20px;
+      box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.4);
+      z-index: 99;
+    }
+
+    .mobile-sticky-cta button {
+      width: 100%;
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--color-bg);
+      background-color: var(--color-accent);
+      border: none;
+      padding: 14px 24px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+
+    .mobile-sticky-cta button:hover {
+      background-color: var(--color-accent-hover);
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .site-logo {
+        font-size: 20px;
+      }
+
+      .header-cta {
+        font-size: 13px;
+        padding: 8px 16px;
+      }
+
+      #daily-reset {
+        padding: 56px 20px;
+      }
+
+      .reset-container {
+        grid-template-columns: 1fr;
+        gap: 48px;
+      }
+
+      .reset-banner {
+        order: -1;
+        height: 240px;
+      }
+
+      .reset-headline {
+        font-size: 32px;
+        margin-bottom: 24px;
+      }
+
+      .reset-body {
+        font-size: 16px;
+        margin-bottom: 28px;
+      }
+
+      .reset-bullets {
+        margin-bottom: 20px;
+      }
+
+      .reset-bullets li {
+        font-size: 15px;
+        margin-bottom: 12px;
+      }
+
+      .reset-actions {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 16px;
+      }
+
+      .reset-cta {
+        width: 100%;
+        text-align: center;
+      }
+
+      .reset-link {
+        text-align: center;
+      }
+
+      #what-you-get,
+      #by-day-30,
+      #how-it-works,
+      #pricing,
+      #sample-edition,
+      #faq,
+      #final-conversion {
+        padding: 64px 20px;
+      }
+
+      .what-container {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+
+      .what-intro h2,
+      .day30-header h2,
+      .how-container h2,
+      .pricing-header h2,
+      .sample-container h2,
+      .faq-container h2,
+      .final-container h2 {
+        font-size: 32px;
+      }
+
+      .outcomes-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+
+      .steps {
+        grid-template-columns: 1fr;
+        gap: 32px;
+      }
+
+      .pricing-cards {
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+
+      .final-actions {
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .final-cta,
+      .final-link {
+        width: 100%;
+        text-align: center;
+      }
+
+      .footer-links {
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .mobile-sticky-cta {
+        display: block;
+      }
+    }
+
+    @media (min-width: 901px) and (max-width: 1100px) {
+      .reset-container {
+        gap: 40px;
+      }
+
+      .reset-headline {
+        font-size: 40px;
+      }
+    }
+  </style>
 </head>
+<body>
 
-<body class="bg-brand-white text-brand-black font-sans antialiased">
-
-    <!-- Header -->
-    <header class="border-b border-brand-divider bg-brand-white/95 backdrop-blur sticky top-0 z-50">
-        <div class="max-w-6xl mx-auto px-6 py-6 flex justify-between items-center">
-            <div class="text-2xl font-serif font-light tracking-tight">Daily Sublime</div>
-            <nav class="hidden md:flex space-x-8 text-sm" role="navigation">
-                <a href="#how-it-works" class="hover:text-brand-gold transition-colors duration-200">How It Works</a>
-                <a href="#sample" class="hover:text-brand-gold transition-colors duration-200">Sample</a>
-                <a href="#pricing" class="hover:text-brand-gold transition-colors duration-200">Pricing</a>
-                <a href="#faq" class="hover:text-brand-gold transition-colors duration-200">FAQ</a>
-            </nav>
-            <button id="mobile-menu-btn" class="md:hidden" aria-label="Open menu">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                </svg>
-            </button>
-        </div>
-        
-        <!-- Mobile Menu -->
-        <nav id="mobile-menu" class="hidden md:hidden border-t border-brand-divider bg-brand-white px-6 py-4 space-y-3 text-sm">
-            <a href="#how-it-works" class="block hover:text-brand-gold transition-colors duration-200">How It Works</a>
-            <a href="#sample" class="block hover:text-brand-gold transition-colors duration-200">Sample</a>
-            <a href="#pricing" class="block hover:text-brand-gold transition-colors duration-200">Pricing</a>
-            <a href="#faq" class="block hover:text-brand-gold transition-colors duration-200">FAQ</a>
-        </nav>
-    </header>
-
-    <!-- Hero Section with Image Background -->
-    <section class="relative min-h-[85vh] flex items-center justify-center image-banner">
-        <img src="Gemini_Generated_Image_qyvgxoqyvg.jpg" alt="Daily Sublime - A painter, a practice, two minutes" class="absolute inset-0 w-full h-full object-cover">
-        <div class="hero-overlay absolute inset-0"></div>
-        
-        <div class="relative z-10 max-w-4xl mx-auto px-6 py-20 text-center text-brand-white">
-            <h1 class="font-serif text-4xl md:text-5xl lg:text-6xl leading-tight mb-8 font-light">
-                A daily practice of noticing,<br>anchored in art.
-            </h1>
-            
-            <ul class="space-y-3 mb-12 text-lg md:text-xl max-w-2xl mx-auto opacity-95">
-                <li>Train attention without the therapy-speak</li>
-                <li>Build a quiet collection of taste and perception</li>
-                <li>Seven minutes that change how you see the rest of your day</li>
-            </ul>
-            
-            <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <a href="payment.html" class="inline-block bg-brand-white text-brand-black px-8 py-4 text-base font-medium tracking-wide hover:scale-105 hover:shadow-2xl transition-all duration-200">
-                    Start Daily Sublime
-                </a>
-                <a href="#sample" class="inline-block border-2 border-brand-white text-brand-white px-8 py-4 text-base font-medium tracking-wide hover:bg-brand-white hover:text-brand-black transition-all duration-200">
-                    See a sample day
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <!-- Visual Divider Banner -->
-    <section class="image-banner h-32 md:h-48">
-        <img src="Dewatermark_1767184865240.jpg" alt="Classical still life detail" class="opacity-30">
-    </section>
-
-    <!-- What It Is -->
-    <section id="how-it-works" class="max-w-4xl mx-auto px-6 py-20 md:py-24">
-        <h2 class="font-serif text-3xl md:text-4xl mb-8 font-light">What You Receive</h2>
-        
-        <div class="space-y-6 text-lg leading-relaxed text-brand-text-secondary">
-            <p>
-                Each morning, a short email delivers one curated artwork and a structured way to look at it. No app. No notifications. Just a brief, authored encounter designed to slow cognition and sharpen awareness.
-            </p>
-            
-            <div class="border-l-2 border-brand-gold pl-6 my-8">
-                <h3 class="font-serif text-xl mb-4 text-brand-black">What arrives daily:</h3>
-                <ul class="space-y-2">
-                    <li>One iconic painting or drawing from art history</li>
-                    <li>A perceptual hook that reorients how you see</li>
-                    <li>Five noticing prompts to anchor your attention</li>
-                    <li>A short meditative micro-practice</li>
-                    <li>A true biographical story about the artist</li>
-                    <li>A poem excerpt chosen for resonance</li>
-                </ul>
-            </div>
-            
-            <p>
-                Time commitment: 2–7 minutes. The format is constrained, the experience is spacious.
-            </p>
-        </div>
-    </section>
-
-    <!-- Featured Image Banner -->
-    <section class="max-w-6xl mx-auto px-6 py-12">
-        <div class="image-banner rounded-sm overflow-hidden shadow-lg">
-            <img src="wmremove-transformed.jpg" alt="The art of observation - Magritte inspired eye" class="h-[400px] md:h-[500px]">
-        </div>
-    </section>
-
-    <!-- Sample Day -->
-    <section id="sample" class="max-w-4xl mx-auto px-6 py-20 md:py-24">
-        <h2 class="font-serif text-3xl md:text-4xl mb-8 font-light">Inside a Day</h2>
-        
-        <div id="sample-card" class="bg-white border border-brand-divider shadow-sm p-8 md:p-12 sample-collapsed">
-            <div class="mb-6">
-                <div class="text-sm uppercase tracking-wider text-brand-text-secondary mb-3">Today's Work</div>
-                <div class="font-serif text-xl italic">
-                    Édouard Vuillard, <span class="font-normal">Interior, Mother and Sister of the Artist</span>, 1893
-                </div>
-            </div>
-            
-            <div class="w-full h-64 bg-brand-divider mb-8 rounded-sm overflow-hidden">
-                <img src="Dewatermark_1767184865240.jpg" alt="Sample artwork detail" class="w-full h-full object-cover">
-            </div>
-            
-            <div class="mb-6">
-                <div class="text-sm uppercase tracking-wider text-brand-burgundy mb-3">Hook</div>
-                <p class="text-lg leading-relaxed">
-                    Vuillard painted domestic interiors like crime scenes. Nothing dramatic happens, yet something always feels withheld. Notice what refuses to resolve.
-                </p>
-            </div>
-            
-            <div class="mb-6">
-                <div class="text-sm uppercase tracking-wider text-brand-burgundy mb-3">Notice</div>
-                <ul class="space-y-2 text-lg">
-                    <li>The wallpaper competes with the figures for dominance</li>
-                    <li>Your eye cannot settle; the pattern insists</li>
-                    <li class="text-brand-text-secondary" id="notice-hidden">[Three more prompts in full version]</li>
-                </ul>
-            </div>
-            
-            <div class="mb-6">
-                <div class="text-sm uppercase tracking-wider text-brand-burgundy mb-3">Practice</div>
-                <p class="text-lg leading-relaxed">
-                    Set a timer for two minutes. Look only at the space between the two figures. Do not name what you see…
-                </p>
-                <p class="text-brand-text-secondary mt-2" id="practice-hidden">[Practice continues]</p>
-            </div>
-            
-            <div id="full-sample-content" class="hidden">
-                <div class="mb-6">
-                    <div class="text-sm uppercase tracking-wider text-brand-burgundy mb-3">Story</div>
-                    <p class="text-lg leading-relaxed">
-                        Vuillard lived with his mother and sister for most of his life. They ran a dressmaking business from their small apartment. The rooms were crowded with fabric, patterns, domestic routine. He painted the same spaces again and again. Not out of lack of material, but precision.
-                    </p>
-                </div>
-                
-                <div>
-                    <div class="text-sm uppercase tracking-wider text-brand-burgundy mb-3">Poem</div>
-                    <p class="text-lg italic leading-relaxed">
-                        "I have lived in important places, times<br>
-                        When great events were decided…"
-                    </p>
-                    <p class="text-sm text-brand-text-secondary mt-2">
-                        Patrick Kavanagh, from "Epic," Collected Poems (1964)
-                    </p>
-                </div>
-            </div>
-            
-            <button id="toggle-sample" class="mt-8 text-brand-black border-b border-brand-black hover:text-brand-gold hover:border-brand-gold transition-colors duration-200 text-base font-medium">
-                View full sample
-            </button>
-        </div>
-    </section>
-
-    <!-- Divider -->
-    <div class="max-w-6xl mx-auto px-6">
-        <hr class="border-brand-divider">
+  <!-- Header -->
+  <header class="site-header">
+    <div class="header-container">
+      <a href="#" class="site-logo">Daily Sublime</a>
+      <a href="#pricing" class="header-cta">Start Now</a>
     </div>
+  </header>
 
-    <!-- Why It Works -->
-    <section class="max-w-4xl mx-auto px-6 py-20 md:py-24">
-        <h2 class="font-serif text-3xl md:text-4xl mb-8 font-light">How It Changes Attention</h2>
-        
-        <div class="space-y-6 text-lg leading-relaxed text-brand-text-secondary">
-            <p>
-                This is not art education. It is perceptual training disguised as a collecting habit.
-            </p>
-            
-            <p>
-                Structured noticing reduces cognitive noise. Constraint creates focus. Repetition over time builds what psychologists call selective attention: the ability to hold one thing clearly while the rest recedes. You become the kind of person who pauses.
-            </p>
-            
-            <p>
-                The biographical stories and poems offer context without lecture. The artwork itself does the work. You are not learning about beauty. You are practicing a specific cognitive skill: sustained, non-reactive looking.
-            </p>
-            
-            <p>
-                Over weeks, the effect compounds. You notice more in conversations, in rooms, in your own reactions. The practice is brief because attention is a limited resource. We treat it accordingly.
-            </p>
+  <!-- Section 1: A daily reset for attention -->
+  <section id="daily-reset">
+    <div class="reset-container">
+      <div class="reset-content">
+        <h2 class="reset-headline">A daily reset for attention</h2>
+        <p class="reset-body">Daily Sublime is a 2 to 7 minute ritual that trains perception using masterworks. Not trivia. Not wellness noise. You leave with calmer focus, sharper taste, and a cleaner inner pace.</p>
+        <ul class="reset-bullets">
+          <li>See what most people pass by, in paint and in life.</li>
+          <li>Learn the craft by noticing, not by studying.</li>
+          <li>Carry it into your day with one small constraint.</li>
+        </ul>
+        <p class="reset-trust">No prior art knowledge needed. Cancel anytime.</p>
+        <div class="reset-actions">
+          <a href="#pricing" class="reset-cta">Start with €9.99 per month</a>
+          <a href="#sample-edition" class="reset-link">See a sample edition</a>
         </div>
-    </section>
-
-    <!-- Tagline Banner -->
-    <section class="max-w-6xl mx-auto px-6 py-12">
-        <div class="image-banner rounded-sm overflow-hidden shadow-lg">
-            <img src="Gemini_Generated_Image_m9tkd7m9tkd7m9tk.jpg" alt="Stop seeing, learn to observe - 100 days of practice, 100 painters" class="h-[350px] md:h-[450px]">
-        </div>
-    </section>
-
-    <!-- For Whom / Not For Whom -->
-    <section class="max-w-5xl mx-auto px-6 py-20 md:py-24">
-        <h2 class="font-serif text-3xl md:text-4xl mb-12 font-light text-center">Who This Is For</h2>
-        
-        <div class="grid md:grid-cols-2 gap-12">
-            <div>
-                <h3 class="font-serif text-xl mb-6 text-brand-black">For you if:</h3>
-                <ul class="space-y-3 text-base text-brand-text-secondary">
-                    <li>You value aesthetics but distrust wellness marketing</li>
-                    <li>You want the benefits of mindfulness without the spiritual overlay</li>
-                    <li>You prefer authored, editorial experiences to algorithmic feeds</li>
-                    <li>You already collect things (books, wine, prints, type specimens) and want to collect perceptual moments</li>
-                </ul>
-            </div>
-            
-            <div>
-                <h3 class="font-serif text-xl mb-6 text-brand-black">Not for you if:</h3>
-                <ul class="space-y-3 text-base text-brand-text-secondary">
-                    <li>You want guided meditations or breathing exercises</li>
-                    <li>You need immediate therapeutic intervention</li>
-                    <li>You prefer video or audio formats</li>
-                    <li>You find the idea of "training perception" pretentious rather than intriguing</li>
-                </ul>
-            </div>
-        </div>
-    </section>
-
-    <!-- Divider -->
-    <div class="max-w-6xl mx-auto px-6">
-        <hr class="border-brand-divider">
+      </div>
+      <div class="reset-banner">
+        <span class="banner-caption">A 2–7 minute edition, daily.</span>
+      </div>
     </div>
+  </section>
 
-    <!-- Pricing -->
-    <section id="pricing" class="max-w-5xl mx-auto px-6 py-20 md:py-24">
-        <h2 class="font-serif text-3xl md:text-4xl mb-12 font-light text-center">Join Daily Sublime</h2>
-        
-        <div class="overflow-x-auto">
-            <table class="w-full border-collapse">
-                <thead>
-                    <tr class="border-b-2 border-brand-black">
-                        <th class="text-left py-4 px-4 font-serif text-lg font-normal">Plan</th>
-                        <th class="text-left py-4 px-4 font-serif text-lg font-normal">Price</th>
-                        <th class="text-left py-4 px-4 font-serif text-lg font-normal">Best For</th>
-                    </tr>
-                </thead>
-                <tbody class="text-brand-text-secondary">
-                    <tr class="border-b border-brand-divider">
-                        <td class="py-6 px-4">Monthly</td>
-                        <td class="py-6 px-4">€9.99/month</td>
-                        <td class="py-6 px-4">Try the practice, cancel anytime</td>
-                    </tr>
-                    <tr class="border-b border-brand-divider bg-brand-white/50 relative">
-                        <td class="py-6 px-4 font-medium text-brand-black">
-                            Annual
-                            <span class="ml-2 text-xs uppercase tracking-wider text-brand-gold">Most Popular</span>
-                        </td>
-                        <td class="py-6 px-4 font-medium text-brand-black">€99/year</td>
-                        <td class="py-6 px-4">Commit to building the habit</td>
-                    </tr>
-                    <tr class="border-b border-brand-divider">
-                        <td class="py-6 px-4">101-Day Pass</td>
-                        <td class="py-6 px-4">€79 one-time</td>
-                        <td class="py-6 px-4">A finite, intensive season</td>
-                    </tr>
-                </tbody>
-            </table>
+  <!-- Section 2: What you get, daily -->
+  <section id="what-you-get">
+    <div class="what-container">
+      <div class="what-intro">
+        <h2>What you get, daily</h2>
+        <p>You are not buying information. You are buying a better way to look. Daily Sublime gives you one masterwork a day and a small set of cues that sharpen perception fast. It is quiet, structured, and oddly addictive in the best way: you start seeing beauty where you used to see nothing.</p>
+      </div>
+      <div class="feature-cards">
+        <div class="feature-card">
+          <h3>One iconic work</h3>
+          <p>A single painting from a master, museum quality, chosen for its capacity to slow you down and make you look twice.</p>
         </div>
-        
-        <div class="mt-8 text-center text-base text-brand-text-secondary">
-            <p>All plans include full archive access, sourced attributions, and the same daily experience.</p>
-            <p class="mt-2">Cancel anytime. 30-day money-back guarantee.</p>
+        <div class="feature-card">
+          <h3>Five noticing prompts</h3>
+          <p>Precise cues that train your eye to see what you would normally skip: shadow, rhythm, edges, silence.</p>
         </div>
-        
-        <div class="text-center mt-12">
-            <a href="payment.html" class="inline-block bg-brand-black text-brand-white px-12 py-4 text-base font-medium tracking-wide hover:scale-105 hover:shadow-lg transition-all duration-200">
-                Start Daily Sublime
-            </a>
+        <div class="feature-card">
+          <h3>A 2–7 minute meditation</h3>
+          <p>One short practice built around a single constraint, something not to do, so you can rest your attention without forcing it.</p>
         </div>
-    </section>
-
-    <!-- Divider -->
-    <div class="max-w-6xl mx-auto px-6">
-        <hr class="border-brand-divider">
+        <div class="feature-card">
+          <h3>One true story</h3>
+          <p>A brief, memorable moment from the painter's life that makes the work human and the painter real.</p>
+        </div>
+        <div class="feature-card">
+          <h3>A short poem excerpt</h3>
+          <p>A few lines that echo the painting's mood, chosen to linger with you after the edition closes.</p>
+        </div>
+        <p class="feature-note">No homework. No streak pressure. Just a daily return.</p>
+      </div>
     </div>
+  </section>
 
-    <!-- Trust Section -->
-    <section class="max-w-4xl mx-auto px-6 py-20 md:py-24">
-        <h2 class="font-serif text-3xl md:text-4xl mb-12 font-light">How We Operate</h2>
-        
-        <div class="space-y-10">
-            <div>
-                <h3 class="font-serif text-xl mb-3 text-brand-black">Sourcing</h3>
-                <p class="text-base leading-relaxed text-brand-text-secondary">
-                    Every artwork is attributed. Every biographical detail is fact-checked against primary sources and institutional archives. Every poem excerpt includes the collection and publication year. We name where things come from.
-                </p>
-            </div>
-            
-            <div>
-                <h3 class="font-serif text-xl mb-3 text-brand-black">Privacy</h3>
-                <p class="text-base leading-relaxed text-brand-text-secondary">
-                    Your email is used only to send the daily practice. We do not sell data, insert tracking pixels, or share your information. Unsubscribe in one click.
-                </p>
-            </div>
-            
-            <div>
-                <h3 class="font-serif text-xl mb-3 text-brand-black">Cancellation</h3>
-                <p class="text-base leading-relaxed text-brand-text-secondary">
-                    Cancel from your account page anytime. No retention dark patterns. If you cancel mid-month, access continues through the billing period.
-                </p>
-            </div>
-            
-            <div>
-                <h3 class="font-serif text-xl mb-3 text-brand-black">Guarantee</h3>
-                <p class="text-base leading-relaxed text-brand-text-secondary">
-                    30-day money-back guarantee. If the practice does not feel valuable, request a refund. No questions asked.
-                </p>
-            </div>
+  <!-- Section 3: By day 30, you'll notice -->
+  <section id="by-day-30">
+    <div class="day30-container">
+      <div class="day30-header">
+        <h2>By day 30, you'll notice…</h2>
+        <p>This is what changes when you practice observation instead of chasing stimulation. Not in theory. In ordinary rooms, ordinary conversations, ordinary mornings.</p>
+      </div>
+      <div class="outcomes-grid">
+        <div class="outcome-item">
+          <h3>Calmer focus</h3>
+          <p>Your mind settles faster and holds attention longer without force or frustration.</p>
         </div>
-    </section>
-
-    <!-- Divider -->
-    <div class="max-w-6xl mx-auto px-6">
-        <hr class="border-brand-divider">
+        <div class="outcome-item">
+          <h3>Better aesthetic taste</h3>
+          <p>You start seeing why some things feel beautiful and others feel cheap, and you trust your own eye more.</p>
+        </div>
+        <div class="outcome-item">
+          <h3>Less compulsive scrolling</h3>
+          <p>You reach for your phone less often because your attention has a better place to go.</p>
+        </div>
+        <div class="outcome-item">
+          <h3>More patience with ambiguity</h3>
+          <p>You can sit with uncertainty, complexity, and slowness without needing an answer right away.</p>
+        </div>
+        <div class="outcome-item">
+          <h3>Sharper observation in real spaces</h3>
+          <p>You notice light, texture, composition, and color in the world around you without trying.</p>
+        </div>
+        <div class="outcome-item">
+          <h3>A gentler relationship with self-judgment</h3>
+          <p>You stop grading yourself and start observing yourself the way you observe a painting: with curiosity, not criticism.</p>
+        </div>
+      </div>
     </div>
+  </section>
 
-    <!-- FAQ -->
-    <section id="faq" class="max-w-4xl mx-auto px-6 py-20 md:py-24">
-        <h2 class="font-serif text-3xl md:text-4xl mb-12 font-light">Questions</h2>
-        
-        <div class="space-y-8">
-            <div>
-                <h3 class="font-serif text-lg mb-2 text-brand-black">Is this an art history lesson?</h3>
-                <p class="text-base text-brand-text-secondary">
-                    No. You do not need to remember artist names or movements. The biographical stories provide context, but the practice is perceptual, not academic.
-                </p>
-            </div>
-            
-            <div>
-                <h3 class="font-serif text-lg mb-2 text-brand-black">Do I need existing art knowledge?</h3>
-                <p class="text-base text-brand-text-secondary">
-                    No. The prompts guide your attention. Prior knowledge can be interesting but is not required.
-                </p>
-            </div>
-            
-            <div>
-                <h3 class="font-serif text-lg mb-2 text-brand-black">How long does each day take?</h3>
-                <p class="text-base text-brand-text-secondary">
-                    Between two and seven minutes. The format is designed to be brief. Some days you linger; most days you move through it in a single sitting.
-                </p>
-            </div>
-            
-            <div>
-                <h3 class="font-serif text-lg mb-2 text-brand-black">What if I miss days?</h3>
-                <p class="text-base text-brand-text-secondary">
-                    The archive remains accessible. There is no streak counter, no gamification. Return when you choose. The practice benefits from consistency but does not punish absence.
-                </p>
-            </div>
-            
-            <div>
-                <h3 class="font-serif text-lg mb-2 text-brand-black">Is this spiritual or religious?</h3>
-                <p class="text-base text-brand-text-secondary">
-                    No. The language is secular. The benefits are cognitive and emotional, not metaphysical. If you bring a spiritual lens, the structure accommodates it, but nothing is prescribed.
-                </p>
-            </div>
-            
-            <div>
-                <h3 class="font-serif text-lg mb-2 text-brand-black">Is everything properly sourced?</h3>
-                <p class="text-base text-brand-text-secondary">
-                    Yes. Every artwork includes artist, title, date, medium, and current institutional holding. Poems cite author, collection, and year. Stories reference biographies and archives.
-                </p>
-            </div>
-            
-            <div>
-                <h3 class="font-serif text-lg mb-2 text-brand-black">Can I cancel easily?</h3>
-                <p class="text-base text-brand-text-secondary">
-                    Yes. One click from your account page. No email to support required, no friction.
-                </p>
-            </div>
+  <!-- Section 4: How it works -->
+  <section id="how-it-works">
+    <div class="how-container">
+      <h2>How it works</h2>
+      <div class="steps">
+        <div class="step">
+          <div class="step-number">1</div>
+          <h3>Open today's edition</h3>
+          <p>Each morning, a new edition arrives. One painter. One work. No clutter.</p>
         </div>
-    </section>
-
-    <!-- Divider -->
-    <div class="max-w-6xl mx-auto px-6">
-        <hr class="border-brand-divider">
+        <div class="step">
+          <div class="step-number">2</div>
+          <h3>Look for what you're told to notice</h3>
+          <p>Five prompts guide your attention to details you would normally miss.</p>
+        </div>
+        <div class="step">
+          <div class="step-number">3</div>
+          <h3>Do the short practice with one constraint</h3>
+          <p>A 2 to 7 minute meditation that gives your attention a place to rest.</p>
+        </div>
+      </div>
+      <p class="constraint-line">The constraint is the doorway.</p>
+      <p class="how-supporting">The practice is short by design. The goal is not escape. It is returning to the world with cleaner eyes.</p>
     </div>
+  </section>
 
-    <!-- Final CTA -->
-    <section class="max-w-3xl mx-auto px-6 py-20 md:py-24 text-center">
-        <h2 class="font-serif text-3xl md:text-4xl mb-6 font-light">Begin tomorrow morning.</h2>
-        
-        <p class="text-lg text-brand-text-secondary mb-10 leading-relaxed">
-            The first day arrives in your inbox at 7 a.m. your local time. One painting, five prompts, a short practice. Then you go about your day, slightly recalibrated.
-        </p>
-        
-        <a href="payment.html" class="inline-block bg-brand-black text-brand-white px-12 py-4 text-base font-medium tracking-wide hover:scale-105 hover:shadow-lg transition-all duration-200">
-            Start Daily Sublime
-        </a>
-        
-        <p class="text-sm text-brand-text-secondary mt-4">
-            30-day guarantee • Cancel anytime
-        </p>
-    </section>
-
-    <!-- Footer -->
-    <footer class="border-t border-brand-divider bg-brand-white py-12">
-        <div class="max-w-6xl mx-auto px-6">
-            <div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-                <div class="text-sm text-brand-text-secondary">
-                    Daily Sublime © 2025
-                </div>
-                <nav class="flex space-x-6 text-sm text-brand-text-secondary">
-                    <a href="#" class="hover:text-brand-gold transition-colors duration-200">Privacy</a>
-                    <a href="#" class="hover:text-brand-gold transition-colors duration-200">Terms</a>
-                    <a href="#" class="hover:text-brand-gold transition-colors duration-200">Contact</a>
-                    <a href="mailto:hello@dailysublime.com" class="hover:text-brand-gold transition-colors duration-200">Updates</a>
-                </nav>
-            </div>
+  <!-- Section 5: Pricing -->
+  <section id="pricing">
+    <div class="pricing-container">
+      <div class="pricing-header">
+        <h2>Choose your access</h2>
+      </div>
+      <div class="pricing-cards">
+        <div class="pricing-card highlight">
+          <h3>Monthly</h3>
+          <div class="price">€9.99</div>
+          <ul>
+            <li>Daily editions with one painter at a time</li>
+            <li>Access to full archive of past editions</li>
+            <li>New editions every morning</li>
+          </ul>
+          <button onclick="window.location.href='#pricing'">Start with €9.99 per month</button>
+          <p class="pricing-trust">Cancel anytime</p>
         </div>
-    </footer>
+        <div class="pricing-card">
+          <div class="pricing-badge">Best Value</div>
+          <h3>Full Course</h3>
+          <div class="price">€19.99</div>
+          <ul>
+            <li>All current daily editions, forever</li>
+            <li>No recurring payments</li>
+            <li>Lifetime access to all course content</li>
+          </ul>
+          <button onclick="window.location.href='#pricing'">Buy the full course €19.99</button>
+          <p class="pricing-trust">One-time payment</p>
+        </div>
+        <div class="pricing-card">
+          <h3>Premium</h3>
+          <div class="price">€30</div>
+          <ul>
+            <li>Everything in Monthly, plus other courses</li>
+            <li>Early access to new courses</li>
+            <li>Help fund future courses</li>
+          </ul>
+          <button onclick="window.location.href='#pricing'">Go Premium €30 per month</button>
+          <p class="pricing-trust">Cancel anytime</p>
+        </div>
+      </div>
+      <div class="pricing-faq-link">
+        <a href="#faq">Questions about access and cancellation?</a>
+      </div>
+    </div>
+  </section>
 
-    <!-- JavaScript -->
-    <script>
-        // Mobile menu toggle
-        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-        const mobileMenu = document.getElementById('mobile-menu');
+  <!-- Section 6: Sample edition -->
+  <section id="sample-edition">
+    <div class="sample-container">
+      <h2>See what an edition feels like</h2>
+      <div class="edition-preview">
+        <div class="edition-image">[ Edition artwork preview ]</div>
+        <div class="edition-painter">Featured Painter: Claude Monet</div>
+        <div class="edition-lines">
+          <p>Notice the way light dissolves form. Not by force, but by patience.</p>
+          <p>The painting does not argue. It waits for you to see what it already knows.</p>
+          <p>Today's constraint: do not try to understand what you see. Just see it.</p>
+        </div>
+      </div>
+      <a href="#sample-edition" class="sample-cta">See a sample edition</a>
+    </div>
+  </section>
+
+  <!-- Section 7: FAQ -->
+  <section id="faq">
+    <div class="faq-container">
+      <h2>Questions</h2>
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          <span>Is this an art history course?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <p>No. This is a practice in seeing and attention. You will learn about painters, but through looking, not through lectures. The goal is calmer focus and sharper perception, not memorizing dates.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          <span>How long is each daily edition?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <p>Between 2 and 7 minutes. Short enough to fit into any morning, long enough to actually change your attention for the day.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          <span>Do I need any background in art?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <p>No. The practice is designed for people who want to see more clearly, not people who already know art terms. If you can look at a painting, you can do this.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          <span>What do I actually do in the meditation?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <p>You follow one simple constraint: something not to do. Not trying to clear your mind. Not fixing your breath. Just noticing, with one small boundary that makes noticing easier.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          <span>Can I cancel anytime?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <p>Yes. Monthly and Premium subscriptions can be canceled anytime with no penalties or questions. The Full Course is a one-time payment with lifetime access.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          <span>What's the difference between monthly, full course, and premium?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <p>Monthly gives you daily editions for as long as you subscribe. Full Course gives you all current editions forever with no recurring payment. Premium includes everything in Monthly plus access to other courses and early releases.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 8: Final conversion -->
+  <section id="final-conversion">
+    <div class="final-container">
+      <h2>Make attention your luxury</h2>
+      <p>Beauty is not rare. Attention is. Give it a place to land, once a day. Two to seven minutes. One painter. A calmer mind that feels more like yours.</p>
+      <div class="final-actions">
+        <a href="#pricing" class="final-cta">Start with €9.99 per month</a>
+        <a href="#sample-edition" class="final-link">See a sample edition</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="footer-container">
+      <div class="footer-brand">Daily Sublime</div>
+      <div class="footer-email">hello@dailysublime.com</div>
+      <div class="footer-links">
+        <a href="#">Terms</a>
+        <a href="#">Privacy</a>
+        <a href="#">Contact</a>
+      </div>
+      <div class="footer-copyright">© 2026 Daily Sublime. All rights reserved.</div>
+    </div>
+  </footer>
+
+  <!-- Mobile sticky CTA -->
+  <div class="mobile-sticky-cta">
+    <button onclick="window.location.href='#pricing'">Start with €9.99 per month</button>
+  </div>
+
+  <!-- Minimal JS for FAQ accordion -->
+  <script>
+    document.querySelectorAll('.faq-question').forEach(button => {
+      button.addEventListener('click', () => {
+        const faqItem = button.parentElement;
+        const isOpen = faqItem.classList.contains('open');
         
-        mobileMenuBtn.addEventListener('click', () => {
-            mobileMenu.classList.toggle('hidden');
+        document.querySelectorAll('.faq-item').forEach(item => {
+          item.classList.remove('open');
+          item.querySelector('.faq-question').setAttribute('aria-expanded', 'false');
         });
         
-        // Sample expansion toggle
-        const toggleSampleBtn = document.getElementById('toggle-sample');
-        const sampleCard = document.getElementById('sample-card');
-        const fullSampleContent = document.getElementById('full-sample-content');
-        const noticeHidden = document.getElementById('notice-hidden');
-        const practiceHidden = document.getElementById('practice-hidden');
-        
-        toggleSampleBtn.addEventListener('click', () => {
-            const isCollapsed = sampleCard.classList.contains('sample-collapsed');
-            
-            if (isCollapsed) {
-                sampleCard.classList.remove('sample-collapsed');
-                sampleCard.classList.add('sample-expanded');
-                fullSampleContent.classList.remove('hidden');
-                noticeHidden.classList.add('hidden');
-                practiceHidden.classList.add('hidden');
-                toggleSampleBtn.textContent = 'Collapse sample';
-            } else {
-                sampleCard.classList.add('sample-collapsed');
-                sampleCard.classList.remove('sample-expanded');
-                fullSampleContent.classList.add('hidden');
-                noticeHidden.classList.remove('hidden');
-                practiceHidden.classList.remove('hidden');
-                toggleSampleBtn.textContent = 'View full sample';
-                
-                sampleCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
-        });
-        
-        // Smooth scroll for anchor links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                    mobileMenu.classList.add('hidden');
-                }
-            });
-        });
-    </script>
+        if (!isOpen) {
+          faqItem.classList.add('open');
+          button.setAttribute('aria-expanded', 'true');
+        }
+      });
+    });
+  </script>
 
 </body>
 </html>
