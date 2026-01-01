@@ -1,2 +1,0 @@
-# Dailysublime
-painterslayout
