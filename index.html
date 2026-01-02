@@ -299,7 +299,7 @@
       max-width: 1400px;
       margin: 0 auto;
     }
-    /* Rebel Section - THREE COLUMN LAYOUT */
+    /* Rebel Section - ZOOM-STYLE LAYOUT WITH SIDEBAR TOC */
     .rebel-section-wrapper {
       padding: var(--space-3xl) clamp(2rem, 5vw, 4rem);
       background: var(--bg-surface);
@@ -320,11 +320,69 @@
       line-height: 1.2;
       filter: drop-shadow(0 2px 8px rgba(208,169,84,0.5));
     }
-    .rebel-grid {
+    /* ZOOM-STYLE GRID: Sidebar TOC + Main Content */
+    .rebel-content-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 380px 1fr;
       gap: var(--space-3xl);
-      align-items: center;
+      align-items: start;
+    }
+    /* Table of Contents Sidebar (Left) */
+    .rebel-toc {
+      background: linear-gradient(145deg, var(--bg-card), rgba(26,27,32,0.9));
+      border: 1px solid var(--border-gold);
+      border-radius: var(--radius-xl);
+      padding: var(--space-2xl);
+      position: sticky;
+      top: 100px;
+      box-shadow: var(--shadow-md);
+    }
+    .rebel-toc h3 {
+      font-size: var(--fs-sm);
+      color: var(--accent-gold);
+      margin-bottom: var(--space-xl);
+      font-family: 'Cormorant Garamond', serif;
+    }
+    .toc-list {
+      list-style: none;
+    }
+    .toc-item {
+      margin-bottom: var(--space-lg);
+      padding-bottom: var(--space-lg);
+      border-bottom: 1px solid rgba(208, 169, 84, 0.1);
+      transition: all 0.3s ease;
+    }
+    .toc-item:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+    .toc-item:hover {
+      transform: translateX(8px);
+    }
+    .toc-number {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: var(--fs-md);
+      color: var(--accent-gold);
+      font-weight: 500;
+      margin-bottom: var(--space-xs);
+      display: block;
+    }
+    .toc-title {
+      font-size: var(--fs-xs);
+      color: var(--text-muted);
+      line-height: 1.5;
+      cursor: pointer;
+      transition: color 0.3s ease;
+    }
+    .toc-item:hover .toc-title {
+      color: var(--text-main);
+    }
+    /* Main Content (Right) */
+    .rebel-main-content {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2xl);
     }
     .rebel-text-content {
       background: linear-gradient(145deg, var(--bg-card), rgba(26,27,32,0.6));
@@ -332,22 +390,6 @@
       border-radius: var(--radius-xl);
       padding: var(--space-2xl);
       box-shadow: var(--shadow-md);
-      position: relative;
-      overflow: hidden;
-    }
-    .rebel-text-content::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 4px;
-      background: var(--gradient-gold);
-      transform: scaleX(0);
-      transition: transform 1s ease;
-    }
-    .rebel-text-content:hover::before {
-      transform: scaleX(1);
     }
     .rebel-text-content p {
       font-size: var(--fs-sm);
@@ -360,6 +402,9 @@
       color: var(--accent-gold);
       font-family: 'Cormorant Garamond', serif;
       font-style: italic;
+    }
+    .rebel-text-content p:last-child {
+      margin-bottom: 0;
     }
     .rebel-button {
       font-size: var(--fs-md);
@@ -417,7 +462,7 @@
       transition: all 1s ease;
     }
     .rebel-image-wrapper:hover {
-      transform: scale(1.05) rotate(-2deg);
+      transform: scale(1.02);
       box-shadow: 0 3rem 8rem rgba(0,0,0,0.8), var(--bloom-amber);
     }
     .rebel-image {
@@ -890,10 +935,13 @@
       margin-top: var(--space-xs);
     }
     /* Responsive */
-    @media (max-width: 968px) {
-      .rebel-grid {
+    @media (max-width: 1100px) {
+      .rebel-content-grid {
         grid-template-columns: 1fr;
         gap: var(--space-2xl);
+      }
+      .rebel-toc {
+        position: static;
       }
     }
     @media (max-width: 768px) {
@@ -922,14 +970,14 @@
   </style>
 </head>
 <body>
-  <!-- Header: Transparent with Logo Only - NO DARK BANNER -->
+  <!-- Header: Transparent with Logo Only - NO BANNER -->
   <header class="site-header">
     <div class="header-container">
       <img src="wmremove-transformed.jpg" alt="Daily Sublime Logo" class="site-logo">
     </div>
   </header>
 
-  <!-- Hero - BEAUTIFUL IMAGE AS BACKGROUND -->
+  <!-- Hero - WITH BEAUTIFUL IMAGE BACKGROUND -->
   <section class="hero-section reveal-section">
     <img src="hero-banner.jpg" alt="Masterwork Painting" class="hero-image" loading="eager">
     <div class="hero-overlay"></div>
@@ -950,23 +998,55 @@
     </div>
   </section>
 
-  <!-- Rebel Section: THREE COLUMN LAYOUT - Title Center, Text Left, Image Right -->
+  <!-- Rebel Section: ZOOM-STYLE LAYOUT - Sidebar TOC + Main Content -->
   <section class="rebel-section-wrapper reveal-section" id="rebel-section">
     <div class="rebel-container">
       <div class="rebel-title-center">
         <h2>Attention is a luxury!</h2>
       </div>
-      <div class="rebel-grid">
-        <div class="rebel-text-content">
-          <p>Dear Rebel,</p>
-          <p>We are gripped by a poverty of presence in a world too frictionless to be noticed. In a life on autopilot, seizing your attention is a radical act of rebellion.</p>
-          <p>The sublime life waits for your gaze.</p>
-          <p>This course is your daily ritual of reclamation. Each morning, we bring you one painter and one practice, a moment to stop the scroll, and reclaim your humanity.</p>
-          <p>Shall we begin?</p>
-          <a href="#pricing" class="rebel-button">YES!</a>
-        </div>
-        <div class="rebel-image-wrapper">
-          <img src="sample-edition-preview.jpg" alt="Daily Sublime Edition Preview" class="rebel-image">
+      
+      <div class="rebel-content-grid">
+        <!-- Sidebar Table of Contents (Left) -->
+        <aside class="rebel-toc">
+          <h3>In this section</h3>
+          <ul class="toc-list">
+            <li class="toc-item">
+              <span class="toc-number">01</span>
+              <div class="toc-title">What is attention poverty?</div>
+            </li>
+            <li class="toc-item">
+              <span class="toc-number">02</span>
+              <div class="toc-title">The daily practice</div>
+            </li>
+            <li class="toc-item">
+              <span class="toc-number">03</span>
+              <div class="toc-title">Benefits of observation</div>
+            </li>
+            <li class="toc-item">
+              <span class="toc-number">04</span>
+              <div class="toc-title">Reclaim your humanity</div>
+            </li>
+            <li class="toc-item">
+              <span class="toc-number">05</span>
+              <div class="toc-title">Begin your journey</div>
+            </li>
+          </ul>
+        </aside>
+
+        <!-- Main Content Area (Right) -->
+        <div class="rebel-main-content">
+          <div class="rebel-text-content">
+            <p>Dear Rebel,</p>
+            <p>We are gripped by a poverty of presence in a world too frictionless to be noticed. In a life on autopilot, seizing your attention is a radical act of rebellion.</p>
+            <p>The sublime life waits for your gaze.</p>
+            <p>This course is your daily ritual of reclamation. Each morning, we bring you one painter and one practice, a moment to stop the scroll, and reclaim your humanity.</p>
+            <p>Shall we begin?</p>
+            <a href="#pricing" class="rebel-button">YES!</a>
+          </div>
+          
+          <div class="rebel-image-wrapper">
+            <img src="sample-edition-preview.jpg" alt="Daily Sublime Edition Preview" class="rebel-image">
+          </div>
         </div>
       </div>
     </div>
