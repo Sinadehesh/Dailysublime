@@ -941,14 +941,28 @@
       font-size: var(--fs-xs);
       margin-top: var(--space-xs);
     }
-    /* Responsive */
+    /* Responsive - MOBILE ORDER FIXED + LARGE IMAGE */
     @media (max-width: 968px) {
       .rebel-grid {
         grid-template-columns: 1fr;
         gap: var(--space-2xl);
       }
+      /* Fix for "insanely small picture" + Order */
+      .rebel-image-wrapper {
+        order: -1; /* Moves image above text */
+        width: 100%;
+        margin-bottom: var(--space-lg);
+        transform: scale(1.05); /* Slight zoom for impact */
+        border-width: 2px;
+      }
       .rebel-card {
-        padding: var(--space-2xl);
+        padding: var(--space-xl) var(--space-lg); /* Less horizontal padding */
+      }
+      .rebel-text-content {
+        text-align: center; /* Better readability on mobile */
+      }
+      .rebel-text-content p:first-of-type {
+        font-size: var(--fs-lg);
       }
     }
     @media (max-width: 768px) {
