@@ -299,16 +299,25 @@
       max-width: 1400px;
       margin: 0 auto;
     }
-    /* Rebel Section - CLEAN SIMPLE LAYOUT */
+    /* Rebel Section - STUNNING VISUAL DESIGN */
     .rebel-section-wrapper {
       padding: var(--space-3xl) clamp(2rem, 5vw, 4rem);
-      background: var(--bg-surface);
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
+      background: linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-surface) 50%, var(--bg-primary) 100%);
+      position: relative;
+      overflow: hidden;
+    }
+    .rebel-section-wrapper::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent-gold), transparent);
     }
     .rebel-container {
-      max-width: 1200px;
+      max-width: 1300px;
       margin: 0 auto;
       width: 100%;
     }
@@ -325,34 +334,75 @@
       filter: drop-shadow(0 2px 8px rgba(208,169,84,0.5));
       margin-bottom: var(--space-md);
     }
-    /* SIMPLE TWO-COLUMN GRID */
+    /* BEAUTIFUL CARD LAYOUT */
+    .rebel-card {
+      background: linear-gradient(145deg, rgba(26,27,32,0.95), rgba(17,18,21,0.9));
+      border: 2px solid var(--border-gold);
+      border-radius: var(--radius-xl);
+      padding: var(--space-3xl);
+      box-shadow: var(--shadow-lg), var(--bloom-gold);
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(10px);
+    }
+    .rebel-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--gradient-gold);
+    }
+    .rebel-card::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(208,169,84,0.05) 0%, transparent 70%);
+      pointer-events: none;
+    }
     .rebel-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr 1.2fr;
       gap: var(--space-3xl);
       align-items: center;
+      position: relative;
+      z-index: 2;
     }
     .rebel-text-content {
-      padding: var(--space-xl) 0;
+      padding: var(--space-lg) 0;
     }
     .rebel-text-content p {
       font-size: var(--fs-sm);
       color: var(--text-muted);
-      line-height: 1.9;
+      line-height: 2;
       margin-bottom: var(--space-lg);
     }
     .rebel-text-content p:first-of-type {
+      font-size: clamp(2rem, 3vw, 2.75rem);
+      color: var(--accent-gold);
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      margin-bottom: var(--space-xl);
+      line-height: 1.3;
+    }
+    .rebel-text-content p strong {
+      color: var(--text-main);
+      font-weight: 600;
+    }
+    .rebel-text-content p:last-of-type {
       font-size: var(--fs-md);
       color: var(--accent-gold);
       font-family: 'Cormorant Garamond', serif;
       font-style: italic;
-      margin-bottom: var(--space-lg);
-    }
-    .rebel-text-content p:last-of-type {
-      margin-bottom: var(--space-xl);
+      margin-bottom: var(--space-2xl);
+      margin-top: var(--space-xl);
     }
     .rebel-button {
-      font-size: var(--fs-md);
+      font-size: var(--fs-sm);
       font-weight: 700;
       color: var(--bg-primary);
       background: var(--gradient-gold);
@@ -369,7 +419,7 @@
       letter-spacing: 0.15em;
       position: relative;
       overflow: hidden;
-      font-family: 'Cormorant Garamond', serif;
+      font-family: 'Inter', sans-serif;
       border: 2px solid transparent;
     }
     .rebel-button::before {
@@ -394,7 +444,7 @@
       transform: translateX(12px) scale(1.3);
     }
     .rebel-button:hover {
-      transform: translateY(-10px) scale(1.08);
+      transform: translateY(-8px) scale(1.05);
       box-shadow: var(--shadow-lg), var(--bloom-purple);
       border-color: var(--accent-purple);
     }
@@ -402,18 +452,31 @@
       position: relative;
       border-radius: var(--radius-xl);
       overflow: hidden;
-      box-shadow: var(--shadow-lg), var(--bloom-gold);
+      box-shadow: 0 2rem 6rem rgba(0,0,0,0.6), var(--bloom-gold);
       transition: all 1s ease;
-      border: 2px solid var(--accent-gold);
+      border: 3px solid var(--accent-gold);
+    }
+    .rebel-image-wrapper::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(208,169,84,0.2), transparent);
+      z-index: 1;
+      pointer-events: none;
     }
     .rebel-image-wrapper:hover {
-      transform: scale(1.03);
+      transform: scale(1.02) translateY(-8px);
       box-shadow: 0 3rem 8rem rgba(0,0,0,0.8), var(--bloom-amber);
+      border-color: var(--accent-amber);
     }
     .rebel-image {
       width: 100%;
       height: auto;
       display: block;
+      transition: transform 0.8s ease;
+    }
+    .rebel-image-wrapper:hover .rebel-image {
+      transform: scale(1.05);
     }
     /* Features Tilt Cards */
     .features-grid {
@@ -884,6 +947,9 @@
         grid-template-columns: 1fr;
         gap: var(--space-2xl);
       }
+      .rebel-card {
+        padding: var(--space-2xl);
+      }
     }
     @media (max-width: 768px) {
       .pricing-grid, .steps-container, .outcomes-grid {
@@ -939,25 +1005,27 @@
     </div>
   </section>
 
-  <!-- Rebel Section: CLEAN TWO-COLUMN LAYOUT -->
+  <!-- Rebel Section: STUNNING PREMIUM DESIGN -->
   <section class="rebel-section-wrapper reveal-section" id="rebel-section">
     <div class="rebel-container">
       <div class="rebel-title-center">
         <h2>Attention is a luxury!</h2>
       </div>
       
-      <div class="rebel-grid">
-        <div class="rebel-text-content">
-          <p>Dear Rebel,</p>
-          <p>We are gripped by a poverty of presence in a world too frictionless to be noticed. In a life on autopilot, seizing your attention is a radical act of rebellion.</p>
-          <p>The sublime life waits for your gaze.</p>
-          <p>This course is your daily ritual of reclamation. Each morning, we bring you one painter and one practice, a moment to stop the scroll, and reclaim your humanity.</p>
-          <p>Shall we begin?</p>
-          <a href="#pricing" class="rebel-button">YES!</a>
-        </div>
-        
-        <div class="rebel-image-wrapper">
-          <img src="sample-edition-preview.jpg" alt="Daily Sublime Edition Preview" class="rebel-image">
+      <div class="rebel-card">
+        <div class="rebel-grid">
+          <div class="rebel-text-content">
+            <p>Dear Rebel,</p>
+            <p>We are gripped by a <strong>poverty of presence</strong> in a world too frictionless to be noticed. In a life on autopilot, seizing your attention is a <strong>radical act of rebellion.</strong></p>
+            <p>The sublime life waits for your gaze.</p>
+            <p>This course is your <strong>daily ritual of reclamation.</strong> Each morning, we bring you one painter and one practice, a moment to stop the scroll, and reclaim your humanity.</p>
+            <p>Shall we begin?</p>
+            <a href="#pricing" class="rebel-button">YES!</a>
+          </div>
+          
+          <div class="rebel-image-wrapper">
+            <img src="sample-edition-preview.jpg" alt="Daily Sublime Edition Preview" class="rebel-image">
+          </div>
         </div>
       </div>
     </div>
