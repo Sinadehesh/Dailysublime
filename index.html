@@ -278,72 +278,67 @@
       max-width: 1400px;
       margin: 0 auto;
     }
-    /* Rebel Section - BEAUTIFUL VISIBLE PAINTING BACKGROUND */
+    /* Rebel Section - NEW THREE COLUMN LAYOUT */
     .rebel-section-wrapper {
-      position: relative;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
       padding: var(--space-3xl) clamp(2rem, 5vw, 4rem);
+      background: var(--bg-surface);
     }
-    .rebel-bg-image {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      opacity: 0.5;
-      filter: brightness(0.8) saturate(1.2);
-      transition: all 1s ease;
+    .rebel-container {
+      max-width: 1400px;
+      margin: 0 auto;
     }
-    .rebel-section-wrapper:hover .rebel-bg-image {
-      opacity: 0.65;
-      filter: brightness(0.9) saturate(1.3);
-      transform: scale(1.03);
-    }
-    .rebel-bg-overlay {
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(ellipse at center, rgba(10,10,12,0.4) 0%, rgba(10,10,12,0.75) 70%, rgba(10,10,12,0.9) 100%);
-      z-index: 1;
-    }
-    .rebel-content-centered {
-      position: relative;
-      z-index: 2;
-      max-width: 52rem;
+    .rebel-title-center {
       text-align: center;
-      background: linear-gradient(145deg, rgba(10,10,12,0.8), rgba(26,27,32,0.75));
-      border: 2px solid var(--accent-gold);
-      border-radius: var(--radius-xl);
-      padding: var(--space-3xl) var(--space-2xl);
-      box-shadow: 0 3rem 8rem rgba(0,0,0,0.8), var(--bloom-gold);
-      backdrop-filter: blur(15px);
+      margin-bottom: var(--space-3xl);
     }
-    .rebel-content-centered h2 {
+    .rebel-title-center h2 {
       font-size: var(--fs-xl);
-      margin-bottom: var(--space-2xl);
       background: linear-gradient(135deg, var(--text-main), var(--accent-gold), var(--accent-amber));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       line-height: 1.2;
-      text-shadow: none;
       filter: drop-shadow(0 2px 8px rgba(208,169,84,0.5));
     }
-    .rebel-content-centered p {
+    .rebel-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-3xl);
+      align-items: center;
+    }
+    .rebel-text-content {
+      background: linear-gradient(145deg, var(--bg-card), rgba(26,27,32,0.6));
+      border: 1px solid var(--border-gold);
+      border-radius: var(--radius-xl);
+      padding: var(--space-2xl);
+      box-shadow: var(--shadow-md);
+      position: relative;
+      overflow: hidden;
+    }
+    .rebel-text-content::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--gradient-gold);
+      transform: scaleX(0);
+      transition: transform 1s ease;
+    }
+    .rebel-text-content:hover::before {
+      transform: scaleX(1);
+    }
+    .rebel-text-content p {
       font-size: var(--fs-sm);
-      color: var(--text-main);
+      color: var(--text-muted);
       line-height: 1.9;
       margin-bottom: var(--space-lg);
-      opacity: 0.95;
     }
-    .rebel-content-centered p:first-of-type {
+    .rebel-text-content p:first-of-type {
       font-size: var(--fs-md);
       color: var(--accent-gold);
       font-family: 'Cormorant Garamond', serif;
       font-style: italic;
-      margin-bottom: var(--space-md);
     }
     .rebel-button {
       font-size: var(--fs-md);
@@ -365,7 +360,7 @@
       overflow: hidden;
       font-family: 'Cormorant Garamond', serif;
       border: 2px solid transparent;
-      margin-top: var(--space-xl);
+      margin-top: var(--space-md);
     }
     .rebel-button::before {
       content: '';
@@ -392,6 +387,23 @@
       transform: translateY(-10px) scale(1.08);
       box-shadow: var(--shadow-lg), var(--bloom-purple);
       border-color: var(--accent-purple);
+    }
+    .rebel-image-wrapper {
+      position: relative;
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      box-shadow: var(--shadow-lg), var(--bloom-gold);
+      transition: all 1s ease;
+    }
+    .rebel-image-wrapper:hover {
+      transform: scale(1.05) rotate(-2deg);
+      box-shadow: 0 3rem 8rem rgba(0,0,0,0.8), var(--bloom-amber);
+    }
+    .rebel-image {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: var(--radius-xl);
     }
     /* Features Tilt Cards */
     .features-grid {
@@ -857,6 +869,12 @@
       margin-top: var(--space-xs);
     }
     /* Responsive */
+    @media (max-width: 968px) {
+      .rebel-grid {
+        grid-template-columns: 1fr;
+        gap: var(--space-2xl);
+      }
+    }
     @media (max-width: 768px) {
       .pricing-grid, .steps-container, .outcomes-grid {
         grid-template-columns: 1fr;
@@ -872,13 +890,6 @@
       }
       .pricing-card.featured {
         transform: scale(1);
-      }
-      .rebel-section-wrapper {
-        min-height: auto;
-        padding: var(--space-2xl) var(--space-md);
-      }
-      .rebel-content-centered {
-        padding: var(--space-xl);
       }
     }
     @media (max-width: 480px) {
@@ -916,18 +927,25 @@
     </div>
   </section>
 
-  <!-- Rebel Section: CENTERED WITH VISIBLE PAINTING BACKGROUND -->
+  <!-- Rebel Section: THREE COLUMN LAYOUT - Title Center, Text Left, Image Right -->
   <section class="rebel-section-wrapper reveal-section" id="rebel-section">
-    <img src="sample-edition-preview.jpg" alt="Background Painting" class="rebel-bg-image">
-    <div class="rebel-bg-overlay"></div>
-    <div class="rebel-content-centered">
-      <h2>Attention is a luxury!</h2>
-      <p>Dear Rebel,</p>
-      <p>We are gripped by a poverty of presence in a world too frictionless to be noticed. In a life on autopilot, seizing your attention is a radical act of rebellion.</p>
-      <p>The sublime life waits for your gaze.</p>
-      <p>This course is your daily ritual of reclamation. Each morning, we bring you one painter and one practice, a moment to stop the scroll, and reclaim your humanity.</p>
-      <p>Shall we begin?</p>
-      <a href="#pricing" class="rebel-button">YES!</a>
+    <div class="rebel-container">
+      <div class="rebel-title-center">
+        <h2>Attention is a luxury!</h2>
+      </div>
+      <div class="rebel-grid">
+        <div class="rebel-text-content">
+          <p>Dear Rebel,</p>
+          <p>We are gripped by a poverty of presence in a world too frictionless to be noticed. In a life on autopilot, seizing your attention is a radical act of rebellion.</p>
+          <p>The sublime life waits for your gaze.</p>
+          <p>This course is your daily ritual of reclamation. Each morning, we bring you one painter and one practice, a moment to stop the scroll, and reclaim your humanity.</p>
+          <p>Shall we begin?</p>
+          <a href="#pricing" class="rebel-button">YES!</a>
+        </div>
+        <div class="rebel-image-wrapper">
+          <img src="sample-edition-preview.jpg" alt="Daily Sublime Edition Preview" class="rebel-image">
+        </div>
+      </div>
     </div>
   </section>
 
