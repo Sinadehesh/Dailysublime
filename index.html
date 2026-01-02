@@ -79,8 +79,7 @@
       line-height: 1.7;
       overflow-x: hidden;
       -webkit-font-smoothing: antialiased;
-      /* Eye Cursor */
-      cursor: url('eye.png'), auto;
+      cursor: auto;
     }
     /* Typography Enhanced */
     h1, h2, h3 {
@@ -181,9 +180,9 @@
     .particle:nth-child(7) { width: 9px; height: 9px; top: 90%; left: 60%; animation-delay: 6s; animation-duration: 16s; }
     .particle:nth-child(8) { width: 4px; height: 4px; top: 40%; left: 15%; animation-delay: 7s; animation-duration: 12s; }
     @keyframes float {
-      0%, 100% { transform: translateY(0) rotate(0deg) scale(1) opacity: 0.5; }
-      33% { transform: translateY(-30px) rotate(120deg) scale(1.2) opacity: 1; }
-      66% { transform: translateY(-10px) rotate(240deg) scale(0.8) opacity: 0.8; }
+      0%, 100% { transform: translateY(0) rotate(0deg) scale(1); opacity: 0.5; }
+      33% { transform: translateY(-30px) rotate(120deg) scale(1.2); opacity: 1; }
+      66% { transform: translateY(-10px) rotate(240deg) scale(0.8); opacity: 0.8; }
     }
     .hero-content {
       position: relative;
@@ -239,6 +238,7 @@
       background: var(--gradient-amber);
       transform: scale(0);
       transition: all 0.8s ease;
+      z-index: -1;
     }
     .hero-cta:hover::before {
       transform: scale(1);
@@ -246,7 +246,6 @@
     .hero-cta:hover {
       transform: translateY(-12px) scale(1.1) rotate(3deg);
       box-shadow: 0 2rem 6rem var(--shadow-gold), var(--bloom-amber);
-      background: var(--gradient-amber);
     }
     @keyframes revealHero {
       to {
@@ -272,6 +271,10 @@
       opacity: 0;
       transform: translateY(50px);
       transition: all 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    .reveal-stagger.visible {
+      opacity: 1;
+      transform: translateY(0);
     }
     .reveal-stagger.visible:nth-child(1) { transition-delay: 0.3s; }
     .reveal-stagger.visible:nth-child(2) { transition-delay: 0.6s; }
@@ -355,13 +358,13 @@
       font-family: 'Cormorant Garamond', serif;
       border: 2px solid transparent;
     }
-    .rebel-button::before {
+    .rebel-button::after {
       content: '→';
       margin-left: var(--space-sm);
       font-size: var(--fs-sm);
       transition: transform 0.6s ease;
     }
-    .rebel-button:hover::before {
+    .rebel-button:hover::after {
       transform: translateX(12px) scale(1.3);
     }
     .rebel-button:hover {
@@ -473,6 +476,16 @@
       background: rgba(26,27,32,0.95);
       box-shadow: var(--bloom-amber);
     }
+    .outcome-item h3 {
+      font-size: var(--fs-sm);
+      margin-bottom: var(--space-sm);
+      color: var(--text-main);
+    }
+    .outcome-item p {
+      font-size: var(--fs-xs);
+      color: var(--text-muted);
+      line-height: 1.8;
+    }
     /* Steps */
     .steps-container {
       display: grid;
@@ -505,6 +518,7 @@
     }
     .step-item p {
       color: var(--text-muted);
+      font-size: var(--fs-xs);
     }
     /* Pricing */
     .pricing-grid {
@@ -526,7 +540,7 @@
     }
     .pricing-card.featured {
       border-color: var(--accent-amber);
-      transform: scale(1.1) translateY(-15px);
+      transform: scale(1.05);
       box-shadow: var(--shadow-lg), var(--bloom-amber);
     }
     .pricing-card.featured .pricing-badge {
@@ -542,7 +556,7 @@
       box-shadow: var(--bloom-amber);
     }
     .pricing-card:hover {
-      transform: translateY(-25px) rotateX(10deg) rotateY(10deg) scale(1.05);
+      transform: translateY(-15px) scale(1.03);
       box-shadow: var(--shadow-lg), var(--bloom-gold);
     }
     .pricing-name {
@@ -633,23 +647,31 @@
       align-items: center;
       transition: all 0.5s ease;
     }
+    .faq-question::after {
+      content: '+';
+      font-size: var(--fs-lg);
+      transition: transform 0.3s ease;
+    }
+    .faq-item.open .faq-question::after {
+      transform: rotate(45deg);
+    }
     .faq-question:hover {
       background: rgba(208,169,84,0.1);
       color: var(--accent-gold);
     }
     .faq-answer {
-      padding: 0 var(--space-lg) var(--space-lg);
+      padding: 0 var(--space-lg);
       color: var(--text-muted);
       font-size: var(--fs-xs);
       max-height: 0;
       opacity: 0;
       overflow: hidden;
-      transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
     }
     .faq-item.open .faq-answer {
-      max-height: 200px;
+      max-height: 300px;
       opacity: 1;
-      padding: var(--space-xl) var(--space-lg) var(--space-lg);
+      padding: var(--space-md) var(--space-lg) var(--space-lg);
     }
     .faq-item.open .faq-question {
       background: rgba(245,158,11,0.1);
@@ -732,6 +754,7 @@
       overflow-y: auto;
       transform: scale(0.7);
       transition: all 0.6s ease;
+      position: relative;
     }
     .modal-overlay.open .modal-content {
       transform: scale(1);
@@ -745,6 +768,10 @@
       color: var(--text-muted);
       font-size: 2rem;
       cursor: pointer;
+      line-height: 1;
+    }
+    .modal-close:hover {
+      color: var(--accent-gold);
     }
     .modal h3 {
       font-size: var(--fs-lg);
@@ -808,6 +835,9 @@
       .features-grid {
         grid-template-columns: 1fr;
       }
+      .pricing-card.featured {
+        transform: scale(1);
+      }
     }
     @media (max-width: 480px) {
       .hero-cta, .rebel-button {
@@ -821,24 +851,31 @@
   <!-- Header: Logo Only -->
   <header class="site-header">
     <div class="header-container">
-      <img src="wmremove-transformed.jpg" alt="Daily Sublime Logo" class="site-logo" data-magnetic>
+      <img src="wmremove-transformed.jpg" alt="Daily Sublime Logo" class="site-logo">
     </div>
   </header>
+
   <!-- Hero -->
-  <section class="hero-section reveal-section" data-magnetic-container>
+  <section class="hero-section reveal-section">
     <img src="hero-banner.jpg" alt="Masterwork Painting" class="hero-image" loading="eager">
     <div class="hero-overlay"></div>
     <div class="hero-particles">
-      <div class="particle"></div><div class="particle"></div><div class="particle"></div>
-      <div class="particle"></div><div class="particle"></div><div class="particle"></div>
-      <div class="particle"></div><div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
     </div>
     <div class="hero-content">
       <h1 class="hero-title">Sublime</h1>
       <p class="hero-subtitle">The Art Of Observation</p>
-      <a href="#rebel-section" class="hero-cta magnetic-link">I am intrigued!</a>
+      <a href="#rebel-section" class="hero-cta">I am intrigued!</a>
     </div>
   </section>
+
   <!-- Rebel Reset: Enhanced -->
   <section class="content-section reveal-section" id="rebel-section">
     <div class="reset-grid">
@@ -849,11 +886,12 @@
         <p>The sublime life waits for your gaze.</p>
         <p>This course is your daily ritual of distribution. Each morning, we bring you one painter and one practice, a moment to stop the scroll, and reclaim your humanity.</p>
         <p>Shall we begin?</p>
-        <a href="#pricing" class="rebel-button magnetic-link">YES!</a>
+        <a href="#pricing" class="rebel-button">YES!</a>
       </div>
       <img src="sample-edition-preview.jpg" alt="Sample Daily Edition Preview" class="reset-image" loading="lazy">
     </div>
   </section>
+
   <!-- Features -->
   <section class="content-section reveal-section" id="features">
     <h2 style="text-align: center; margin-bottom: var(--space-2xl);">What you get, daily</h2>
@@ -883,6 +921,7 @@
       </article>
     </div>
   </section>
+
   <!-- Outcomes -->
   <section class="content-section reveal-section" style="background: var(--bg-surface);" id="outcomes">
     <h2 style="text-align: center; margin-bottom: var(--space-xl);">By day 30, you'll notice</h2>
@@ -898,4 +937,280 @@
         <h3>Better aesthetic taste</h3>
         <p>You start seeing why some things feel beautiful and others feel cheap, and you trust your own eye more.</p>
       </div>
-      <div class="outcome-item reveal
+      <div class="outcome-item reveal-stagger">
+        <h3>Deeper conversations</h3>
+        <p>You listen better, notice more, and ask questions that matter instead of filling silence.</p>
+      </div>
+      <div class="outcome-item reveal-stagger">
+        <h3>Less reactive scrolling</h3>
+        <p>Your thumb pauses before opening apps. You catch yourself reaching for distraction and choose differently.</p>
+      </div>
+      <div class="outcome-item reveal-stagger">
+        <h3>Richer daily experience</h3>
+        <p>Light through a window, texture on a wall, the way someone gestures—ordinary moments become textured, interesting, alive.</p>
+      </div>
+      <div class="outcome-item reveal-stagger">
+        <h3>Stronger creative instincts</h3>
+        <p>You notice patterns, connections, and possibilities that others miss. Ideas arrive more easily.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section class="content-section reveal-section" id="how-it-works">
+    <h2 style="text-align: center; margin-bottom: var(--space-2xl);">How it works</h2>
+    <div class="steps-container">
+      <div class="step-item reveal-stagger">
+        <span class="step-number">01</span>
+        <h3>Wake up</h3>
+        <p>Every morning at 6am, a new edition lands in your inbox. One painting. One practice.</p>
+      </div>
+      <div class="step-item reveal-stagger">
+        <span class="step-number">02</span>
+        <h3>Look slowly</h3>
+        <p>Spend 5-10 minutes with the image. Follow the prompts. Notice what you'd normally skip.</p>
+      </div>
+      <div class="step-item reveal-stagger">
+        <span class="step-number">03</span>
+        <h3>Carry it with you</h3>
+        <p>The painting stays with you all day. You start seeing differently—patterns, light, rhythm in ordinary life.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing -->
+  <section class="content-section reveal-section" id="pricing">
+    <h2 style="text-align: center; margin-bottom: var(--space-xl);">Choose your path</h2>
+    <p style="text-align: center; font-size: var(--fs-sm); color: var(--text-muted); max-width: 60rem; margin: 0 auto var(--space-3xl);">
+      Start with one month. Commit to a year. The depth of your attention grows with time.
+    </p>
+    <div class="pricing-grid">
+      <div class="pricing-card reveal-stagger">
+        <h3 class="pricing-name">Monthly</h3>
+        <div class="pricing-price">€29</div>
+        <p class="pricing-period">per month</p>
+        <ul class="pricing-features">
+          <li>Daily edition every morning</li>
+          <li>One masterwork per day</li>
+          <li>Five observation prompts</li>
+          <li>One guided meditation</li>
+          <li>Cancel anytime</li>
+        </ul>
+        <button class="pricing-button" data-modal-trigger>Begin</button>
+      </div>
+      <div class="pricing-card featured reveal-stagger">
+        <div class="pricing-badge">Most Popular</div>
+        <h3 class="pricing-name">Annual</h3>
+        <div class="pricing-price">€249</div>
+        <p class="pricing-period">per year (€20.75/month)</p>
+        <ul class="pricing-features">
+          <li>Daily edition every morning</li>
+          <li>365 masterworks</li>
+          <li>Five observation prompts daily</li>
+          <li>One guided meditation daily</li>
+          <li>Exclusive artist interviews</li>
+          <li>Save €99 per year</li>
+        </ul>
+        <button class="pricing-button" data-modal-trigger>Begin</button>
+        <p class="pricing-popularity">Chosen by 74% of subscribers</p>
+      </div>
+      <div class="pricing-card reveal-stagger">
+        <h3 class="pricing-name">Lifetime</h3>
+        <div class="pricing-price">€799</div>
+        <p class="pricing-period">one-time payment</p>
+        <ul class="pricing-features">
+          <li>Daily edition forever</li>
+          <li>Full archive access</li>
+          <li>All future updates included</li>
+          <li>Priority support</li>
+          <li>Exclusive community access</li>
+          <li>Behind-the-scenes content</li>
+        </ul>
+        <button class="pricing-button" data-modal-trigger>Begin</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="content-section reveal-section" id="faq">
+    <h2 style="text-align: center; margin-bottom: var(--space-2xl);">Questions</h2>
+    <div class="faq-container">
+      <div class="faq-item">
+        <button class="faq-question">
+          <span>Do I need to know anything about art?</span>
+        </button>
+        <div class="faq-answer">
+          <p>No. This is not an art history course. It's a practice in attention. You don't need to know names, periods, or theory. You only need to be willing to look.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question">
+          <span>How much time does it take?</span>
+        </button>
+        <div class="faq-answer">
+          <p>5-10 minutes in the morning. Some days you'll want more. Most days, that's enough. The practice is brief, the effect lasts all day.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question">
+          <span>What if I miss a day?</span>
+        </button>
+        <div class="faq-answer">
+          <p>You can revisit any past edition in the archive. There's no streak to maintain, no guilt. This is a practice, not a performance.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question">
+          <span>Is this just for artists or creative people?</span>
+        </button>
+        <div class="faq-answer">
+          <p>No. This is for anyone who feels overwhelmed by noise and wants to reclaim their attention. Lawyers, founders, parents, students—the practice works for anyone.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question">
+          <span>Can I gift this to someone?</span>
+        </button>
+        <div class="faq-answer">
+          <p>Yes. Contact us at hello@dailysublime.com and we'll set up a gift subscription with a custom message.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question">
+          <span>What's your refund policy?</span>
+        </button>
+        <div class="faq-answer">
+          <p>Try it for 14 days. If you don't notice a shift in your attention, email us for a full refund. No questions asked.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="footer-content">
+      <div class="footer-brand">Daily Sublime</div>
+      <a href="mailto:hello@dailysublime.com" class="footer-email">hello@dailysublime.com</a>
+      <div class="footer-links">
+        <a href="#features">Features</a>
+        <a href="#outcomes">Outcomes</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#faq">FAQ</a>
+      </div>
+      <p class="footer-copyright">© 2026 Daily Sublime. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- Modal -->
+  <div class="modal-overlay" id="subscribeModal">
+    <div class="modal-content">
+      <button class="modal-close" aria-label="Close modal">×</button>
+      <h3>Begin your practice</h3>
+      <form id="subscribeForm">
+        <div class="form-group">
+          <label for="name">Your name</label>
+          <input type="text" id="name" name="name" required>
+        </div>
+        <div class="form-group">
+          <label for="email">Email address</label>
+          <input type="email" id="email" name="email" required>
+        </div>
+        <button type="submit" class="subscribe-btn">Start tomorrow morning</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // Intersection Observer for scroll-reveal animations
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, observerOptions);
+
+    // Observe all reveal elements
+    document.querySelectorAll('.reveal-section, .reveal-stagger').forEach((el) => {
+      observer.observe(el);
+    });
+
+    // FAQ Accordion functionality
+    document.querySelectorAll('.faq-question').forEach(button => {
+      button.addEventListener('click', () => {
+        const faqItem = button.parentElement;
+        const isOpen = faqItem.classList.contains('open');
+        
+        // Close all other items
+        document.querySelectorAll('.faq-item').forEach(item => {
+          item.classList.remove('open');
+        });
+        
+        // Toggle current item
+        if (!isOpen) {
+          faqItem.classList.add('open');
+        }
+      });
+    });
+
+    // Modal functionality
+    const modal = document.getElementById('subscribeModal');
+    const modalTriggers = document.querySelectorAll('[data-modal-trigger]');
+    const modalClose = document.querySelector('.modal-close');
+
+    modalTriggers.forEach(trigger => {
+      trigger.addEventListener('click', (e) => {
+        e.preventDefault();
+        modal.classList.add('open');
+        document.body.style.overflow = 'hidden';
+      });
+    });
+
+    if (modalClose) {
+      modalClose.addEventListener('click', () => {
+        modal.classList.remove('open');
+        document.body.style.overflow = '';
+      });
+    }
+
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        modal.classList.remove('open');
+        document.body.style.overflow = '';
+      }
+    });
+
+    // Form submission
+    const subscribeForm = document.getElementById('subscribeForm');
+    if (subscribeForm) {
+      subscribeForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        // Add your form submission logic here
+        alert('Thank you! Your first edition arrives tomorrow morning.');
+        modal.classList.remove('open');
+        document.body.style.overflow = '';
+        subscribeForm.reset();
+      });
+    }
+
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      });
+    });
+  </script>
+</body>
+</html>
