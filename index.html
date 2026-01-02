@@ -31,11 +31,16 @@
       --accent-emerald: #16a34a;
       --accent-emerald-dark: #15803d;
       --accent-amber: #f59e0b;
+      --accent-purple: #8b5cf6;
+      --accent-blue: #3b82f6;
       --gradient-amber: linear-gradient(135deg, #f59e0b, #d97706);
+      --gradient-purple: linear-gradient(135deg, #8b5cf6, #6366f1);
+      --gradient-blue: linear-gradient(135deg, #3b82f6, #2563eb);
       --border-gold: rgba(208, 169, 84, 0.2);
       --shadow-gold: 0 0 2rem rgba(208, 169, 84, 0.3);
       --shadow-emerald: 0 0 2rem rgba(22, 163, 74, 0.4);
       --shadow-amber: 0 0 2rem rgba(245, 158, 11, 0.5);
+      --shadow-purple: 0 0 2rem rgba(139, 92, 246, 0.5);
       --gradient-gold: linear-gradient(135deg, #d0a954, #b59140);
       --gradient-emerald: linear-gradient(135deg, #16a34a, #15803d);
       /* Typography Golden Ratio */
@@ -62,6 +67,7 @@
       --shadow-lg: 0 2rem 6rem rgba(0,0,0,0.5);
       --bloom-gold: 0 0 3rem rgba(208,169,84,0.6);
       --bloom-amber: 0 0 3rem rgba(245,158,11,0.7);
+      --bloom-purple: 0 0 3rem rgba(139,92,246,0.7);
     }
     * {
       margin: 0;
@@ -93,18 +99,21 @@
     h3 { font-size: var(--fs-md); }
     /* Enhanced Cursor Removed Custom Div */
     .cursor { display: none; }
-    /* Header Glassmorphism - Logo Only */
+    /* Header - Transparent with Logo Only */
     .site-header {
       position: fixed;
       top: 0;
       left: 0;
       right: 0;
-      background: rgba(10,10,12,0.95);
-      backdrop-filter: blur(30px);
-      border-bottom: 1px solid var(--border-gold);
-      padding: var(--space-sm) var(--space-md);
+      background: transparent;
+      backdrop-filter: blur(10px);
+      padding: var(--space-md) var(--space-md);
       z-index: 1000;
       transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    .site-header.scrolled {
+      background: rgba(10,10,12,0.8);
+      border-bottom: 1px solid var(--border-gold);
     }
     .header-container {
       max-width: 1400px;
@@ -114,17 +123,18 @@
       align-items: center;
     }
     .site-logo {
-      height: 3.5rem;
-      width: 3.5rem;
+      height: 4rem;
+      width: 4rem;
       border-radius: 50%;
       object-fit: cover;
       border: 2px solid var(--accent-gold);
       transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
       cursor: pointer;
+      box-shadow: var(--bloom-gold);
     }
     .site-logo:hover {
-      transform: scale(1.1) rotate(360deg);
-      box-shadow: var(--bloom-gold);
+      transform: scale(1.15) rotate(360deg);
+      box-shadow: var(--bloom-gold), 0 0 4rem rgba(208,169,84,0.8);
     }
     /* Hero Parallax Distortion */
     .hero-section {
@@ -223,19 +233,20 @@
       display: inline-flex;
       align-items: center;
       gap: var(--space-md);
-      transition: all 1s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      transition: all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
       box-shadow: var(--shadow-lg), var(--bloom-gold);
       position: relative;
       overflow: hidden;
       opacity: 0;
       transform: scale(0.8) translateY(50px);
       animation: revealHeroPulse 2.2s 1.2s forwards;
+      border: 2px solid transparent;
     }
     .hero-cta::before {
       content: '';
       position: absolute;
       inset: 0;
-      background: var(--gradient-amber);
+      background: var(--gradient-purple);
       transform: scale(0);
       transition: all 0.8s ease;
       z-index: -1;
@@ -244,8 +255,9 @@
       transform: scale(1);
     }
     .hero-cta:hover {
-      transform: translateY(-12px) scale(1.1) rotate(3deg);
-      box-shadow: 0 2rem 6rem var(--shadow-gold), var(--bloom-amber);
+      transform: translateY(-12px) scale(1.1);
+      box-shadow: 0 2rem 6rem rgba(139, 92, 246, 0.6), var(--bloom-purple);
+      border-color: var(--accent-purple);
     }
     @keyframes revealHero {
       to {
@@ -288,61 +300,75 @@
       max-width: 1400px;
       margin: 0 auto;
     }
-    /* Rebel Section - Beautified */
-    .reset-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: var(--space-3xl);
-      align-items: start;
-      margin-top: var(--space-2xl);
-    }
-    .reset-content {
-      background: linear-gradient(145deg, var(--bg-card), rgba(26,27,32,0.6));
-      border: 1px solid var(--border-gold);
-      border-radius: var(--radius-xl);
-      padding: var(--space-2xl);
-      box-shadow: var(--shadow-md);
+    /* Rebel Section - CENTERED WITH BACKGROUND IMAGE */
+    .rebel-section-wrapper {
       position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       overflow: hidden;
+      padding: var(--space-3xl) clamp(2rem, 5vw, 4rem);
     }
-    .reset-content::before {
-      content: '';
+    .rebel-bg-image {
       position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 4px;
-      background: var(--gradient-gold);
-      transform: scaleX(0);
-      transition: transform 1s ease;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.15;
+      filter: blur(2px) brightness(0.7);
+      transition: all 1s ease;
     }
-    .reset-content:hover::before {
-      transform: scaleX(1);
+    .rebel-section-wrapper:hover .rebel-bg-image {
+      opacity: 0.25;
+      filter: blur(0px) brightness(0.9);
+      transform: scale(1.05);
     }
-    .reset-content h2 {
-      font-size: var(--fs-lg);
-      margin-bottom: var(--space-xl);
-      background: linear-gradient(135deg, var(--text-main), var(--accent-gold));
+    .rebel-bg-overlay {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at center, rgba(10,10,12,0.7) 0%, rgba(10,10,12,0.95) 100%);
+      z-index: 1;
+    }
+    .rebel-content-centered {
+      position: relative;
+      z-index: 2;
+      max-width: 50rem;
+      text-align: center;
+      background: linear-gradient(145deg, rgba(26,27,32,0.85), rgba(26,27,32,0.7));
+      border: 2px solid var(--border-gold);
+      border-radius: var(--radius-xl);
+      padding: var(--space-3xl);
+      box-shadow: var(--shadow-lg), var(--bloom-gold);
+      backdrop-filter: blur(20px);
+    }
+    .rebel-content-centered h2 {
+      font-size: var(--fs-xl);
+      margin-bottom: var(--space-2xl);
+      background: linear-gradient(135deg, var(--text-main), var(--accent-gold), var(--accent-amber));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      position: relative;
-      z-index: 2;
+      line-height: 1.2;
     }
-    .reset-content p {
+    .rebel-content-centered p {
       font-size: var(--fs-sm);
       color: var(--text-muted);
-      line-height: 1.8;
-      margin-bottom: var(--space-xl);
-      opacity: 0.95;
-      z-index: 2;
-      position: relative;
+      line-height: 1.9;
+      margin-bottom: var(--space-lg);
+    }
+    .rebel-content-centered p:first-of-type {
+      font-size: var(--fs-md);
+      color: var(--accent-gold);
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
     }
     .rebel-button {
       font-size: var(--fs-md);
       font-weight: 700;
       color: var(--bg-primary);
       background: var(--gradient-gold);
-      padding: var(--space-lg) var(--space-2xl);
+      padding: var(--space-lg) var(--space-3xl);
       border-radius: 50px;
       cursor: pointer;
       text-decoration: none;
@@ -352,39 +378,38 @@
       transition: all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
       box-shadow: var(--shadow-md), var(--bloom-gold);
       text-transform: uppercase;
-      letter-spacing: 0.1em;
+      letter-spacing: 0.15em;
       position: relative;
       overflow: hidden;
       font-family: 'Cormorant Garamond', serif;
       border: 2px solid transparent;
+      margin-top: var(--space-xl);
+    }
+    .rebel-button::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--gradient-purple);
+      transform: scale(0);
+      transition: all 0.8s ease;
+      z-index: -1;
+    }
+    .rebel-button:hover::before {
+      transform: scale(1);
     }
     .rebel-button::after {
       content: '→';
       margin-left: var(--space-sm);
-      font-size: var(--fs-sm);
+      font-size: var(--fs-md);
       transition: transform 0.6s ease;
     }
     .rebel-button:hover::after {
       transform: translateX(12px) scale(1.3);
     }
     .rebel-button:hover {
-      background: var(--gradient-amber);
-      transform: translateY(-10px) rotate(5deg);
-      box-shadow: var(--shadow-lg), var(--bloom-amber);
-      border-color: var(--accent-gold);
-    }
-    .reset-image {
-      width: 100%;
-      height: clamp(28rem, 45vh, 40rem);
-      object-fit: cover;
-      border-radius: var(--radius-xl);
-      box-shadow: var(--shadow-lg);
-      transition: all 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-      transform: translateZ(0);
-    }
-    .reset-image:hover {
-      transform: scale(1.08) rotate(-2deg) translateY(-15px);
-      box-shadow: var(--bloom-amber);
+      transform: translateY(-10px) scale(1.08);
+      box-shadow: var(--shadow-lg), var(--bloom-purple);
+      border-color: var(--accent-purple);
     }
     /* Features Tilt Cards */
     .features-grid {
@@ -461,7 +486,7 @@
       top: 0;
       bottom: 0;
       width: 5px;
-      background: var(--gradient-amber);
+      background: var(--gradient-purple);
       transform: scaleY(0);
       transition: transform 0.6s ease;
       opacity: 0;
@@ -471,10 +496,10 @@
       opacity: 1;
     }
     .outcome-item:hover {
-      border-left-color: var(--accent-amber);
+      border-left-color: var(--accent-purple);
       transform: translateX(12px);
       background: rgba(26,27,32,0.95);
-      box-shadow: var(--bloom-amber);
+      box-shadow: var(--bloom-purple);
     }
     .outcome-item h3 {
       font-size: var(--fs-sm);
@@ -539,21 +564,21 @@
       perspective: 1000px;
     }
     .pricing-card.featured {
-      border-color: var(--accent-amber);
+      border-color: var(--accent-purple);
       transform: scale(1.05);
-      box-shadow: var(--shadow-lg), var(--bloom-amber);
+      box-shadow: var(--shadow-lg), var(--bloom-purple);
     }
     .pricing-card.featured .pricing-badge {
       position: absolute;
       top: -1rem;
       right: 2rem;
-      background: var(--gradient-amber);
-      color: var(--bg-primary);
+      background: var(--gradient-purple);
+      color: var(--text-main);
       padding: 0.5rem 1.5rem;
       border-radius: var(--radius-lg);
       font-size: var(--fs-xs);
       font-weight: 700;
-      box-shadow: var(--bloom-amber);
+      box-shadow: var(--bloom-purple);
     }
     .pricing-card:hover {
       transform: translateY(-15px) scale(1.03);
@@ -608,10 +633,24 @@
       cursor: pointer;
       transition: all 0.6s ease;
       box-shadow: var(--shadow-md);
+      position: relative;
+      overflow: hidden;
+    }
+    .pricing-button::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--gradient-purple);
+      transform: scale(0);
+      transition: all 0.6s ease;
+      z-index: -1;
+    }
+    .pricing-button:hover::before {
+      transform: scale(1);
     }
     .pricing-button:hover {
       transform: scale(1.05);
-      box-shadow: var(--bloom-gold);
+      box-shadow: var(--bloom-purple);
     }
     .pricing-popularity {
       font-size: var(--fs-xs);
@@ -674,8 +713,8 @@
       padding: var(--space-md) var(--space-lg) var(--space-lg);
     }
     .faq-item.open .faq-question {
-      background: rgba(245,158,11,0.1);
-      color: var(--accent-amber);
+      background: rgba(139,92,246,0.1);
+      color: var(--accent-purple);
     }
     /* Footer */
     .site-footer {
@@ -804,17 +843,31 @@
       width: 100%;
       font-size: var(--fs-sm);
       font-weight: 700;
-      background: var(--gradient-amber);
+      background: var(--gradient-gold);
       color: var(--bg-primary);
       border: none;
       padding: var(--space-lg);
       border-radius: var(--radius-lg);
       cursor: pointer;
       transition: all 0.5s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .subscribe-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--gradient-purple);
+      transform: scale(0);
+      transition: all 0.5s ease;
+      z-index: -1;
+    }
+    .subscribe-btn:hover::before {
+      transform: scale(1);
     }
     .subscribe-btn:hover {
       transform: scale(1.02);
-      box-shadow: var(--bloom-amber);
+      box-shadow: var(--bloom-purple);
     }
     .error {
       color: #ef4444;
@@ -823,7 +876,7 @@
     }
     /* Responsive */
     @media (max-width: 768px) {
-      .reset-grid, .pricing-grid, .steps-container, .outcomes-grid {
+      .pricing-grid, .steps-container, .outcomes-grid {
         grid-template-columns: 1fr;
       }
       .hero-section {
@@ -838,6 +891,13 @@
       .pricing-card.featured {
         transform: scale(1);
       }
+      .rebel-section-wrapper {
+        min-height: auto;
+        padding: var(--space-2xl) var(--space-md);
+      }
+      .rebel-content-centered {
+        padding: var(--space-xl);
+      }
     }
     @media (max-width: 480px) {
       .hero-cta, .rebel-button {
@@ -848,7 +908,7 @@
   </style>
 </head>
 <body>
-  <!-- Header: Logo Only -->
+  <!-- Header: Transparent with Logo Only -->
   <header class="site-header">
     <div class="header-container">
       <img src="wmremove-transformed.jpg" alt="Daily Sublime Logo" class="site-logo">
@@ -876,19 +936,18 @@
     </div>
   </section>
 
-  <!-- Rebel Reset: Enhanced -->
-  <section class="content-section reveal-section" id="rebel-section">
-    <div class="reset-grid">
-      <div class="reset-content">
-        <h2>Attention is a luxury!</h2>
-        <p>Dear Rebel,</p>
-        <p>We are gripped by a poverty of presence in a world too frictionless to be noticed. In a life on autopilot, seizing your attention is a radical act of rebellion.</p>
-        <p>The sublime life waits for your gaze.</p>
-        <p>This course is your daily ritual of distribution. Each morning, we bring you one painter and one practice, a moment to stop the scroll, and reclaim your humanity.</p>
-        <p>Shall we begin?</p>
-        <a href="#pricing" class="rebel-button">YES!</a>
-      </div>
-      <img src="sample-edition-preview.jpg" alt="Sample Daily Edition Preview" class="reset-image" loading="lazy">
+  <!-- Rebel Section: CENTERED WITH BACKGROUND -->
+  <section class="rebel-section-wrapper reveal-section" id="rebel-section">
+    <img src="sample-edition-preview.jpg" alt="Background" class="rebel-bg-image">
+    <div class="rebel-bg-overlay"></div>
+    <div class="rebel-content-centered">
+      <h2>Attention is a luxury!</h2>
+      <p>Dear Rebel,</p>
+      <p>We are gripped by a poverty of presence in a world too frictionless to be noticed. In a life on autopilot, seizing your attention is a radical act of rebellion.</p>
+      <p>The sublime life waits for your gaze.</p>
+      <p>This course is your daily ritual of reclamation. Each morning, we bring you one painter and one practice, a moment to stop the scroll, and reclaim your humanity.</p>
+      <p>Shall we begin?</p>
+      <a href="#pricing" class="rebel-button">YES!</a>
     </div>
   </section>
 
@@ -1121,6 +1180,16 @@
   </div>
 
   <script>
+    // Header scroll effect
+    window.addEventListener('scroll', () => {
+      const header = document.querySelector('.site-header');
+      if (window.scrollY > 100) {
+        header.classList.add('scrolled');
+      } else {
+        header.classList.remove('scrolled');
+      }
+    });
+
     // Intersection Observer for scroll-reveal animations
     const observerOptions = {
       threshold: 0.1,
@@ -1190,7 +1259,6 @@
     if (subscribeForm) {
       subscribeForm.addEventListener('submit', (e) => {
         e.preventDefault();
-        // Add your form submission logic here
         alert('Thank you! Your first edition arrives tomorrow morning.');
         modal.classList.remove('open');
         document.body.style.overflow = '';
