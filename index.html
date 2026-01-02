@@ -299,7 +299,10 @@
       max-width: 1400px;
       margin: 0 auto;
     }
-    /* Rebel Section - STUNNING VISUAL DESIGN */
+    
+    /* ========================================
+       STUNNING NEW REBEL SECTION WITH 2 IMAGES
+       ======================================== */
     .rebel-section-wrapper {
       padding: var(--space-3xl) clamp(2rem, 5vw, 4rem);
       background: linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-surface) 50%, var(--bg-primary) 100%);
@@ -316,113 +319,182 @@
       height: 1px;
       background: linear-gradient(90deg, transparent, var(--accent-gold), transparent);
     }
+    .rebel-section-wrapper::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent-gold), transparent);
+    }
     .rebel-container {
-      max-width: 1300px;
+      max-width: 1500px;
       margin: 0 auto;
       width: 100%;
     }
-    .rebel-title-center {
+    
+    /* MAGNIFICENT TITLE */
+    .rebel-title-spectacular {
       text-align: center;
       margin-bottom: var(--space-3xl);
+      position: relative;
     }
-    .rebel-title-center h2 {
-      font-size: var(--fs-xl);
-      background: linear-gradient(135deg, var(--text-main), var(--accent-gold), var(--accent-amber));
+    .rebel-title-spectacular h2 {
+      font-size: clamp(3.5rem, 8vw, 7rem);
+      background: linear-gradient(135deg, var(--text-main) 0%, var(--accent-gold) 30%, var(--accent-amber) 60%, var(--accent-gold) 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      line-height: 1.2;
-      filter: drop-shadow(0 2px 8px rgba(208,169,84,0.5));
-      margin-bottom: var(--space-md);
+      line-height: 1.1;
+      filter: drop-shadow(0 4px 20px rgba(208,169,84,0.6));
+      margin-bottom: var(--space-lg);
+      font-weight: 300;
+      letter-spacing: -0.03em;
     }
-    /* BEAUTIFUL CARD LAYOUT */
-    .rebel-card {
-      background: linear-gradient(145deg, rgba(26,27,32,0.95), rgba(17,18,21,0.9));
-      border: 2px solid var(--border-gold);
-      border-radius: var(--radius-xl);
-      padding: var(--space-3xl);
-      box-shadow: var(--shadow-lg), var(--bloom-gold);
-      position: relative;
-      overflow: hidden;
-      backdrop-filter: blur(10px);
-    }
-    .rebel-card::before {
+    .rebel-title-spectacular::after {
       content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
+      display: block;
+      width: 120px;
       height: 3px;
       background: var(--gradient-gold);
+      margin: var(--space-xl) auto 0;
+      border-radius: 2px;
+      box-shadow: var(--bloom-gold);
     }
-    .rebel-card::after {
+    
+    /* ASYMMETRIC PREMIUM LAYOUT */
+    .rebel-premium-grid {
+      display: grid;
+      grid-template-columns: 0.9fr 1.1fr 0.7fr;
+      gap: var(--space-2xl);
+      align-items: start;
+      position: relative;
+    }
+    
+    /* LEFT IMAGE - LARGE & DRAMATIC */
+    .rebel-image-left {
+      position: relative;
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      box-shadow: 0 2rem 6rem rgba(0,0,0,0.7), var(--bloom-gold);
+      transition: all 1s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      border: 3px solid var(--accent-gold);
+      transform: rotate(-2deg);
+      height: 650px;
+    }
+    .rebel-image-left::before {
       content: '';
       position: absolute;
-      top: -50%;
-      right: -50%;
-      width: 200%;
-      height: 200%;
-      background: radial-gradient(circle, rgba(208,169,84,0.05) 0%, transparent 70%);
+      inset: 0;
+      background: linear-gradient(135deg, rgba(208,169,84,0.3), transparent 60%);
+      z-index: 1;
       pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.8s ease;
     }
-    .rebel-grid {
-      display: grid;
-      grid-template-columns: 1fr 1.2fr;
-      gap: var(--space-3xl);
-      align-items: center;
+    .rebel-image-left:hover::before {
+      opacity: 1;
+    }
+    .rebel-image-left:hover {
+      transform: rotate(0deg) scale(1.03) translateY(-10px);
+      box-shadow: 0 3rem 9rem rgba(0,0,0,0.9), var(--bloom-amber);
+      border-color: var(--accent-amber);
+    }
+    .rebel-image-left img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 1s ease;
+    }
+    .rebel-image-left:hover img {
+      transform: scale(1.08);
+    }
+    
+    /* CENTER TEXT CONTENT */
+    .rebel-text-center {
+      padding: var(--space-2xl) var(--space-lg);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
       position: relative;
       z-index: 2;
     }
-    .rebel-text-content {
-      padding: var(--space-lg) 0;
-    }
-    .rebel-text-content p {
+    .rebel-text-center p {
       font-size: var(--fs-sm);
       color: var(--text-muted);
       line-height: 2;
-      margin-bottom: var(--space-lg);
+      margin-bottom: var(--space-xl);
+      transition: all 0.6s ease;
     }
-    .rebel-text-content p:first-of-type {
-      font-size: clamp(2rem, 3vw, 2.75rem);
+    .rebel-text-center p:hover {
+      color: var(--text-main);
+      transform: translateX(8px);
+    }
+    .rebel-text-center p:first-of-type {
+      font-size: clamp(2.25rem, 3.5vw, 3rem);
       color: var(--accent-gold);
       font-family: 'Cormorant Garamond', serif;
       font-style: italic;
       margin-bottom: var(--space-xl);
       line-height: 1.3;
+      font-weight: 500;
     }
-    .rebel-text-content p strong {
+    .rebel-text-center p strong {
       color: var(--text-main);
       font-weight: 600;
+      position: relative;
+      display: inline-block;
     }
-    .rebel-text-content p:last-of-type {
+    .rebel-text-center p strong::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: var(--gradient-gold);
+      transform: scaleX(0);
+      transition: transform 0.6s ease;
+    }
+    .rebel-text-center p:hover strong::after {
+      transform: scaleX(1);
+    }
+    .rebel-text-center p:last-of-type {
       font-size: var(--fs-md);
       color: var(--accent-gold);
       font-family: 'Cormorant Garamond', serif;
       font-style: italic;
       margin-bottom: var(--space-2xl);
-      margin-top: var(--space-xl);
+      margin-top: var(--space-lg);
+      font-weight: 500;
     }
-    .rebel-button {
+    
+    /* CTA BUTTON - SPECTACULAR */
+    .rebel-button-spectacular {
       font-size: var(--fs-sm);
       font-weight: 700;
       color: var(--bg-primary);
       background: var(--gradient-gold);
       padding: var(--space-lg) var(--space-3xl);
-      border-radius: 50px;
+      border-radius: 60px;
       cursor: pointer;
       text-decoration: none;
       display: inline-flex;
       align-items: center;
       gap: var(--space-sm);
       transition: all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-      box-shadow: var(--shadow-md), var(--bloom-gold);
+      box-shadow: var(--shadow-lg), var(--bloom-gold);
       text-transform: uppercase;
-      letter-spacing: 0.15em;
+      letter-spacing: 0.2em;
       position: relative;
       overflow: hidden;
       font-family: 'Inter', sans-serif;
-      border: 2px solid transparent;
+      border: 3px solid transparent;
+      align-self: flex-start;
     }
-    .rebel-button::before {
+    .rebel-button-spectacular::before {
       content: '';
       position: absolute;
       inset: 0;
@@ -430,54 +502,156 @@
       transform: scale(0);
       transition: all 0.8s ease;
       z-index: -1;
+      border-radius: 60px;
     }
-    .rebel-button:hover::before {
+    .rebel-button-spectacular:hover::before {
       transform: scale(1);
     }
-    .rebel-button::after {
+    .rebel-button-spectacular::after {
       content: '→';
       margin-left: var(--space-sm);
-      font-size: var(--fs-md);
-      transition: transform 0.6s ease;
+      font-size: var(--fs-lg);
+      transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
     }
-    .rebel-button:hover::after {
-      transform: translateX(12px) scale(1.3);
+    .rebel-button-spectacular:hover::after {
+      transform: translateX(15px) scale(1.4);
     }
-    .rebel-button:hover {
-      transform: translateY(-8px) scale(1.05);
-      box-shadow: var(--shadow-lg), var(--bloom-purple);
+    .rebel-button-spectacular:hover {
+      transform: translateY(-12px) scale(1.08);
+      box-shadow: 0 3rem 8rem rgba(139, 92, 246, 0.7), var(--bloom-purple);
       border-color: var(--accent-purple);
     }
-    .rebel-image-wrapper {
+    
+    /* RIGHT IMAGE - ELEGANT & OFFSET */
+    .rebel-image-right {
       position: relative;
       border-radius: var(--radius-xl);
       overflow: hidden;
-      box-shadow: 0 2rem 6rem rgba(0,0,0,0.6), var(--bloom-gold);
-      transition: all 1s ease;
-      border: 3px solid var(--accent-gold);
+      box-shadow: 0 2rem 6rem rgba(0,0,0,0.7), var(--bloom-purple);
+      transition: all 1s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      border: 3px solid var(--accent-purple);
+      transform: rotate(3deg) translateY(60px);
+      height: 500px;
     }
-    .rebel-image-wrapper::before {
+    .rebel-image-right::before {
       content: '';
       position: absolute;
       inset: 0;
-      background: linear-gradient(135deg, rgba(208,169,84,0.2), transparent);
+      background: linear-gradient(225deg, rgba(139,92,246,0.3), transparent 60%);
       z-index: 1;
       pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.8s ease;
     }
-    .rebel-image-wrapper:hover {
-      transform: scale(1.02) translateY(-8px);
-      box-shadow: 0 3rem 8rem rgba(0,0,0,0.8), var(--bloom-amber);
+    .rebel-image-right:hover::before {
+      opacity: 1;
+    }
+    .rebel-image-right:hover {
+      transform: rotate(0deg) scale(1.05) translateY(50px);
+      box-shadow: 0 3rem 9rem rgba(0,0,0,0.9), var(--bloom-amber);
       border-color: var(--accent-amber);
     }
-    .rebel-image {
+    .rebel-image-right img {
       width: 100%;
-      height: auto;
+      height: 100%;
+      object-fit: cover;
       display: block;
-      transition: transform 0.8s ease;
+      transition: transform 1s ease;
     }
-    .rebel-image-wrapper:hover .rebel-image {
-      transform: scale(1.05);
+    .rebel-image-right:hover img {
+      transform: scale(1.12);
     }
+    
+    /* FLOATING DECORATIVE ELEMENTS */
+    .rebel-decoration {
+      position: absolute;
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(208,169,84,0.1), transparent 70%);
+      pointer-events: none;
+      animation: floatDecor 15s ease-in-out infinite;
+    }
+    .rebel-decoration:nth-child(1) {
+      top: 10%;
+      left: 5%;
+      animation-delay: 0s;
+    }
+    .rebel-decoration:nth-child(2) {
+      bottom: 20%;
+      right: 8%;
+      background: radial-gradient(circle, rgba(139,92,246,0.08), transparent 70%);
+      animation-delay: 5s;
+      width: 300px;
+      height: 300px;
+    }
+    @keyframes floatDecor {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33% { transform: translate(30px, -40px) scale(1.1); }
+      66% { transform: translate(-20px, 20px) scale(0.9); }
+    }
+    
+    /* RESPONSIVE - MOBILE PERFECTION */
+    @media (max-width: 1200px) {
+      .rebel-premium-grid {
+        grid-template-columns: 1fr 1.2fr;
+        gap: var(--space-xl);
+      }
+      .rebel-image-right {
+        display: none;
+      }
+      .rebel-image-left {
+        height: 550px;
+      }
+    }
+    
+    @media (max-width: 968px) {
+      .rebel-premium-grid {
+        grid-template-columns: 1fr;
+        gap: var(--space-2xl);
+      }
+      .rebel-image-left {
+        order: 1;
+        transform: rotate(0deg);
+        height: 500px;
+        width: 100%;
+        max-width: 100%;
+      }
+      .rebel-text-center {
+        order: 2;
+        padding: var(--space-xl) var(--space-md);
+        text-align: center;
+      }
+      .rebel-button-spectacular {
+        align-self: center;
+      }
+      .rebel-image-right {
+        display: block;
+        order: 3;
+        transform: rotate(0deg) translateY(0);
+        height: 400px;
+        width: 100%;
+      }
+      .rebel-title-spectacular h2 {
+        font-size: clamp(2.5rem, 10vw, 4rem);
+      }
+    }
+    
+    @media (max-width: 640px) {
+      .rebel-image-left {
+        height: 400px;
+      }
+      .rebel-image-right {
+        height: 350px;
+      }
+      .rebel-section-wrapper {
+        padding: var(--space-2xl) var(--space-md);
+      }
+      .rebel-text-center p {
+        font-size: var(--fs-xs);
+      }
+    }
+
     /* Features Tilt Cards */
     .features-grid {
       display: grid;
@@ -941,30 +1115,7 @@
       font-size: var(--fs-xs);
       margin-top: var(--space-xs);
     }
-    /* Responsive - MOBILE ORDER FIXED + LARGE IMAGE */
-    @media (max-width: 968px) {
-      .rebel-grid {
-        grid-template-columns: 1fr;
-        gap: var(--space-2xl);
-      }
-      /* Fix for "insanely small picture" + Order */
-      .rebel-image-wrapper {
-        order: -1; /* Moves image above text */
-        width: 100%;
-        margin-bottom: var(--space-lg);
-        transform: scale(1.05); /* Slight zoom for impact */
-        border-width: 2px;
-      }
-      .rebel-card {
-        padding: var(--space-xl) var(--space-lg); /* Less horizontal padding */
-      }
-      .rebel-text-content {
-        text-align: center; /* Better readability on mobile */
-      }
-      .rebel-text-content p:first-of-type {
-        font-size: var(--fs-lg);
-      }
-    }
+    
     @media (max-width: 768px) {
       .pricing-grid, .steps-container, .outcomes-grid {
         grid-template-columns: 1fr;
@@ -983,7 +1134,7 @@
       }
     }
     @media (max-width: 480px) {
-      .hero-cta, .rebel-button {
+      .hero-cta {
         padding: var(--space-md) var(--space-lg);
         font-size: var(--fs-sm);
       }
@@ -991,14 +1142,14 @@
   </style>
 </head>
 <body>
-  <!-- Header: Transparent with Logo Only - NO BANNER -->
+  <!-- Header: Transparent with Logo Only -->
   <header class="site-header">
     <div class="header-container">
       <img src="wmremove-transformed.jpg" alt="Daily Sublime Logo" class="site-logo">
     </div>
   </header>
 
-  <!-- Hero - WITH BEAUTIFUL IMAGE BACKGROUND -->
+  <!-- Hero -->
   <section class="hero-section reveal-section">
     <img src="hero-banner.jpg" alt="Masterwork Painting" class="hero-image" loading="eager">
     <div class="hero-overlay"></div>
@@ -1019,27 +1170,35 @@
     </div>
   </section>
 
-  <!-- Rebel Section: STUNNING PREMIUM DESIGN -->
+  <!-- ⭐ SPECTACULAR REBEL SECTION WITH 2 IMAGES ⭐ -->
   <section class="rebel-section-wrapper reveal-section" id="rebel-section">
+    <div class="rebel-decoration"></div>
+    <div class="rebel-decoration"></div>
+    
     <div class="rebel-container">
-      <div class="rebel-title-center">
+      <div class="rebel-title-spectacular">
         <h2>Attention is a luxury!</h2>
       </div>
       
-      <div class="rebel-card">
-        <div class="rebel-grid">
-          <div class="rebel-text-content">
-            <p>Dear Rebel,</p>
-            <p>We are gripped by a <strong>poverty of presence</strong> in a world too frictionless to be noticed. In a life on autopilot, seizing your attention is a <strong>radical act of rebellion.</strong></p>
-            <p>The sublime life waits for your gaze.</p>
-            <p>This course is your <strong>daily ritual of reclamation.</strong> Each morning, we bring you one painter and one practice, a moment to stop the scroll, and reclaim your humanity.</p>
-            <p>Shall we begin?</p>
-            <a href="#pricing" class="rebel-button">YES!</a>
-          </div>
-          
-          <div class="rebel-image-wrapper">
-            <img src="sample-edition-preview.jpg" alt="Daily Sublime Edition Preview" class="rebel-image">
-          </div>
+      <div class="rebel-premium-grid">
+        <!-- LEFT IMAGE - DRAMATIC -->
+        <div class="rebel-image-left">
+          <img src="sample-edition-preview.jpg" alt="Daily Sublime Edition - Masterwork Art">
+        </div>
+        
+        <!-- CENTER TEXT CONTENT -->
+        <div class="rebel-text-center">
+          <p>Dear Rebel,</p>
+          <p>We are gripped by a <strong>poverty of presence</strong> in a world too frictionless to be noticed. In a life on autopilot, seizing your attention is a <strong>radical act of rebellion.</strong></p>
+          <p>The sublime life waits for your gaze.</p>
+          <p>This course is your <strong>daily ritual of reclamation.</strong> Each morning, we bring you one painter and one practice, a moment to stop the scroll, and reclaim your humanity.</p>
+          <p>Shall we begin?</p>
+          <a href="#pricing" class="rebel-button-spectacular">YES!</a>
+        </div>
+        
+        <!-- RIGHT IMAGE - ELEGANT OFFSET -->
+        <div class="rebel-image-right">
+          <img src="hero-banner.jpg" alt="Art of Observation - Visual Detail">
         </div>
       </div>
     </div>
