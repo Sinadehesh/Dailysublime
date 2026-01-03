@@ -1162,8 +1162,121 @@
     }
 
     /* =====================================================
-        RESPONSIVE DESIGN - Mobile First Approach
+        RESPONSIVE DESIGN
         ===================================================== */
+
+    /* Desktop - Premium Smooth Animations */
+    @media (min-width: 1025px) {
+
+      /* Enable GPU acceleration for smooth animations */
+      .feature-card,
+      .pricing-card,
+      .rebel-image-left,
+      .rebel-image-right,
+      .hero-cta,
+      .rebel-button-spectacular,
+      .pricing-button,
+      .site-logo {
+        will-change: transform, box-shadow;
+      }
+
+      /* Smooth, luxurious transitions for desktop */
+      .feature-card {
+        transition: transform 0.7s var(--ease-bounce),
+          box-shadow 0.7s var(--ease-out),
+          border-color 0.5s ease;
+      }
+
+      .feature-card::before {
+        transition: transform 0.8s var(--ease-out);
+      }
+
+      .feature-card::after {
+        transition: opacity 0.7s ease;
+      }
+
+      .feature-icon {
+        transition: transform 0.6s var(--ease-bounce);
+      }
+
+      .pricing-card {
+        transition: transform 0.7s var(--ease-bounce),
+          box-shadow 0.7s var(--ease-out),
+          border-color 0.5s ease;
+      }
+
+      .pricing-card::before {
+        transition: opacity 0.6s ease;
+      }
+
+      .pricing-button {
+        transition: transform 0.5s var(--ease-bounce),
+          box-shadow 0.5s ease;
+      }
+
+      .rebel-image-left,
+      .rebel-image-right {
+        transition: transform 0.9s var(--ease-bounce),
+          box-shadow 0.7s var(--ease-out),
+          border-color 0.5s ease;
+      }
+
+      .rebel-image-left img,
+      .rebel-image-right img {
+        transition: transform 1.2s var(--ease-out);
+      }
+
+      .hero-cta {
+        transition: transform 0.6s var(--ease-bounce),
+          box-shadow 0.6s var(--ease-out);
+      }
+
+      .hero-cta::before {
+        transition: opacity 0.5s ease;
+      }
+
+      .rebel-button-spectacular {
+        transition: transform 0.7s var(--ease-bounce),
+          box-shadow 0.6s var(--ease-out);
+      }
+
+      .rebel-button-spectacular::before {
+        transition: opacity 0.6s ease;
+      }
+
+      .rebel-button-spectacular::after {
+        transition: transform 0.5s var(--ease-bounce);
+      }
+
+      .rebel-text-center p {
+        transition: color 0.5s ease, transform 0.5s var(--ease-out);
+      }
+
+      .rebel-text-center p strong::after {
+        transition: transform 0.5s var(--ease-out);
+      }
+
+      .site-logo {
+        transition: transform 0.7s var(--ease-bounce),
+          box-shadow 0.5s ease;
+      }
+
+      .footer-logo {
+        transition: transform 0.8s var(--ease-bounce),
+          box-shadow 0.5s ease;
+      }
+
+      /* Reveal animations - smoother on desktop */
+      .reveal-section {
+        transition: opacity 1.2s var(--ease-out),
+          transform 1.2s var(--ease-out);
+      }
+
+      .reveal-stagger {
+        transition: opacity 1s var(--ease-out),
+          transform 1s var(--ease-out);
+      }
+    }
 
     /* Tablet & Below */
     @media (max-width: 1200px) {
