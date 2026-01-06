@@ -3722,9 +3722,8 @@
 
         currentIndex = index;
 
-        // Calculate transform based on visible slides position
-        const slideIndex = Array.from(allSlides).indexOf(visibleSlides[currentIndex]);
-        track.style.transform = `translateX(-${slideIndex * 100}%)`;
+        // Calculate transform based on visible slides only (hidden slides don't take space)
+        track.style.transform = `translateX(-${currentIndex * 100}%)`;
 
         // Update active states
         allSlides.forEach(slide => slide.classList.remove('active'));
