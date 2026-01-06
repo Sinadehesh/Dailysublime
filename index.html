@@ -1161,6 +1161,27 @@
       margin-top: var(--space-xs);
     }
 
+    .footer-legal {
+      margin-top: var(--space-lg);
+      padding-top: var(--space-md);
+      border-top: 1px solid rgba(212, 175, 55, 0.1);
+      display: flex;
+      justify-content: center;
+      gap: var(--space-lg);
+      flex-wrap: wrap;
+    }
+
+    .footer-legal a {
+      color: var(--text-muted);
+      font-size: var(--fs-xs);
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .footer-legal a:hover {
+      color: var(--accent-gold);
+    }
+
     /* =====================================================
         HOW IT WORKS SECTION - Premium Process
         ===================================================== */
@@ -2273,7 +2294,7 @@
         <!-- Supporter Tier -->
         <div class="pricing-card reveal-stagger">
           <h3 class="pricing-name">Supporter</h3>
-          <div class="pricing-price">$15.00</div>
+          <div class="pricing-price">$19.99</div>
           <div class="pricing-period">per month</div>
           <ul class="pricing-features">
             <li>Review the arts daily</li>
@@ -2293,6 +2314,10 @@
     <img src="wmremove-transformed.jpg" alt="Daily Sublime" class="footer-logo">
     <p class="footer-text">© 2026 Daily Sublime. All rights reserved.</p>
     <p class="footer-tagline">Reclaim your attention. Embrace the sublime.</p>
+    <div class="footer-legal">
+      <a href="https://privacy.sinadehesh.com/" target="_blank" rel="noopener">Privacy Policy</a>
+      <a href="https://tos.sinadehesh.com/#about" target="_blank" rel="noopener">Terms of Service</a>
+    </div>
   </footer>
 
   <!-- JavaScript -->
