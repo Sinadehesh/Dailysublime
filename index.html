@@ -2116,6 +2116,947 @@
         transform: scale(0.99);
       }
     }
+
+    /* =====================================================
+       WHAT IS DAILY SUBLIME - Premium Gallery Section
+       ===================================================== */
+
+    /* Color System Variables */
+    .wids-section {
+      --wids-base: #0d0c0f;
+      --wids-base-warm: #12110f;
+      --wids-surface: #1a1816;
+      --wids-surface-elevated: #221f1c;
+      --wids-gold: #c9a227;
+      --wids-gold-light: #e4c65a;
+      --wids-gold-pale: #f5e6b8;
+      --wids-ivory: #faf6eb;
+      --wids-amber: #d4a14a;
+      --wids-ultramarine: rgba(30, 42, 74, 0.15);
+      --wids-verdigris: rgba(43, 74, 66, 0.12);
+      --wids-text-primary: #f0ebe0;
+      --wids-text-secondary: #b8b0a0;
+      --wids-text-muted: #7a736a;
+      --wids-shadow-warm: rgba(45, 35, 20, 0.4);
+      --wids-shadow-cool: rgba(20, 30, 50, 0.3);
+      --wids-gold-glow: rgba(201, 162, 39, 0.25);
+    }
+
+    .wids-section {
+      position: relative;
+      padding: clamp(4rem, 10vw, 8rem) clamp(1rem, 4vw, 2rem);
+      background:
+        radial-gradient(ellipse 120% 80% at 20% 20%, var(--wids-ultramarine), transparent 50%),
+        radial-gradient(ellipse 100% 60% at 80% 80%, var(--wids-verdigris), transparent 40%),
+        radial-gradient(ellipse 80% 50% at 50% 0%, rgba(201, 162, 39, 0.03), transparent 60%),
+        linear-gradient(180deg, var(--wids-base) 0%, var(--wids-base-warm) 50%, var(--wids-base) 100%);
+      overflow: hidden;
+    }
+
+    /* Grain overlay */
+    .wids-section::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      opacity: 0.03;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Top/bottom decorative lines */
+    .wids-section::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(90%, 900px);
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--wids-gold), transparent);
+      opacity: 0.4;
+    }
+
+    .wids-container {
+      position: relative;
+      z-index: 2;
+      max-width: 1400px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: clamp(2rem, 5vw, 5rem);
+      align-items: center;
+    }
+
+    /* Screen reader only text */
+    .wids-sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    /* ===== LEFT COLUMN - COPY ===== */
+    .wids-copy {
+      padding-right: clamp(1rem, 3vw, 3rem);
+    }
+
+    .wids-label {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .wids-label-text {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--wids-gold);
+    }
+
+    .wids-label-line {
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, var(--wids-gold), transparent);
+      max-width: 100px;
+    }
+
+    .wids-headline {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: clamp(2.25rem, 5vw, 3.5rem);
+      font-weight: 400;
+      line-height: 1.15;
+      color: var(--wids-text-primary);
+      margin-bottom: 2rem;
+      background: linear-gradient(135deg, var(--wids-text-primary), var(--wids-gold-light));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .wids-body {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: clamp(0.95rem, 1.1vw, 1.1rem);
+      line-height: 1.85;
+      color: var(--wids-text-secondary);
+      max-width: 60ch;
+    }
+
+    .wids-body p {
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+
+    .wids-body p+p::before {
+      content: '';
+      position: absolute;
+      top: -0.75rem;
+      left: 0;
+      width: 40px;
+      height: 1px;
+      background: linear-gradient(90deg, var(--wids-gold), transparent);
+      opacity: 0.5;
+    }
+
+    .wids-body strong {
+      color: var(--wids-text-primary);
+      font-weight: 500;
+    }
+
+    /* CTAs */
+    .wids-cta-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-top: 2.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .wids-cta-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 1rem 2rem;
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--wids-base);
+      background: linear-gradient(135deg, var(--wids-gold), var(--wids-gold-light));
+      border: none;
+      border-radius: 50px;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      box-shadow:
+        0 4px 20px var(--wids-shadow-warm),
+        0 0 30px var(--wids-gold-glow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .wids-cta-primary::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, var(--wids-gold-light), var(--wids-amber));
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+
+    .wids-cta-primary:hover {
+      transform: translateY(-3px) scale(1.02);
+      box-shadow:
+        0 8px 32px var(--wids-shadow-warm),
+        0 0 50px var(--wids-gold-glow);
+    }
+
+    .wids-cta-primary:hover::before {
+      opacity: 1;
+    }
+
+    .wids-cta-primary span {
+      position: relative;
+      z-index: 1;
+    }
+
+    .wids-cta-primary:focus-visible {
+      outline: 3px solid var(--wids-ivory);
+      outline-offset: 3px;
+    }
+
+    .wids-cta-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 1rem 2rem;
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: var(--wids-gold);
+      background: transparent;
+      border: 1px solid var(--wids-gold);
+      border-radius: 50px;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    .wids-cta-secondary:hover {
+      background: rgba(201, 162, 39, 0.1);
+      border-color: var(--wids-gold-light);
+      color: var(--wids-gold-light);
+      transform: translateY(-2px);
+    }
+
+    .wids-cta-secondary:focus-visible {
+      outline: 3px solid var(--wids-gold);
+      outline-offset: 3px;
+    }
+
+    .wids-cta-note {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 0.8rem;
+      color: var(--wids-text-muted);
+      letter-spacing: 0.05em;
+    }
+
+    /* ===== RIGHT COLUMN - INTERACTIVE PREVIEW ===== */
+    .wids-preview-wrapper {
+      perspective: 1200px;
+      position: relative;
+    }
+
+    .wids-preview {
+      position: relative;
+      background: var(--wids-surface);
+      border-radius: 16px;
+      overflow: hidden;
+      transform-style: preserve-3d;
+      transition: transform 0.15s ease-out;
+      box-shadow:
+        0 25px 80px -20px var(--wids-shadow-warm),
+        0 15px 40px -15px var(--wids-shadow-cool),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    }
+
+    /* Gilded frame effect */
+    .wids-preview::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 16px;
+      padding: 2px;
+      background: linear-gradient(135deg,
+          var(--wids-gold) 0%,
+          var(--wids-gold-light) 25%,
+          var(--wids-amber) 50%,
+          var(--wids-gold) 75%,
+          var(--wids-gold-light) 100%);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+      opacity: 0.6;
+      transition: opacity 0.5s ease;
+    }
+
+    .wids-preview:hover::before {
+      opacity: 1;
+    }
+
+    /* Shimmer effect on frame */
+    .wids-preview::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 16px;
+      background: linear-gradient(105deg,
+          transparent 40%,
+          rgba(255, 255, 255, 0.1) 45%,
+          rgba(255, 255, 255, 0.2) 50%,
+          rgba(255, 255, 255, 0.1) 55%,
+          transparent 60%);
+      background-size: 300% 100%;
+      background-position: 200% 0;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+
+    .wids-preview:hover::after {
+      opacity: 1;
+      animation: widsShimmer 2s ease-in-out infinite;
+    }
+
+    @keyframes widsShimmer {
+      0% {
+        background-position: 200% 0;
+      }
+
+      100% {
+        background-position: -200% 0;
+      }
+    }
+
+    /* Email header */
+    .wids-email-header {
+      background: linear-gradient(180deg, var(--wids-surface-elevated), var(--wids-surface));
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid rgba(201, 162, 39, 0.1);
+    }
+
+    .wids-email-from {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .wids-email-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--wids-gold), var(--wids-amber));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--wids-base);
+    }
+
+    .wids-email-sender {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--wids-text-primary);
+    }
+
+    .wids-email-subject {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.1rem;
+      color: var(--wids-text-secondary);
+      font-style: italic;
+      margin-bottom: 0.5rem;
+    }
+
+    .wids-email-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 0.7rem;
+      color: var(--wids-text-muted);
+      padding: 0.25rem 0.75rem;
+      background: rgba(201, 162, 39, 0.1);
+      border-radius: 20px;
+      border: 1px solid rgba(201, 162, 39, 0.2);
+    }
+
+    .wids-email-badge::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--wids-gold);
+    }
+
+    /* Canvas painting area */
+    .wids-canvas-wrapper {
+      position: relative;
+      padding: 1.5rem;
+      background: var(--wids-base-warm);
+    }
+
+    .wids-canvas {
+      position: relative;
+      aspect-ratio: 4 / 3;
+      border-radius: 4px;
+      overflow: hidden;
+      background:
+        linear-gradient(135deg, #2a2520, #1a1714);
+      box-shadow:
+        inset 0 2px 10px rgba(0, 0, 0, 0.5),
+        0 8px 30px -10px rgba(0, 0, 0, 0.6);
+    }
+
+    /* Canvas texture */
+    .wids-canvas::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='weave'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.15' numOctaves='2' result='noise'/%3E%3CfeDisplacementMap in='SourceGraphic' in2='noise' scale='2' xChannelSelector='R' yChannelSelector='G'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23weave)' fill='%23332a22' opacity='0.3'/%3E%3C/svg%3E");
+      opacity: 0.4;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* Spotlight vignette */
+    .wids-canvas::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 70% 60% at 50% 40%, transparent 30%, rgba(0, 0, 0, 0.4) 100%);
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    /* Painting placeholder content */
+    .wids-painting-placeholder {
+      position: absolute;
+      inset: 8%;
+      background:
+        linear-gradient(145deg, #3d3530, #2a2420),
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='grain'%3E%3CfeTurbulence baseFrequency='0.8' type='fractalNoise'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23grain)'/%3E%3C/svg%3E");
+      background-blend-mode: overlay;
+      border-radius: 2px;
+      z-index: 3;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+    }
+
+    .wids-painting-icon {
+      width: 60px;
+      height: 60px;
+      border: 2px solid var(--wids-gold);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0.6;
+    }
+
+    .wids-painting-icon svg {
+      width: 28px;
+      height: 28px;
+      stroke: var(--wids-gold);
+      fill: none;
+      stroke-width: 1.5;
+    }
+
+    .wids-painting-text {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 0.9rem;
+      font-style: italic;
+      color: var(--wids-text-muted);
+      text-align: center;
+      opacity: 0.7;
+    }
+
+    /* Gilded inner frame */
+    .wids-inner-frame {
+      position: absolute;
+      inset: 4%;
+      border: 2px solid;
+      border-image: linear-gradient(135deg,
+          var(--wids-gold) 0%,
+          var(--wids-gold-pale) 30%,
+          var(--wids-amber) 60%,
+          var(--wids-gold) 100%) 1;
+      pointer-events: none;
+      z-index: 4;
+      opacity: 0.5;
+    }
+
+    /* Noticing hotspots */
+    .wids-hotspots {
+      position: absolute;
+      inset: 0;
+      z-index: 5;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      pointer-events: none;
+    }
+
+    .wids-hotspots.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .wids-hotspot {
+      position: absolute;
+      width: 36px;
+      height: 36px;
+      border: 2px solid var(--wids-gold);
+      border-radius: 50%;
+      background: rgba(201, 162, 39, 0.15);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .wids-hotspot::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      background: var(--wids-gold);
+      border-radius: 50%;
+      animation: widsPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes widsPulse {
+
+      0%,
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+
+      50% {
+        transform: scale(1.3);
+        opacity: 0.6;
+      }
+    }
+
+    .wids-hotspot:nth-child(1) {
+      top: 20%;
+      left: 25%;
+    }
+
+    .wids-hotspot:nth-child(2) {
+      top: 35%;
+      right: 20%;
+    }
+
+    .wids-hotspot:nth-child(3) {
+      bottom: 40%;
+      left: 15%;
+    }
+
+    .wids-hotspot:nth-child(4) {
+      bottom: 25%;
+      right: 30%;
+    }
+
+    .wids-hotspot:nth-child(5) {
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .wids-hotspot:hover,
+    .wids-hotspot:focus {
+      background: rgba(201, 162, 39, 0.3);
+      transform: scale(1.15);
+    }
+
+    .wids-hotspot:nth-child(5):hover,
+    .wids-hotspot:nth-child(5):focus {
+      transform: translate(-50%, -50%) scale(1.15);
+    }
+
+    .wids-hotspot:focus-visible {
+      outline: 2px solid var(--wids-ivory);
+      outline-offset: 2px;
+    }
+
+    /* Tooltip */
+    .wids-tooltip {
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%) translateY(-8px);
+      padding: 0.4rem 0.75rem;
+      background: var(--wids-surface-elevated);
+      border: 1px solid var(--wids-gold);
+      border-radius: 6px;
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--wids-gold-light);
+      white-space: nowrap;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.2s ease;
+      z-index: 10;
+    }
+
+    .wids-tooltip::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 5px solid transparent;
+      border-top-color: var(--wids-gold);
+    }
+
+    .wids-hotspot:hover .wids-tooltip,
+    .wids-hotspot:focus .wids-tooltip {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(-50%) translateY(-12px);
+    }
+
+    /* Content modules */
+    .wids-modules {
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .wids-module {
+      background: var(--wids-surface-elevated);
+      border-radius: 8px;
+      padding: 0.85rem 1rem;
+      border-left: 3px solid transparent;
+      transition: all 0.4s ease;
+    }
+
+    .wids-module.highlight {
+      border-left-color: var(--wids-gold);
+      background: linear-gradient(90deg, rgba(201, 162, 39, 0.08), transparent);
+    }
+
+    .wids-module-title {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--wids-text-primary);
+      margin-bottom: 0.4rem;
+    }
+
+    .wids-module-skeleton {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .wids-skeleton-line {
+      height: 8px;
+      background: linear-gradient(90deg, var(--wids-surface) 0%, rgba(201, 162, 39, 0.1) 50%, var(--wids-surface) 100%);
+      background-size: 200% 100%;
+      border-radius: 4px;
+      animation: widsSkeleton 2s ease-in-out infinite;
+    }
+
+    .wids-skeleton-line:nth-child(1) {
+      width: 90%;
+    }
+
+    .wids-skeleton-line:nth-child(2) {
+      width: 75%;
+    }
+
+    .wids-skeleton-line:nth-child(3) {
+      width: 60%;
+      animation-delay: 0.2s;
+    }
+
+    @keyframes widsSkeleton {
+
+      0%,
+      100% {
+        background-position: 200% 0;
+      }
+
+      50% {
+        background-position: -200% 0;
+      }
+    }
+
+    /* Toggle controls */
+    .wids-controls {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 1rem;
+      background: var(--wids-surface-elevated);
+      border-top: 1px solid rgba(201, 162, 39, 0.1);
+    }
+
+    .wids-toggle-group {
+      display: flex;
+      background: var(--wids-base);
+      border-radius: 8px;
+      padding: 0.25rem;
+      gap: 0.25rem;
+    }
+
+    .wids-toggle {
+      padding: 0.5rem 1rem;
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--wids-text-muted);
+      background: transparent;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .wids-toggle.active {
+      background: var(--wids-surface);
+      color: var(--wids-gold);
+    }
+
+    .wids-toggle:hover:not(.active) {
+      color: var(--wids-text-secondary);
+    }
+
+    .wids-toggle:focus-visible {
+      outline: 2px solid var(--wids-gold);
+      outline-offset: 2px;
+    }
+
+    .wids-noticing-toggle {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-left: 1rem;
+      padding: 0.5rem 1rem;
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--wids-text-muted);
+      background: transparent;
+      border: 1px solid var(--wids-text-muted);
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .wids-noticing-toggle.active {
+      color: var(--wids-gold);
+      border-color: var(--wids-gold);
+      background: rgba(201, 162, 39, 0.1);
+    }
+
+    .wids-noticing-toggle:focus-visible {
+      outline: 2px solid var(--wids-gold);
+      outline-offset: 2px;
+    }
+
+    .wids-noticing-indicator {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--wids-text-muted);
+      transition: background 0.3s ease;
+    }
+
+    .wids-noticing-toggle.active .wids-noticing-indicator {
+      background: var(--wids-gold);
+      box-shadow: 0 0 8px var(--wids-gold-glow);
+    }
+
+    /* Device frame effect for mobile view */
+    .wids-preview.mobile-view {
+      max-width: 320px;
+      margin: 0 auto;
+    }
+
+    /* Mobile sticky CTAs within section */
+    .wids-sticky-ctas {
+      display: none;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 1024px) {
+      .wids-container {
+        grid-template-columns: 1fr;
+        gap: clamp(2rem, 6vw, 4rem);
+      }
+
+      .wids-copy {
+        padding-right: 0;
+        text-align: center;
+      }
+
+      .wids-label {
+        justify-content: center;
+      }
+
+      .wids-label-line {
+        display: none;
+      }
+
+      .wids-body {
+        max-width: 65ch;
+        margin: 0 auto;
+      }
+
+      .wids-body p+p::before {
+        left: 50%;
+        transform: translateX(-50%);
+      }
+
+      .wids-cta-group {
+        justify-content: center;
+      }
+
+      .wids-cta-note {
+        width: 100%;
+        text-align: center;
+      }
+
+      .wids-preview-wrapper {
+        max-width: 500px;
+        margin: 0 auto;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .wids-section {
+        padding: clamp(3rem, 8vw, 5rem) 1rem;
+      }
+
+      .wids-headline {
+        font-size: clamp(1.75rem, 8vw, 2.5rem);
+      }
+
+      .wids-body {
+        font-size: 0.95rem;
+      }
+
+      .wids-cta-group {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .wids-cta-primary,
+      .wids-cta-secondary {
+        width: 100%;
+        max-width: 280px;
+        justify-content: center;
+      }
+
+      .wids-controls {
+        flex-wrap: wrap;
+        gap: 0.75rem;
+      }
+
+      .wids-noticing-toggle {
+        margin-left: 0;
+      }
+
+      /* Sticky CTAs for mobile - within section */
+      .wids-sticky-ctas {
+        display: flex;
+        position: sticky;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 1rem;
+        background: linear-gradient(180deg, transparent, var(--wids-base) 20%);
+        justify-content: center;
+        gap: 0.75rem;
+        z-index: 10;
+        margin-top: 2rem;
+      }
+
+      .wids-sticky-ctas .wids-cta-primary,
+      .wids-sticky-ctas .wids-cta-secondary {
+        padding: 0.85rem 1.5rem;
+        font-size: 0.85rem;
+        flex: 1;
+        max-width: 160px;
+      }
+    }
+
+    @media (max-width: 380px) {
+      .wids-headline {
+        font-size: 1.5rem;
+      }
+
+      .wids-email-subject {
+        font-size: 0.95rem;
+      }
+
+      .wids-module-title {
+        font-size: 0.85rem;
+      }
+    }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      .wids-preview {
+        transition: none;
+      }
+
+      .wids-preview::after {
+        animation: none;
+      }
+
+      .wids-hotspot::before {
+        animation: none;
+      }
+
+      .wids-skeleton-line {
+        animation: none;
+        background: var(--wids-surface);
+      }
+
+      .wids-cta-primary,
+      .wids-cta-secondary,
+      .wids-toggle,
+      .wids-noticing-toggle,
+      .wids-module,
+      .wids-hotspot,
+      .wids-tooltip {
+        transition: none;
+      }
+    }
   </style>
 </head>
 
@@ -2257,6 +3198,153 @@
     </div>
   </section>
 
+  <!-- What Is Daily Sublime Section -->
+  <section class="wids-section reveal-section" id="what-is-daily-sublime" aria-labelledby="wids-heading">
+    <!-- Screen reader SEO text -->
+    <span class="wids-sr-only">Daily art email to learn to see through master paintings with guided looking
+      practice.</span>
+
+    <div class="wids-container">
+      <!-- Left Column: Copy -->
+      <div class="wids-copy">
+        <div class="wids-label">
+          <span class="wids-label-text">Daily Ritual</span>
+          <span class="wids-label-line" aria-hidden="true"></span>
+        </div>
+
+        <h2 id="wids-heading" class="wids-headline">What is Daily Sublime?</h2>
+
+        <div class="wids-body">
+          <p>Daily Sublime is a daily art email that trains your attention using one great painting at a time. No art
+            news. No trivia. No forced inspiration. Just a masterwork delivered to your inbox and a short, guided way to
+            look, so your perception gets sharper and your mind gets quieter in the same 2 to 7 minutes you would
+            otherwise spend scrolling.</p>
+
+          <p>Think of it as a private gallery visit that fits into a normal morning. Each edition is clean and simple on
+            both phone and desktop: one primary image, then a sequence of prompts that gently moves you from "seeing" to
+            "noticing." You do not need any art background. You only need a small daily window and the willingness to
+            look carefully.</p>
+
+          <p>Want to know exactly what arrives in your inbox before you subscribe? Visit the Samples page to see real
+            editions, shown as screenshots on both mobile and desktop.</p>
+        </div>
+
+        <div class="wids-cta-group">
+          <a href="/samples" class="wids-cta-primary" data-cta="samples">
+            <span>View Sample Editions</span>
+          </a>
+          <a href="/join" class="wids-cta-secondary" data-cta="join">
+            <span>Start Daily Sublime</span>
+          </a>
+        </div>
+        <p class="wids-cta-note">No app. Just email.</p>
+      </div>
+
+      <!-- Right Column: Interactive Preview -->
+      <div class="wids-preview-wrapper">
+        <div class="wids-preview" id="widsPreview" role="region" aria-label="Interactive email preview">
+          <!-- Email Header -->
+          <div class="wids-email-header">
+            <div class="wids-email-from">
+              <div class="wids-email-avatar" aria-hidden="true">DS</div>
+              <span class="wids-email-sender">Daily Sublime</span>
+            </div>
+            <div class="wids-email-subject">Masterwork of the Day</div>
+            <span class="wids-email-badge">Delivered daily &bull; 2&ndash;7 minutes</span>
+          </div>
+
+          <!-- Canvas Area -->
+          <div class="wids-canvas-wrapper">
+            <div class="wids-canvas">
+              <div class="wids-painting-placeholder">
+                <div class="wids-painting-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="3" y="3" width="18" height="18" rx="2" />
+                    <circle cx="8.5" cy="8.5" r="1.5" />
+                    <path d="M21 15l-5-5L5 21" />
+                  </svg>
+                </div>
+                <span class="wids-painting-text">Today's Masterwork</span>
+              </div>
+              <div class="wids-inner-frame" aria-hidden="true"></div>
+
+              <!-- Hotspots for Noticing Mode -->
+              <div class="wids-hotspots" id="widsHotspots" aria-hidden="true">
+                <button class="wids-hotspot" type="button" aria-describedby="tooltip-edge">
+                  <span class="wids-tooltip" id="tooltip-edge" role="tooltip">Edge</span>
+                </button>
+                <button class="wids-hotspot" type="button" aria-describedby="tooltip-light">
+                  <span class="wids-tooltip" id="tooltip-light" role="tooltip">Light</span>
+                </button>
+                <button class="wids-hotspot" type="button" aria-describedby="tooltip-contrast">
+                  <span class="wids-tooltip" id="tooltip-contrast" role="tooltip">Contrast</span>
+                </button>
+                <button class="wids-hotspot" type="button" aria-describedby="tooltip-gesture">
+                  <span class="wids-tooltip" id="tooltip-gesture" role="tooltip">Gesture</span>
+                </button>
+                <button class="wids-hotspot" type="button" aria-describedby="tooltip-space">
+                  <span class="wids-tooltip" id="tooltip-space" role="tooltip">Negative Space</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Content Modules -->
+          <div class="wids-modules">
+            <div class="wids-module" id="widsModuleWhy">
+              <div class="wids-module-title">Why it matters</div>
+              <div class="wids-module-skeleton" aria-hidden="true">
+                <div class="wids-skeleton-line"></div>
+                <div class="wids-skeleton-line"></div>
+              </div>
+            </div>
+            <div class="wids-module" id="widsModuleNotice">
+              <div class="wids-module-title">Notice</div>
+              <div class="wids-module-skeleton" aria-hidden="true">
+                <div class="wids-skeleton-line"></div>
+                <div class="wids-skeleton-line"></div>
+                <div class="wids-skeleton-line"></div>
+              </div>
+            </div>
+            <div class="wids-module" id="widsModulePractice">
+              <div class="wids-module-title">Practice</div>
+              <div class="wids-module-skeleton" aria-hidden="true">
+                <div class="wids-skeleton-line"></div>
+                <div class="wids-skeleton-line"></div>
+              </div>
+            </div>
+            <div class="wids-module" id="widsModuleStyle">
+              <div class="wids-module-title">Style</div>
+              <div class="wids-module-skeleton" aria-hidden="true">
+                <div class="wids-skeleton-line"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Controls -->
+          <div class="wids-controls">
+            <div class="wids-toggle-group" role="radiogroup" aria-label="Device view">
+              <button class="wids-toggle active" type="button" data-toggle="desktop" role="radio"
+                aria-checked="true">Desktop</button>
+              <button class="wids-toggle" type="button" data-toggle="phone" role="radio"
+                aria-checked="false">Phone</button>
+            </div>
+            <button class="wids-noticing-toggle" type="button" data-toggle="noticing-mode" aria-pressed="false">
+              <span class="wids-noticing-indicator" aria-hidden="true"></span>
+              <span>Noticing Mode</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Sticky CTAs -->
+    <div class="wids-sticky-ctas" aria-hidden="true">
+      <a href="/samples" class="wids-cta-primary" tabindex="-1"><span>Samples</span></a>
+      <a href="/join" class="wids-cta-secondary" tabindex="-1"><span>Start</span></a>
+    </div>
+  </section>
+
   <!-- Pricing Section -->
   <section class="pricing-section reveal-section" id="pricing">
     <div class="pricing-container">
@@ -2395,6 +3483,143 @@
     if ('ontouchstart' in window) {
       document.body.classList.add('touch-device');
     }
+
+    // =====================================================
+    // What Is Daily Sublime - Interactive Preview
+    // =====================================================
+    (function () {
+      const preview = document.getElementById('widsPreview');
+      const hotspots = document.getElementById('widsHotspots');
+      const toggles = document.querySelectorAll('.wids-toggle');
+      const noticingToggle = document.querySelector('.wids-noticing-toggle');
+      const modules = document.querySelectorAll('.wids-module');
+      const section = document.getElementById('what-is-daily-sublime');
+
+      if (!preview) return;
+
+      // Check for reduced motion preference
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
+      // Device view toggle (Phone / Desktop)
+      toggles.forEach(toggle => {
+        toggle.addEventListener('click', () => {
+          toggles.forEach(t => {
+            t.classList.remove('active');
+            t.setAttribute('aria-checked', 'false');
+          });
+          toggle.classList.add('active');
+          toggle.setAttribute('aria-checked', 'true');
+
+          if (toggle.dataset.toggle === 'phone') {
+            preview.classList.add('mobile-view');
+          } else {
+            preview.classList.remove('mobile-view');
+          }
+        });
+      });
+
+      // Noticing mode toggle
+      if (noticingToggle && hotspots) {
+        noticingToggle.addEventListener('click', () => {
+          const isActive = noticingToggle.classList.toggle('active');
+          noticingToggle.setAttribute('aria-pressed', isActive);
+          hotspots.classList.toggle('active', isActive);
+          hotspots.setAttribute('aria-hidden', !isActive);
+        });
+      }
+
+      // Micro-physics tilt effect (desktop only, respects reduced motion)
+      if (!prefersReducedMotion && !isTouchDevice) {
+        let currentX = 0;
+        let currentY = 0;
+        let targetX = 0;
+        let targetY = 0;
+        let animating = false;
+
+        const updateTilt = () => {
+          currentX += (targetX - currentX) * 0.1;
+          currentY += (targetY - currentY) * 0.1;
+
+          const rotateX = currentY * 6;
+          const rotateY = currentX * -6;
+
+          preview.style.transform = `perspective(1200px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+
+          if (Math.abs(targetX - currentX) > 0.001 || Math.abs(targetY - currentY) > 0.001) {
+            requestAnimationFrame(updateTilt);
+          } else {
+            animating = false;
+          }
+        };
+
+        preview.addEventListener('mousemove', (e) => {
+          const rect = preview.getBoundingClientRect();
+          targetX = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
+          targetY = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
+
+          if (!animating) {
+            animating = true;
+            requestAnimationFrame(updateTilt);
+          }
+        });
+
+        preview.addEventListener('mouseleave', () => {
+          targetX = 0;
+          targetY = 0;
+          if (!animating) {
+            animating = true;
+            requestAnimationFrame(updateTilt);
+          }
+        });
+      }
+
+      // Scroll-driven module highlighting
+      if (section && !prefersReducedMotion) {
+        const sectionObserver = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              const scrollProgress = entry.intersectionRatio;
+
+              // Progressive highlighting based on scroll position
+              modules.forEach((mod, index) => {
+                const threshold = 0.2 + (index * 0.15);
+                if (scrollProgress >= threshold) {
+                  mod.classList.add('highlight');
+                } else {
+                  mod.classList.remove('highlight');
+                }
+              });
+
+              // Show hotspots automatically at higher scroll
+              if (scrollProgress > 0.6 && hotspots) {
+                hotspots.classList.add('active');
+                if (noticingToggle) {
+                  noticingToggle.classList.add('active');
+                  noticingToggle.setAttribute('aria-pressed', 'true');
+                }
+              }
+            }
+          });
+        }, {
+          threshold: [0, 0.2, 0.4, 0.6, 0.8, 1.0],
+          rootMargin: '-10% 0px -10% 0px'
+        });
+
+        sectionObserver.observe(section);
+      }
+
+      // Keyboard navigation for hotspots
+      const hotspotButtons = document.querySelectorAll('.wids-hotspot');
+      hotspotButtons.forEach(button => {
+        button.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            button.focus();
+          }
+        });
+      });
+    })();
   </script>
 </body>
 
