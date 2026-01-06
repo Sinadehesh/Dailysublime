@@ -2911,6 +2911,135 @@
       display: none;
     }
 
+    /* ===== CAROUSEL STYLES ===== */
+    .wids-carousel {
+      position: relative;
+      overflow: hidden;
+      border-radius: 12px 12px 0 0;
+    }
+
+    .wids-carousel-track {
+      display: flex;
+      transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    .wids-carousel-slide {
+      min-width: 100%;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+
+    .wids-carousel-slide.active {
+      opacity: 1;
+    }
+
+    .wids-carousel-slide img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .wids-carousel-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 40px;
+      height: 40px;
+      background: rgba(13, 12, 15, 0.8);
+      border: 1px solid var(--wids-gold);
+      border-radius: 50%;
+      color: var(--wids-gold);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      z-index: 5;
+      backdrop-filter: blur(10px);
+    }
+
+    .wids-carousel-nav:hover {
+      background: var(--wids-gold);
+      color: var(--wids-base);
+    }
+
+    .wids-carousel-nav:focus-visible {
+      outline: 2px solid var(--wids-ivory);
+      outline-offset: 2px;
+    }
+
+    .wids-carousel-nav svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .wids-carousel-prev {
+      left: 0.75rem;
+    }
+
+    .wids-carousel-next {
+      right: 0.75rem;
+    }
+
+    .wids-carousel-dots {
+      position: absolute;
+      bottom: 1rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 0.5rem;
+      z-index: 5;
+    }
+
+    .wids-carousel-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      border: 1px solid var(--wids-gold);
+      background: rgba(13, 12, 15, 0.6);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      padding: 0;
+    }
+
+    .wids-carousel-dot.active {
+      background: var(--wids-gold);
+      transform: scale(1.2);
+    }
+
+    .wids-carousel-dot:hover:not(.active) {
+      background: rgba(201, 162, 39, 0.4);
+    }
+
+    .wids-carousel-dot:focus-visible {
+      outline: 2px solid var(--wids-ivory);
+      outline-offset: 2px;
+    }
+
+    .wids-sample-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 1rem;
+      background: var(--wids-surface-elevated);
+      border-top: 1px solid rgba(201, 162, 39, 0.1);
+    }
+
+    .wids-sample-label {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--wids-gold);
+    }
+
+    .wids-sample-count {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 0.75rem;
+      color: var(--wids-text-muted);
+    }
+
     /* ===== RESPONSIVE ===== */
     @media (max-width: 1024px) {
       .wids-container {
@@ -3240,109 +3369,76 @@
         <p class="wids-cta-note">No app. Just email.</p>
       </div>
 
-      <!-- Right Column: Interactive Preview -->
+      <!-- Right Column: Sample Screenshots Carousel -->
       <div class="wids-preview-wrapper">
-        <div class="wids-preview" id="widsPreview" role="region" aria-label="Interactive email preview">
-          <!-- Email Header -->
-          <div class="wids-email-header">
-            <div class="wids-email-from">
-              <div class="wids-email-avatar" aria-hidden="true">DS</div>
-              <span class="wids-email-sender">Daily Sublime</span>
-            </div>
-            <div class="wids-email-subject">Masterwork of the Day</div>
-            <span class="wids-email-badge">Delivered daily &bull; 2&ndash;7 minutes</span>
-          </div>
+        <div class="wids-preview" id="widsPreview" role="region" aria-label="Sample email editions">
+          <!-- Sample Image Carousel -->
+          <div class="wids-carousel" id="widsCarousel">
+            <div class="wids-carousel-track" id="widsCarouselTrack">
+              <div class="wids-carousel-slide active">
+                <img src="sample-vermeer-1.png"
+                  alt="Daily Sublime: The Measured Theater of Light - Johannes Vermeer edition" loading="lazy">
+              </div>
+              <div class="wids-carousel-slide">
+                <img src="sample-vermeer-2.png"
+                  alt="Daily Sublime: Girl with a Pearl Earring - guided observation content" loading="lazy">
+              </div>
 
-          <!-- Canvas Area -->
-          <div class="wids-canvas-wrapper">
-            <div class="wids-canvas">
-              <div class="wids-painting-placeholder">
-                <div class="wids-painting-icon" aria-hidden="true">
-                  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <rect x="3" y="3" width="18" height="18" rx="2" />
-                    <circle cx="8.5" cy="8.5" r="1.5" />
-                    <path d="M21 15l-5-5L5 21" />
-                  </svg>
-                </div>
-                <span class="wids-painting-text">Today's Masterwork</span>
+              <div class="wids-carousel-slide">
+                <img src="sample-vangogh-1.png" alt="Daily Sublime: Thick Light Restless Air - Vincent van Gogh edition"
+                  loading="lazy">
               </div>
-              <div class="wids-inner-frame" aria-hidden="true"></div>
+              <div class="wids-carousel-slide">
+                <img src="sample-vangogh-2.png"
+                  alt="Daily Sublime: Mini Gallery featuring Cafe Terrace at Night and Irises" loading="lazy">
+              </div>
+              <div class="wids-carousel-slide">
+                <img src="sample-mobile.jpg"
+                  alt="Daily Sublime mobile view - The Bedroom by Van Gogh with style spotlight" loading="lazy">
+              </div>
+            </div>
 
-              <!-- Hotspots for Noticing Mode -->
-              <div class="wids-hotspots" id="widsHotspots" aria-hidden="true">
-                <button class="wids-hotspot" type="button" aria-describedby="tooltip-edge">
-                  <span class="wids-tooltip" id="tooltip-edge" role="tooltip">Edge</span>
-                </button>
-                <button class="wids-hotspot" type="button" aria-describedby="tooltip-light">
-                  <span class="wids-tooltip" id="tooltip-light" role="tooltip">Light</span>
-                </button>
-                <button class="wids-hotspot" type="button" aria-describedby="tooltip-contrast">
-                  <span class="wids-tooltip" id="tooltip-contrast" role="tooltip">Contrast</span>
-                </button>
-                <button class="wids-hotspot" type="button" aria-describedby="tooltip-gesture">
-                  <span class="wids-tooltip" id="tooltip-gesture" role="tooltip">Gesture</span>
-                </button>
-                <button class="wids-hotspot" type="button" aria-describedby="tooltip-space">
-                  <span class="wids-tooltip" id="tooltip-space" role="tooltip">Negative Space</span>
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Content Modules -->
-          <div class="wids-modules">
-            <div class="wids-module" id="widsModuleWhy">
-              <div class="wids-module-title">Why it matters</div>
-              <div class="wids-module-skeleton" aria-hidden="true">
-                <div class="wids-skeleton-line"></div>
-                <div class="wids-skeleton-line"></div>
-              </div>
-            </div>
-            <div class="wids-module" id="widsModuleNotice">
-              <div class="wids-module-title">Notice</div>
-              <div class="wids-module-skeleton" aria-hidden="true">
-                <div class="wids-skeleton-line"></div>
-                <div class="wids-skeleton-line"></div>
-                <div class="wids-skeleton-line"></div>
-              </div>
-            </div>
-            <div class="wids-module" id="widsModulePractice">
-              <div class="wids-module-title">Practice</div>
-              <div class="wids-module-skeleton" aria-hidden="true">
-                <div class="wids-skeleton-line"></div>
-                <div class="wids-skeleton-line"></div>
-              </div>
-            </div>
-            <div class="wids-module" id="widsModuleStyle">
-              <div class="wids-module-title">Style</div>
-              <div class="wids-module-skeleton" aria-hidden="true">
-                <div class="wids-skeleton-line"></div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Controls -->
-          <div class="wids-controls">
-            <div class="wids-toggle-group" role="radiogroup" aria-label="Device view">
-              <button class="wids-toggle active" type="button" data-toggle="desktop" role="radio"
-                aria-checked="true">Desktop</button>
-              <button class="wids-toggle" type="button" data-toggle="phone" role="radio"
-                aria-checked="false">Phone</button>
-            </div>
-            <button class="wids-noticing-toggle" type="button" data-toggle="noticing-mode" aria-pressed="false">
-              <span class="wids-noticing-indicator" aria-hidden="true"></span>
-              <span>Noticing Mode</span>
+            <!-- Carousel Navigation -->
+            <button class="wids-carousel-nav wids-carousel-prev" type="button" aria-label="Previous sample">
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"
+                  stroke-linejoin="round" />
+              </svg>
             </button>
+            <button class="wids-carousel-nav wids-carousel-next" type="button" aria-label="Next sample">
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"
+                  stroke-linejoin="round" />
+              </svg>
+            </button>
+
+            <!-- Carousel Dots -->
+            <div class="wids-carousel-dots" role="tablist" aria-label="Sample navigation">
+              <button class="wids-carousel-dot active" type="button" role="tab" aria-selected="true"
+                aria-label="Sample 1: Vermeer"></button>
+              <button class="wids-carousel-dot" type="button" role="tab" aria-selected="false"
+                aria-label="Sample 2: Vermeer detail"></button>
+              <button class="wids-carousel-dot" type="button" role="tab" aria-selected="false"
+                aria-label="Sample 3: Van Gogh"></button>
+              <button class="wids-carousel-dot" type="button" role="tab" aria-selected="false"
+                aria-label="Sample 4: Van Gogh gallery"></button>
+              <button class="wids-carousel-dot" type="button" role="tab" aria-selected="false"
+                aria-label="Sample 5: Mobile view"></button>
+            </div>
+          </div>
+
+          <!-- Sample Info -->
+          <div class="wids-sample-info">
+            <span class="wids-sample-label">Real email samples</span>
+            <span class="wids-sample-count" id="widsSampleCount">1 of 5</span>
           </div>
         </div>
-      </div>
-    </div>
 
-    <!-- Mobile Sticky CTAs -->
-    <div class="wids-sticky-ctas" aria-hidden="true">
-      <a href="/samples" class="wids-cta-primary" tabindex="-1"><span>Samples</span></a>
-      <a href="/join" class="wids-cta-secondary" tabindex="-1"><span>Start</span></a>
-    </div>
+        <!-- Mobile Sticky CTAs -->
+        <div class="wids-sticky-ctas" aria-hidden="true">
+          <a href="/samples" class="wids-cta-primary" tabindex="-1"><span>Samples</span></a>
+          <a href="/join" class="wids-cta-secondary" tabindex="-1"><span>Start</span></a>
+        </div>
   </section>
 
   <!-- Pricing Section -->
@@ -3485,52 +3581,111 @@
     }
 
     // =====================================================
-    // What Is Daily Sublime - Interactive Preview
+    // What Is Daily Sublime - Sample Carousel
     // =====================================================
     (function () {
+      const carousel = document.getElementById('widsCarousel');
+      const track = document.getElementById('widsCarouselTrack');
+      const slides = document.querySelectorAll('.wids-carousel-slide');
+      const dots = document.querySelectorAll('.wids-carousel-dot');
+      const prevBtn = document.querySelector('.wids-carousel-prev');
+      const nextBtn = document.querySelector('.wids-carousel-next');
+      const countDisplay = document.getElementById('widsSampleCount');
       const preview = document.getElementById('widsPreview');
-      const hotspots = document.getElementById('widsHotspots');
-      const toggles = document.querySelectorAll('.wids-toggle');
-      const noticingToggle = document.querySelector('.wids-noticing-toggle');
-      const modules = document.querySelectorAll('.wids-module');
-      const section = document.getElementById('what-is-daily-sublime');
 
-      if (!preview) return;
+      if (!carousel || !slides.length) return;
+
+      let currentIndex = 0;
+      const totalSlides = slides.length;
 
       // Check for reduced motion preference
       const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 
-      // Device view toggle (Phone / Desktop)
-      toggles.forEach(toggle => {
-        toggle.addEventListener('click', () => {
-          toggles.forEach(t => {
-            t.classList.remove('active');
-            t.setAttribute('aria-checked', 'false');
-          });
-          toggle.classList.add('active');
-          toggle.setAttribute('aria-checked', 'true');
+      function goToSlide(index) {
+        if (index < 0) index = totalSlides - 1;
+        if (index >= totalSlides) index = 0;
 
-          if (toggle.dataset.toggle === 'phone') {
-            preview.classList.add('mobile-view');
-          } else {
-            preview.classList.remove('mobile-view');
-          }
+        currentIndex = index;
+
+        // Update track position
+        track.style.transform = `translateX(-${currentIndex * 100}%)`;
+
+        // Update active states
+        slides.forEach((slide, i) => {
+          slide.classList.toggle('active', i === currentIndex);
         });
+
+        dots.forEach((dot, i) => {
+          dot.classList.toggle('active', i === currentIndex);
+          dot.setAttribute('aria-selected', i === currentIndex);
+        });
+
+        // Update count
+        if (countDisplay) {
+          countDisplay.textContent = `${currentIndex + 1} of ${totalSlides}`;
+        }
+      }
+
+      // Navigation buttons
+      if (prevBtn) {
+        prevBtn.addEventListener('click', () => goToSlide(currentIndex - 1));
+      }
+
+      if (nextBtn) {
+        nextBtn.addEventListener('click', () => goToSlide(currentIndex + 1));
+      }
+
+      // Dot navigation
+      dots.forEach((dot, i) => {
+        dot.addEventListener('click', () => goToSlide(i));
       });
 
-      // Noticing mode toggle
-      if (noticingToggle && hotspots) {
-        noticingToggle.addEventListener('click', () => {
-          const isActive = noticingToggle.classList.toggle('active');
-          noticingToggle.setAttribute('aria-pressed', isActive);
-          hotspots.classList.toggle('active', isActive);
-          hotspots.setAttribute('aria-hidden', !isActive);
+      // Keyboard navigation
+      carousel.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowLeft') {
+          goToSlide(currentIndex - 1);
+        } else if (e.key === 'ArrowRight') {
+          goToSlide(currentIndex + 1);
+        }
+      });
+
+      // Touch/swipe support
+      let touchStartX = 0;
+      let touchEndX = 0;
+
+      carousel.addEventListener('touchstart', (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+      }, { passive: true });
+
+      carousel.addEventListener('touchend', (e) => {
+        touchEndX = e.changedTouches[0].screenX;
+        const diff = touchStartX - touchEndX;
+
+        if (Math.abs(diff) > 50) {
+          if (diff > 0) {
+            goToSlide(currentIndex + 1);
+          } else {
+            goToSlide(currentIndex - 1);
+          }
+        }
+      }, { passive: true });
+
+      // Auto-advance (optional, respects reduced motion)
+      if (!prefersReducedMotion) {
+        let autoAdvance = setInterval(() => goToSlide(currentIndex + 1), 5000);
+
+        // Pause on hover/focus
+        carousel.addEventListener('mouseenter', () => clearInterval(autoAdvance));
+        carousel.addEventListener('focusin', () => clearInterval(autoAdvance));
+
+        carousel.addEventListener('mouseleave', () => {
+          autoAdvance = setInterval(() => goToSlide(currentIndex + 1), 5000);
         });
       }
 
       // Micro-physics tilt effect (desktop only, respects reduced motion)
-      if (!prefersReducedMotion && !isTouchDevice) {
+      if (!prefersReducedMotion && !isTouchDevice && preview) {
         let currentX = 0;
         let currentY = 0;
         let targetX = 0;
@@ -3541,8 +3696,8 @@
           currentX += (targetX - currentX) * 0.1;
           currentY += (targetY - currentY) * 0.1;
 
-          const rotateX = currentY * 6;
-          const rotateY = currentX * -6;
+          const rotateX = currentY * 4;
+          const rotateY = currentX * -4;
 
           preview.style.transform = `perspective(1200px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
 
@@ -3573,52 +3728,6 @@
           }
         });
       }
-
-      // Scroll-driven module highlighting
-      if (section && !prefersReducedMotion) {
-        const sectionObserver = new IntersectionObserver((entries) => {
-          entries.forEach(entry => {
-            if (entry.isIntersecting) {
-              const scrollProgress = entry.intersectionRatio;
-
-              // Progressive highlighting based on scroll position
-              modules.forEach((mod, index) => {
-                const threshold = 0.2 + (index * 0.15);
-                if (scrollProgress >= threshold) {
-                  mod.classList.add('highlight');
-                } else {
-                  mod.classList.remove('highlight');
-                }
-              });
-
-              // Show hotspots automatically at higher scroll
-              if (scrollProgress > 0.6 && hotspots) {
-                hotspots.classList.add('active');
-                if (noticingToggle) {
-                  noticingToggle.classList.add('active');
-                  noticingToggle.setAttribute('aria-pressed', 'true');
-                }
-              }
-            }
-          });
-        }, {
-          threshold: [0, 0.2, 0.4, 0.6, 0.8, 1.0],
-          rootMargin: '-10% 0px -10% 0px'
-        });
-
-        sectionObserver.observe(section);
-      }
-
-      // Keyboard navigation for hotspots
-      const hotspotButtons = document.querySelectorAll('.wids-hotspot');
-      hotspotButtons.forEach(button => {
-        button.addEventListener('keydown', (e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            button.focus();
-          }
-        });
-      });
     })();
   </script>
 </body>
