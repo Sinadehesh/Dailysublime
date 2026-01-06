@@ -2786,7 +2786,7 @@
       background: linear-gradient(90deg, var(--wids-surface) 0%, rgba(201, 162, 39, 0.1) 50%, var(--wids-surface) 100%);
       background-size: 200% 100%;
       border-radius: 4px;
-      animation: widsSkeleton 8s ease-in-out infinite;
+      animation: widsSkeleton 20s ease-in-out infinite;
     }
 
     .wids-skeleton-line:nth-child(1) {
@@ -3257,9 +3257,73 @@
       .wids-noticing-toggle,
       .wids-module,
       .wids-hotspot,
-      .wids-tooltip {
+      .wids-tooltip,
+      .wids-lightbox-close {
         transition: none;
       }
+    }
+
+    /* Lightbox */
+    .wids-lightbox {
+      position: fixed;
+      inset: 0;
+      background: rgba(13, 12, 15, 0.95);
+      backdrop-filter: blur(10px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+      cursor: zoom-out;
+    }
+
+    .wids-lightbox.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .wids-lightbox-img {
+      max-width: 95vw;
+      max-height: 95vh;
+      object-fit: contain;
+      transform: scale(0.9);
+      transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      border-radius: 4px;
+      box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+    }
+
+    .wids-lightbox.active .wids-lightbox-img {
+      transform: scale(1);
+    }
+
+    .wids-lightbox-close {
+      position: absolute;
+      top: 1.5rem;
+      right: 1.5rem;
+      width: 40px;
+      height: 40px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid var(--wids-gold);
+      border-radius: 50%;
+      color: var(--wids-gold);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      z-index: 1001;
+    }
+
+    .wids-lightbox-close:hover {
+      background: var(--wids-gold);
+      color: var(--wids-base);
+    }
+
+    /* Add cursor zoom-in to carousel images */
+    .wids-carousel-slide img {
+      cursor: zoom-in;
     }
   </style>
 </head>
@@ -3487,6 +3551,18 @@
                 <img src="sample-phone-3.jpg" alt="Daily Sublime phone view - Vermeer The Art of Painting"
                   loading="lazy">
               </div>
+            </div>
+
+            <!-- Lightbox Container -->
+            <div class="wids-lightbox" id="widsLightbox" aria-hidden="true">
+              <button class="wids-lightbox-close" aria-label="Close fullscreen view">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+              </button>
+              <img src="" alt="" class="wids-lightbox-img">
             </div>
 
             <!-- Carousel Navigation -->
@@ -3808,6 +3884,52 @@
           }
         }
       }, { passive: true });
+
+      // Lightbox functionality
+      const lightbox = document.getElementById('widsLightbox');
+      const lightboxImg = lightbox.querySelector('.wids-lightbox-img');
+      const lightboxClose = lightbox.querySelector('.wids-lightbox-close');
+
+      // Open lightbox
+      allSlides.forEach(slide => {
+        const img = slide.querySelector('img');
+        if (img) {
+          img.addEventListener('click', () => {
+            lightboxImg.src = img.src;
+            lightboxImg.alt = img.alt;
+            lightbox.classList.add('active');
+            lightbox.setAttribute('aria-hidden', 'false');
+            document.body.style.overflow = 'hidden'; // Prevent background scrolling
+          });
+        }
+      });
+
+      // Close lightbox functions
+      const closeLightbox = () => {
+        lightbox.classList.remove('active');
+        lightbox.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+        setTimeout(() => {
+          lightboxImg.src = ''; // Clear source after transition
+        }, 300);
+      };
+
+      lightboxClose.addEventListener('click', (e) => {
+        e.stopPropagation();
+        closeLightbox();
+      });
+
+      lightbox.addEventListener('click', (e) => {
+        if (e.target === lightbox || e.target === lightboxImg) {
+          closeLightbox();
+        }
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && lightbox.classList.contains('active')) {
+          closeLightbox();
+        }
+      });
 
       // Micro-physics tilt effect (desktop only, respects reduced motion)
       if (!prefersReducedMotion && !isTouchDevice && preview) {
