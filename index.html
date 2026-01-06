@@ -2916,6 +2916,7 @@
       position: relative;
       overflow: hidden;
       border-radius: 12px 12px 0 0;
+      background: var(--wids-base);
     }
 
     .wids-carousel-track {
@@ -2927,16 +2928,36 @@
       min-width: 100%;
       opacity: 0;
       transition: opacity 0.5s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--wids-base);
     }
 
     .wids-carousel-slide.active {
       opacity: 1;
     }
 
-    .wids-carousel-slide img {
+    /* Desktop screenshots - full width */
+    .wids-carousel-slide.desktop-slide img {
       width: 100%;
       height: auto;
       display: block;
+    }
+
+    /* Phone screenshots - constrained height with centered display */
+    .wids-carousel-slide.phone-slide {
+      padding: 1rem;
+    }
+
+    .wids-carousel-slide.phone-slide img {
+      max-height: 400px;
+      width: auto;
+      max-width: 100%;
+      display: block;
+      margin: 0 auto;
+      border-radius: 20px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1);
     }
 
     .wids-carousel-nav {
@@ -3016,6 +3037,55 @@
       outline-offset: 2px;
     }
 
+    /* View type tabs */
+    .wids-view-tabs {
+      display: flex;
+      justify-content: center;
+      gap: 0;
+      background: var(--wids-surface);
+      border-bottom: 1px solid rgba(201, 162, 39, 0.1);
+    }
+
+    .wids-view-tab {
+      flex: 1;
+      padding: 0.75rem 1rem;
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--wids-text-muted);
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .wids-view-tab::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 2px;
+      background: var(--wids-gold);
+      transition: width 0.3s ease;
+    }
+
+    .wids-view-tab.active {
+      color: var(--wids-gold);
+    }
+
+    .wids-view-tab.active::after {
+      width: 60%;
+    }
+
+    .wids-view-tab:hover:not(.active) {
+      color: var(--wids-text-secondary);
+    }
+
     .wids-sample-info {
       display: flex;
       justify-content: space-between;
@@ -3038,6 +3108,11 @@
       font-family: 'Inter', system-ui, sans-serif;
       font-size: 0.75rem;
       color: var(--wids-text-muted);
+    }
+
+    /* Maximum size for preview wrapper */
+    .wids-preview-wrapper {
+      max-width: 480px;
     }
 
     /* ===== RESPONSIVE ===== */
@@ -3372,29 +3447,45 @@
       <!-- Right Column: Sample Screenshots Carousel -->
       <div class="wids-preview-wrapper">
         <div class="wids-preview" id="widsPreview" role="region" aria-label="Sample email editions">
+          <!-- View Type Tabs -->
+          <div class="wids-view-tabs" role="tablist" aria-label="View type">
+            <button class="wids-view-tab active" type="button" role="tab" aria-selected="true"
+              data-view="desktop">Desktop</button>
+            <button class="wids-view-tab" type="button" role="tab" aria-selected="false"
+              data-view="phone">Phone</button>
+          </div>
+
           <!-- Sample Image Carousel -->
           <div class="wids-carousel" id="widsCarousel">
             <div class="wids-carousel-track" id="widsCarouselTrack">
-              <div class="wids-carousel-slide active">
+              <!-- Desktop screenshots -->
+              <div class="wids-carousel-slide desktop-slide active" data-type="desktop">
                 <img src="sample-vermeer-1.png"
                   alt="Daily Sublime: The Measured Theater of Light - Johannes Vermeer edition" loading="lazy">
               </div>
-              <div class="wids-carousel-slide">
+              <div class="wids-carousel-slide desktop-slide" data-type="desktop">
                 <img src="sample-vermeer-2.png"
                   alt="Daily Sublime: Girl with a Pearl Earring - guided observation content" loading="lazy">
               </div>
-
-              <div class="wids-carousel-slide">
+              <div class="wids-carousel-slide desktop-slide" data-type="desktop">
                 <img src="sample-vangogh-1.png" alt="Daily Sublime: Thick Light Restless Air - Vincent van Gogh edition"
                   loading="lazy">
               </div>
-              <div class="wids-carousel-slide">
+              <div class="wids-carousel-slide desktop-slide" data-type="desktop">
                 <img src="sample-vangogh-2.png"
                   alt="Daily Sublime: Mini Gallery featuring Cafe Terrace at Night and Irises" loading="lazy">
               </div>
-              <div class="wids-carousel-slide">
-                <img src="sample-mobile.jpg"
-                  alt="Daily Sublime mobile view - The Bedroom by Van Gogh with style spotlight" loading="lazy">
+              <!-- Phone screenshots -->
+              <div class="wids-carousel-slide phone-slide" data-type="phone">
+                <img src="sample-phone-1.jpg" alt="Daily Sublime phone view - Vermeer Woman Holding a Balance"
+                  loading="lazy">
+              </div>
+              <div class="wids-carousel-slide phone-slide" data-type="phone">
+                <img src="sample-phone-2.jpg" alt="Daily Sublime phone view - Van Gogh The Bedroom" loading="lazy">
+              </div>
+              <div class="wids-carousel-slide phone-slide" data-type="phone">
+                <img src="sample-phone-3.jpg" alt="Daily Sublime phone view - Vermeer The Art of Painting"
+                  loading="lazy">
               </div>
             </div>
 
@@ -3413,24 +3504,15 @@
             </button>
 
             <!-- Carousel Dots -->
-            <div class="wids-carousel-dots" role="tablist" aria-label="Sample navigation">
-              <button class="wids-carousel-dot active" type="button" role="tab" aria-selected="true"
-                aria-label="Sample 1: Vermeer"></button>
-              <button class="wids-carousel-dot" type="button" role="tab" aria-selected="false"
-                aria-label="Sample 2: Vermeer detail"></button>
-              <button class="wids-carousel-dot" type="button" role="tab" aria-selected="false"
-                aria-label="Sample 3: Van Gogh"></button>
-              <button class="wids-carousel-dot" type="button" role="tab" aria-selected="false"
-                aria-label="Sample 4: Van Gogh gallery"></button>
-              <button class="wids-carousel-dot" type="button" role="tab" aria-selected="false"
-                aria-label="Sample 5: Mobile view"></button>
+            <div class="wids-carousel-dots" id="widsCarouselDots" role="tablist" aria-label="Sample navigation">
+              <!-- Dots will be dynamically generated based on current view -->
             </div>
           </div>
 
           <!-- Sample Info -->
           <div class="wids-sample-info">
             <span class="wids-sample-label">Real email samples</span>
-            <span class="wids-sample-count" id="widsSampleCount">1 of 5</span>
+            <span class="wids-sample-count" id="widsSampleCount">1 of 4</span>
           </div>
         </div>
 
@@ -3581,41 +3663,74 @@
     }
 
     // =====================================================
-    // What Is Daily Sublime - Sample Carousel
+    // What Is Daily Sublime - Sample Carousel with Tabs
     // =====================================================
     (function () {
       const carousel = document.getElementById('widsCarousel');
       const track = document.getElementById('widsCarouselTrack');
-      const slides = document.querySelectorAll('.wids-carousel-slide');
-      const dots = document.querySelectorAll('.wids-carousel-dot');
+      const allSlides = document.querySelectorAll('.wids-carousel-slide');
+      const dotsContainer = document.getElementById('widsCarouselDots');
       const prevBtn = document.querySelector('.wids-carousel-prev');
       const nextBtn = document.querySelector('.wids-carousel-next');
       const countDisplay = document.getElementById('widsSampleCount');
       const preview = document.getElementById('widsPreview');
+      const viewTabs = document.querySelectorAll('.wids-view-tab');
 
-      if (!carousel || !slides.length) return;
+      if (!carousel || !allSlides.length) return;
 
+      let currentView = 'desktop';
       let currentIndex = 0;
-      const totalSlides = slides.length;
+      let visibleSlides = [];
 
       // Check for reduced motion preference
       const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 
+      function getVisibleSlides() {
+        return Array.from(allSlides).filter(slide => slide.dataset.type === currentView);
+      }
+
+      function generateDots() {
+        dotsContainer.innerHTML = '';
+        visibleSlides.forEach((slide, i) => {
+          const dot = document.createElement('button');
+          dot.className = 'wids-carousel-dot' + (i === 0 ? ' active' : '');
+          dot.type = 'button';
+          dot.role = 'tab';
+          dot.setAttribute('aria-selected', i === 0);
+          dot.setAttribute('aria-label', `Sample ${i + 1}`);
+          dot.addEventListener('click', () => goToSlide(i));
+          dotsContainer.appendChild(dot);
+        });
+      }
+
+      function updateSlideVisibility() {
+        allSlides.forEach(slide => {
+          if (slide.dataset.type === currentView) {
+            slide.style.display = 'flex';
+          } else {
+            slide.style.display = 'none';
+          }
+        });
+      }
+
       function goToSlide(index) {
-        if (index < 0) index = totalSlides - 1;
-        if (index >= totalSlides) index = 0;
+        if (visibleSlides.length === 0) return;
+
+        if (index < 0) index = visibleSlides.length - 1;
+        if (index >= visibleSlides.length) index = 0;
 
         currentIndex = index;
 
-        // Update track position
-        track.style.transform = `translateX(-${currentIndex * 100}%)`;
+        // Calculate transform based on visible slides position
+        const slideIndex = Array.from(allSlides).indexOf(visibleSlides[currentIndex]);
+        track.style.transform = `translateX(-${slideIndex * 100}%)`;
 
         // Update active states
-        slides.forEach((slide, i) => {
-          slide.classList.toggle('active', i === currentIndex);
-        });
+        allSlides.forEach(slide => slide.classList.remove('active'));
+        visibleSlides[currentIndex].classList.add('active');
 
+        const dots = dotsContainer.querySelectorAll('.wids-carousel-dot');
         dots.forEach((dot, i) => {
           dot.classList.toggle('active', i === currentIndex);
           dot.setAttribute('aria-selected', i === currentIndex);
@@ -3623,9 +3738,38 @@
 
         // Update count
         if (countDisplay) {
-          countDisplay.textContent = `${currentIndex + 1} of ${totalSlides}`;
+          countDisplay.textContent = `${currentIndex + 1} of ${visibleSlides.length}`;
         }
       }
+
+      function switchView(view) {
+        currentView = view;
+        currentIndex = 0;
+
+        // Update tabs
+        viewTabs.forEach(tab => {
+          const isActive = tab.dataset.view === view;
+          tab.classList.toggle('active', isActive);
+          tab.setAttribute('aria-selected', isActive);
+        });
+
+        // Update visible slides
+        visibleSlides = getVisibleSlides();
+        updateSlideVisibility();
+        generateDots();
+        goToSlide(0);
+      }
+
+      // Initialize
+      visibleSlides = getVisibleSlides();
+      updateSlideVisibility();
+      generateDots();
+      goToSlide(0);
+
+      // Tab switching
+      viewTabs.forEach(tab => {
+        tab.addEventListener('click', () => switchView(tab.dataset.view));
+      });
 
       // Navigation buttons
       if (prevBtn) {
@@ -3635,11 +3779,6 @@
       if (nextBtn) {
         nextBtn.addEventListener('click', () => goToSlide(currentIndex + 1));
       }
-
-      // Dot navigation
-      dots.forEach((dot, i) => {
-        dot.addEventListener('click', () => goToSlide(i));
-      });
 
       // Keyboard navigation
       carousel.addEventListener('keydown', (e) => {
@@ -3671,19 +3810,6 @@
         }
       }, { passive: true });
 
-      // Auto-advance (optional, respects reduced motion)
-      if (!prefersReducedMotion) {
-        let autoAdvance = setInterval(() => goToSlide(currentIndex + 1), 5000);
-
-        // Pause on hover/focus
-        carousel.addEventListener('mouseenter', () => clearInterval(autoAdvance));
-        carousel.addEventListener('focusin', () => clearInterval(autoAdvance));
-
-        carousel.addEventListener('mouseleave', () => {
-          autoAdvance = setInterval(() => goToSlide(currentIndex + 1), 5000);
-        });
-      }
-
       // Micro-physics tilt effect (desktop only, respects reduced motion)
       if (!prefersReducedMotion && !isTouchDevice && preview) {
         let currentX = 0;
@@ -3696,8 +3822,8 @@
           currentX += (targetX - currentX) * 0.1;
           currentY += (targetY - currentY) * 0.1;
 
-          const rotateX = currentY * 4;
-          const rotateY = currentX * -4;
+          const rotateX = currentY * 3;
+          const rotateY = currentX * -3;
 
           preview.style.transform = `perspective(1200px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
 
