@@ -1402,6 +1402,32 @@
       border-color: var(--step-accent);
     }
 
+    /* Clickable card link style */
+    .hiw-card-link {
+      position: relative;
+    }
+
+    .hiw-card-link::after {
+      content: 'Explore →';
+      position: absolute;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent-gold);
+      opacity: 0;
+      transform: translateX(-10px);
+      transition: all 0.3s var(--ease-smooth);
+    }
+
+    .hiw-card:hover .hiw-card-link::after {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
     /* Responsive */
     @media (max-width: 968px) {
       .hiw-steps-wrapper {
@@ -3412,7 +3438,8 @@
 
         <!-- Step 01 -->
         <div class="hiw-card step-01 reveal-stagger">
-          <div class="hiw-card-inner">
+          <a href="you-see-what-you-know.html" class="hiw-card-inner hiw-card-link"
+            style="text-decoration: none; color: inherit; display: block; cursor: pointer;">
             <div class="hiw-number">01</div>
             <div class="hiw-painting">
               <img
@@ -3425,7 +3452,7 @@
               <p class="hiw-text">Painters are your teachers. They spent lifetimes mastering observation and perception.
                 Study who they were and how they saw. Their visual logic becomes yours.</p>
             </div>
-          </div>
+          </a>
         </div>
 
         <!-- Step 02 -->
