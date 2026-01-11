@@ -6,56 +6,249 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>You Internalize What You Appreciate - Daily Sublime</title>
     <meta name="description"
-        content="You internalize what you appreciate. Streets reveal composition. Faces show structure. The world gains dimension.">
-    <!-- Fonts -->
+        content="Learn to internalize beauty through the power of observation. Discover how to truly see art with zoom-in details and guided looking.">
+    <!-- Enhanced SEO / Social -->
+    <meta property="og:title" content="You Internalize What You Appreciate - Daily Sublime">
+    <meta property="og:description"
+        content="Streets reveal composition. Faces show structure. The world gains dimension.">
+    <meta property="og:image" content="internalize-jewish-bride.jpg">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <!-- Fonts for Visual Hierarchy -->
     <link
         href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500&family=Inter:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
     <style>
+        /* =====================================================
+        DAILY SUBLIME - YOU INTERNALIZE WHAT YOU APPRECIATE
+        ===================================================== */
+
         :root {
+            /* Core Color Palette - Refined Luxury */
             --bg-primary: #08080a;
             --bg-surface: #0f1013;
+            --bg-card: #161820;
+            --bg-elevated: #1c1e26;
+
+            /* Text Colors with Hierarchy */
             --text-main: #f5ece0;
             --text-secondary: #c8bfb0;
+            --text-muted: #8a8279;
+
+            /* Accent Colors - Amber Theme for Internalize Beauty */
             --accent-gold: #d4af37;
+            --accent-gold-light: #e5c866;
+            --accent-gold-dark: #a68a29;
             --accent-amber: #f59e0b;
+            --accent-amber-light: #fbbf24;
             --accent-purple: #9d7cff;
+            --accent-rose: #ff6b8a;
+            --accent-emerald: #10b981;
+
+            /* Gradients */
+            --gradient-gold: linear-gradient(135deg, #d4af37 0%, #f5d270 50%, #d4af37 100%);
+            --gradient-amber: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            --gradient-dark: linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-surface) 100%);
+
+            /* Shadows & Glows */
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+            --shadow-md: 0 8px 32px rgba(0, 0, 0, 0.4);
+            --shadow-lg: 0 24px 64px rgba(0, 0, 0, 0.5);
+            --shadow-xl: 0 40px 80px rgba(0, 0, 0, 0.6);
+            --glow-gold: 0 0 40px rgba(212, 175, 55, 0.4);
+            --glow-amber: 0 0 40px rgba(245, 158, 11, 0.5);
+            --glow-purple: 0 0 40px rgba(157, 124, 255, 0.4);
+
+            /* Typography Scale - Fluid */
+            --fs-hero: clamp(3rem, 8vw, 7rem);
+            --fs-xl: clamp(2.5rem, 5vw, 4.5rem);
+            --fs-lg: clamp(1.75rem, 3.5vw, 3rem);
+            --fs-md: clamp(1.25rem, 2.5vw, 2rem);
+            --fs-base: clamp(1rem, 1.5vw, 1.25rem);
+            --fs-sm: clamp(0.875rem, 1.2vw, 1rem);
+            --fs-xs: clamp(0.75rem, 1vw, 0.875rem);
+
+            /* Spacing - 8pt Grid */
+            --space-xs: 0.5rem;
+            --space-sm: 1rem;
+            --space-md: 1.5rem;
             --space-lg: 2rem;
             --space-xl: 3rem;
+            --space-2xl: 4rem;
+            --space-3xl: 6rem;
+            --space-4xl: 8rem;
+
+            /* Border Radius */
+            --radius-sm: 0.5rem;
+            --radius-md: 1rem;
+            --radius-lg: 1.5rem;
+            --radius-xl: 2rem;
             --radius-full: 100px;
+
+            /* Transitions */
+            --ease-out: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
             --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+
+            /* Borders */
+            --border-subtle: 1px solid rgba(245, 158, 11, 0.15);
+            --border-amber: 1px solid rgba(245, 158, 11, 0.3);
+            --border-strong: 2px solid var(--accent-amber);
         }
 
-        * {
+        /* Reset & Base */
+        *,
+        *::before,
+        *::after {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 5rem;
+            font-size: 16px;
+        }
+
         body {
-            font-family: 'Inter', -apple-system, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             background: var(--bg-primary);
             color: var(--text-main);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: var(--space-lg);
+            line-height: 1.7;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
+        /* Typography */
         h1,
-        h2 {
+        h2,
+        h3,
+        h4 {
             font-family: 'Cormorant Garamond', Georgia, serif;
             font-weight: 400;
+            line-height: 1.15;
+            letter-spacing: -0.02em;
         }
 
-        .coming-soon {
-            max-width: 600px;
+        /* Selection */
+        ::selection {
+            background: var(--accent-amber);
+            color: var(--bg-primary);
         }
 
-        .label {
+        /* =====================================================
+        HEADER
+        ===================================================== */
+        .site-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: var(--space-sm) var(--space-lg);
+            background: rgba(8, 8, 10, 0.95);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border-bottom: var(--border-subtle);
+            transition: all 0.5s var(--ease-smooth);
+        }
+
+        .header-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .site-logo {
+            height: 3.5rem;
+            width: 3.5rem;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--accent-gold);
+            transition: all 0.6s var(--ease-bounce);
+            cursor: pointer;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .site-logo:hover {
+            transform: scale(1.1) rotate(10deg);
+            box-shadow: var(--glow-gold);
+        }
+
+        .back-button {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--accent-amber);
+            text-decoration: none;
+            font-family: 'Inter', sans-serif;
+            font-size: var(--fs-sm);
+            font-weight: 500;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            padding: 0.75rem 1.5rem;
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            border-radius: var(--radius-full);
+            transition: all 0.3s var(--ease-smooth);
+        }
+
+        .back-button:hover {
+            background: rgba(245, 158, 11, 0.2);
+            box-shadow: var(--glow-amber);
+            transform: translateX(-4px);
+        }
+
+        .back-button svg {
+            width: 18px;
+            height: 18px;
+            transition: transform 0.3s var(--ease-smooth);
+        }
+
+        .back-button:hover svg {
+            transform: translateX(-4px);
+        }
+
+        /* =====================================================
+        HERO SECTION
+        ===================================================== */
+        .hero-section {
+            position: relative;
+            min-height: 60vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: calc(5rem + var(--space-4xl)) var(--space-lg) var(--space-3xl);
+            text-align: center;
+            overflow: hidden;
+            background: linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-surface) 50%, var(--bg-primary) 100%);
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background:
+                radial-gradient(ellipse 80% 50% at 50% 0%, rgba(245, 158, 11, 0.1) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 40% at 20% 80%, rgba(212, 175, 55, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 900px;
+        }
+
+        .hero-label {
             display: inline-flex;
             align-items: center;
             gap: 0.75rem;
@@ -64,40 +257,48 @@
             background: rgba(245, 158, 11, 0.1);
             border: 1px solid rgba(245, 158, 11, 0.3);
             border-radius: var(--radius-full);
-            font-size: 0.75rem;
+        }
+
+        .hero-label-icon {
+            font-size: 1rem;
+        }
+
+        .hero-label-text {
+            font-family: 'Inter', sans-serif;
+            font-size: var(--fs-xs);
             font-weight: 600;
             letter-spacing: 0.15em;
             text-transform: uppercase;
             color: var(--accent-amber);
         }
 
-        .title {
-            font-size: clamp(2.5rem, 5vw, 4rem);
-            margin-bottom: 1rem;
-            background: linear-gradient(135deg, var(--text-main) 0%, var(--accent-amber) 50%, var(--text-main) 100%);
+        .hero-title {
+            font-size: var(--fs-xl);
+            font-weight: 500;
+            color: var(--text-main);
+            margin-bottom: var(--space-md);
+            background: linear-gradient(135deg, var(--text-main) 0%, var(--accent-amber-light) 50%, var(--text-main) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
-        .subtitle {
+        .hero-subtitle {
             font-family: 'Cormorant Garamond', Georgia, serif;
-            font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+            font-size: var(--fs-md);
             font-style: italic;
             color: var(--text-secondary);
-            margin-bottom: var(--space-xl);
+            max-width: 650px;
+            margin: 0 auto;
         }
 
-        .status {
-            padding: 1rem 2rem;
-            background: rgba(245, 158, 11, 0.1);
-            border: 1px solid rgba(245, 158, 11, 0.2);
-            border-radius: 1rem;
-            margin-bottom: var(--space-xl);
-        }
-
-        .status-text {
-            font-size: 0.875rem;
-            color: var(--accent-amber);
+        /* Navigation Buttons */
+        .nav-buttons {
+            display: flex;
+            justify-content: center;
+            gap: var(--space-md);
+            margin-top: var(--space-xl);
+            flex-wrap: wrap;
         }
 
         .nav-button {
@@ -105,55 +306,709 @@
             align-items: center;
             gap: 0.5rem;
             padding: 1rem 2rem;
-            font-size: 0.875rem;
+            font-family: 'Inter', sans-serif;
+            font-size: var(--fs-sm);
             font-weight: 600;
             letter-spacing: 0.05em;
             text-transform: uppercase;
             text-decoration: none;
             border-radius: var(--radius-full);
             transition: all 0.4s var(--ease-smooth);
+        }
+
+        .nav-button-prev {
             color: var(--accent-purple);
             background: rgba(157, 124, 255, 0.1);
             border: 1px solid rgba(157, 124, 255, 0.3);
         }
 
-        .nav-button:hover {
+        .nav-button-prev:hover {
             background: rgba(157, 124, 255, 0.2);
-            box-shadow: 0 0 40px rgba(157, 124, 255, 0.4);
+            box-shadow: var(--glow-purple);
             transform: translateX(-4px);
         }
 
         .nav-button svg {
             width: 18px;
             height: 18px;
+            transition: transform 0.3s var(--ease-smooth);
+        }
+
+        .nav-button-prev:hover svg {
+            transform: translateX(-4px);
+        }
+
+        /* =====================================================
+        CONTENT SECTIONS
+        ===================================================== */
+        .content-section {
+            padding: var(--space-3xl) var(--space-lg);
+            background: var(--bg-primary);
+        }
+
+        .content-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .section-intro {
+            text-align: center;
+            margin-bottom: var(--space-2xl);
+        }
+
+        .section-question {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: var(--fs-lg);
+            font-style: italic;
+            color: var(--accent-amber);
+            margin-bottom: var(--space-lg);
+        }
+
+        .section-text {
+            font-size: var(--fs-base);
+            color: var(--text-secondary);
+            line-height: 1.9;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* Artwork Display */
+        .artwork-container {
+            position: relative;
+            margin: var(--space-2xl) 0;
+        }
+
+        .artwork-frame {
+            position: relative;
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            border: var(--border-amber);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .artwork-frame img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .artwork-caption {
+            padding: var(--space-md) var(--space-lg);
+            background: var(--bg-elevated);
+            border-top: var(--border-subtle);
+        }
+
+        .artwork-title {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: var(--fs-md);
+            color: var(--text-main);
+            margin-bottom: var(--space-xs);
+        }
+
+        .artwork-artist {
+            font-family: 'Inter', sans-serif;
+            font-size: var(--fs-sm);
+            color: var(--accent-amber);
+            font-weight: 500;
+        }
+
+        /* Instruction Block */
+        .instruction-block {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            padding: var(--space-2xl);
+            margin: var(--space-2xl) 0;
+            border: var(--border-amber);
+            text-align: center;
+        }
+
+        .instruction-title {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: var(--fs-lg);
+            color: var(--text-main);
+            margin-bottom: var(--space-md);
+        }
+
+        .instruction-text {
+            font-size: var(--fs-base);
+            color: var(--text-secondary);
+            line-height: 1.8;
+            max-width: 600px;
+            margin: 0 auto var(--space-lg);
+        }
+
+        .instruction-image {
+            max-width: 100%;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-md);
+            margin-top: var(--space-md);
+        }
+
+        /* Zoom Showcase */
+        .zoom-showcase {
+            background: linear-gradient(180deg, var(--bg-surface) 0%, var(--bg-primary) 100%);
+            padding: var(--space-3xl) var(--space-lg);
+        }
+
+        .zoom-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .zoom-intro {
+            text-align: center;
+            margin-bottom: var(--space-2xl);
+        }
+
+        .zoom-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            border-radius: var(--radius-full);
+            margin-bottom: var(--space-md);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--accent-amber);
+        }
+
+        .zoom-title {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: var(--fs-lg);
+            color: var(--text-main);
+            margin-bottom: var(--space-md);
+        }
+
+        .zoom-description {
+            font-size: var(--fs-base);
+            color: var(--text-secondary);
+            max-width: 650px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        /* Comparison Grid */
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-lg);
+            margin: var(--space-2xl) 0;
+        }
+
+        .comparison-item {
+            position: relative;
+        }
+
+        .comparison-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.4rem 0.8rem;
+            background: rgba(8, 8, 10, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            border-radius: var(--radius-full);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.65rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--accent-amber);
+            margin-bottom: var(--space-sm);
+        }
+
+        .comparison-image {
+            width: 100%;
+            border-radius: var(--radius-md);
+            border: var(--border-subtle);
+            box-shadow: var(--shadow-md);
+            transition: transform 0.4s var(--ease-smooth), box-shadow 0.4s var(--ease-smooth);
+            cursor: zoom-in;
+        }
+
+        .comparison-image:hover {
+            transform: scale(1.02);
+            box-shadow: var(--shadow-lg), var(--glow-amber);
+        }
+
+        /* Feature Highlight */
+        .feature-highlight {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            padding: var(--space-xl);
+            margin: var(--space-2xl) 0;
+            border: var(--border-amber);
+            text-align: center;
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: var(--space-md);
+        }
+
+        .feature-title {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: var(--fs-md);
+            color: var(--accent-amber);
+            margin-bottom: var(--space-sm);
+        }
+
+        .feature-text {
+            font-size: var(--fs-sm);
+            color: var(--text-secondary);
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            padding: var(--space-3xl) var(--space-lg);
+            background: linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-surface) 100%);
+            text-align: center;
+        }
+
+        .cta-container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .cta-title {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: var(--fs-lg);
+            color: var(--text-main);
+            margin-bottom: var(--space-md);
+        }
+
+        .cta-text {
+            font-size: var(--fs-base);
+            color: var(--text-secondary);
+            margin-bottom: var(--space-xl);
+        }
+
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1.25rem 2.5rem;
+            font-family: 'Inter', sans-serif;
+            font-size: var(--fs-sm);
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            text-decoration: none;
+            color: var(--bg-primary);
+            background: var(--gradient-amber);
+            border-radius: var(--radius-full);
+            box-shadow: var(--shadow-md), var(--glow-amber);
+            transition: all 0.4s var(--ease-smooth);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg), 0 0 60px rgba(245, 158, 11, 0.6);
+        }
+
+        .cta-button svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* =====================================================
+        FOOTER
+        ===================================================== */
+        .site-footer {
+            padding: var(--space-3xl) var(--space-lg);
+            background: var(--bg-surface);
+            border-top: var(--border-subtle);
+            text-align: center;
+        }
+
+        .footer-logo {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--accent-gold);
+            margin-bottom: var(--space-md);
+        }
+
+        .footer-text {
+            font-size: var(--fs-sm);
+            color: var(--text-muted);
+            margin-bottom: var(--space-xs);
+        }
+
+        .footer-tagline {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: var(--fs-base);
+            font-style: italic;
+            color: var(--accent-gold);
+        }
+
+        /* Lightbox */
+        .lightbox {
+            position: fixed;
+            inset: 0;
+            background: rgba(8, 8, 10, 0.98);
+            backdrop-filter: blur(20px);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s var(--ease-smooth);
+            cursor: zoom-out;
+        }
+
+        .lightbox.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .lightbox-content {
+            position: relative;
+            max-width: 95vw;
+            max-height: 95vh;
+            transform: scale(0.9);
+            transition: transform 0.4s var(--ease-smooth);
+        }
+
+        .lightbox.active .lightbox-content {
+            transform: scale(1);
+        }
+
+        .lightbox-image {
+            max-width: 100%;
+            max-height: 95vh;
+            object-fit: contain;
+            border-radius: var(--radius-sm);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: var(--space-lg);
+            right: var(--space-lg);
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            border-radius: 50%;
+            color: var(--accent-amber);
+            cursor: pointer;
+            transition: all 0.3s var(--ease-smooth);
+            z-index: 2001;
+        }
+
+        .lightbox-close:hover {
+            background: var(--accent-amber);
+            color: var(--bg-primary);
+            transform: rotate(90deg);
+        }
+
+        .lightbox-close svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        /* =====================================================
+        RESPONSIVE
+        ===================================================== */
+        @media (max-width: 768px) {
+            .hero-section {
+                min-height: 50vh;
+                padding: calc(5rem + var(--space-2xl)) var(--space-sm) var(--space-2xl);
+            }
+
+            .content-section,
+            .zoom-showcase,
+            .cta-section {
+                padding: var(--space-2xl) var(--space-sm);
+            }
+
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header-container {
+                padding: 0 var(--space-sm);
+            }
+
+            .back-button span {
+                display: none;
+            }
+
+            .back-button {
+                padding: 0.75rem;
+            }
+
+            .nav-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .nav-button {
+                width: 100%;
+                max-width: 280px;
+                justify-content: center;
+            }
+
+            .instruction-block {
+                padding: var(--space-lg);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-title {
+                font-size: clamp(2rem, 10vw, 3rem);
+            }
+
+            .hero-subtitle,
+            .section-question {
+                font-size: var(--fs-base);
+            }
+        }
+
+        /* Reduced Motion */
+        @media (prefers-reduced-motion: reduce) {
+
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
         }
     </style>
 </head>
 
 <body>
-    <div class="coming-soon">
-        <div class="label">
-            <span>🌟</span>
-            <span>Internalize Beauty</span>
+    <!-- Header -->
+    <header class="site-header">
+        <div class="header-container">
+            <a href="index.html" class="back-button">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <path d="M19 12H5M12 19l-7-7 7-7" />
+                </svg>
+                <span>Back to Home</span>
+            </a>
+            <a href="index.html">
+                <img src="wmremove-transformed.jpg" alt="Daily Sublime Logo" class="site-logo">
+            </a>
         </div>
-        <h1 class="title">You Internalize What You Appreciate</h1>
-        <p class="subtitle">
-            Streets reveal composition. Faces show structure.
-            Ordinary moments carry the same beauty principles. The world gains dimension.
-        </p>
+    </header>
 
-        <div class="status">
-            <p class="status-text">✨ This page is coming soon...</p>
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="hero-content">
+            <div class="hero-label">
+                <span class="hero-label-icon">🌟</span>
+                <span class="hero-label-text">Internalize Beauty</span>
+            </div>
+            <h1 class="hero-title">You Internalize What You Appreciate</h1>
+            <p class="hero-subtitle">
+                Streets reveal composition. Faces show structure.
+                Ordinary moments carry the same beauty principles. The world gains dimension.
+            </p>
+
+            <!-- Navigation Buttons -->
+            <div class="nav-buttons">
+                <a href="you-appreciate-what-you-see.html" class="nav-button nav-button-prev">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M19 12H5M12 19l-7-7 7-7" />
+                    </svg>
+                    <span>Recognize Patterns</span>
+                </a>
+            </div>
         </div>
+    </section>
 
-        <a href="you-appreciate-what-you-see.html" class="nav-button">
+    <!-- Opening Question Section -->
+    <section class="content-section">
+        <div class="content-container">
+            <div class="section-intro">
+                <p class="section-question">When you look at a window, what do you see? Where do you look?</p>
+                <p class="section-text">
+                    Most people see a window. But a trained eye sees light, shadow, reflection, and story.
+                    This is what we teach—not just where to look, but how to truly see.
+                </p>
+            </div>
+
+            <!-- The Jewish Bride Artwork -->
+            <div class="artwork-container">
+                <div class="artwork-frame">
+                    <img src="internalize-jewish-bride.jpg" alt="The Jewish Bride by Rembrandt" class="zoomable"
+                        data-full="internalize-jewish-bride.jpg">
+                    <div class="artwork-caption">
+                        <h3 class="artwork-title">The Jewish Bride</h3>
+                        <p class="artwork-artist">Rembrandt van Rijn · c. 1665</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Instruction Block -->
+    <section class="content-section" style="padding-top: 0;">
+        <div class="content-container">
+            <div class="instruction-block">
+                <h2 class="instruction-title">We Don't Just Tell You Where to Look</h2>
+                <p class="instruction-text">
+                    We teach you how to <strong>internalize</strong> the power of observation.
+                    Each edition guides your eye to specific details—teaching you to see what the masters saw.
+                </p>
+                <img src="internalize-instruction.png" alt="Instruction: Look at the hands" class="instruction-image">
+            </div>
+        </div>
+    </section>
+
+    <!-- Zoom Showcase Section -->
+    <section class="zoom-showcase">
+        <div class="zoom-container">
+            <div class="zoom-intro">
+                <div class="zoom-badge">
+                    <span>🔍</span>
+                    <span>High-Resolution Artwork</span>
+                </div>
+                <h2 class="zoom-title">Zoom to Notice the Details</h2>
+                <p class="zoom-description">
+                    Our high-resolution images let you zoom in to discover the brushstrokes, textures, and subtle
+                    details
+                    that the masters intended—without losing quality. Click any image to explore.
+                </p>
+            </div>
+
+            <!-- Comparison: Normal vs Zoom -->
+            <div class="comparison-grid">
+                <div class="comparison-item">
+                    <span class="comparison-label">📷 Normal View</span>
+                    <img src="internalize-jewish-bride.jpg" alt="The Jewish Bride - Normal View"
+                        class="comparison-image zoomable" data-full="internalize-jewish-bride.jpg">
+                </div>
+                <div class="comparison-item">
+                    <span class="comparison-label">🔍 Zoomed Detail</span>
+                    <img src="internalize-jewish-bride-zoom.jpg" alt="The Jewish Bride - Zoomed on Hands"
+                        class="comparison-image zoomable" data-full="internalize-jewish-bride-zoom.jpg">
+                </div>
+            </div>
+
+            <div class="feature-highlight">
+                <div class="feature-icon">✨</div>
+                <h3 class="feature-title">Notice What Rembrandt Saw</h3>
+                <p class="feature-text">
+                    In The Jewish Bride, the man's hand rests on the woman's chest, and both hands are the brightest
+                    points in the frame.
+                    The faces are secondary. Rembrandt understood that touch, not expression, reveals intimacy.
+                </p>
+            </div>
+
+            <!-- More Examples -->
+            <div class="comparison-grid">
+                <div class="comparison-item">
+                    <span class="comparison-label">📷 Full Painting</span>
+                    <img src="internalize-picasso-1.jpg" alt="Three Musicians - Pablo Picasso"
+                        class="comparison-image zoomable" data-full="internalize-picasso-1.jpg">
+                </div>
+                <div class="comparison-item">
+                    <span class="comparison-label">🔍 With Details</span>
+                    <img src="internalize-picasso-2.jpg" alt="Three Musicians - With Annotations"
+                        class="comparison-image zoomable" data-full="internalize-picasso-2.jpg">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="cta-container">
+            <h2 class="cta-title">Ready to Transform How You See?</h2>
+            <p class="cta-text">
+                Join Daily Sublime and receive daily masterworks with guided observation—training your eye
+                to notice what others miss.
+            </p>
+            <a href="index.html#pricing" class="cta-button">
+                <span>Start Your Journey</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <path d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
+            </a>
+        </div>
+    </section>
+
+    <!-- Lightbox -->
+    <div class="lightbox" id="lightbox">
+        <button class="lightbox-close" aria-label="Close lightbox">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                 stroke-linejoin="round">
-                <path d="M19 12H5M12 19l-7-7 7-7" />
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
             </svg>
-            <span>Back to Recognize Patterns</span>
-        </a>
+        </button>
+        <div class="lightbox-content">
+            <img src="" alt="" class="lightbox-image" id="lightboxImage">
+        </div>
     </div>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <img src="wmremove-transformed.jpg" alt="Daily Sublime" class="footer-logo">
+        <p class="footer-text">© 2026 Daily Sublime. All rights reserved.</p>
+        <p class="footer-tagline">Reclaim your attention. Embrace the sublime.</p>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // Lightbox functionality
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImage = document.getElementById('lightboxImage');
+        const lightboxClose = document.querySelector('.lightbox-close');
+        const zoomableImages = document.querySelectorAll('.zoomable, .comparison-image');
+
+        zoomableImages.forEach(img => {
+            img.addEventListener('click', () => {
+                const imageSrc = img.dataset.full || img.src;
+                const imageAlt = img.alt;
+
+                lightboxImage.src = imageSrc;
+                lightboxImage.alt = imageAlt;
+                lightbox.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            });
+        });
+
+        function closeLightbox() {
+            lightbox.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        lightboxClose.addEventListener('click', (e) => {
+            e.stopPropagation();
+            closeLightbox();
+        });
+
+        lightbox.addEventListener('click', closeLightbox);
+
+        // Escape key to close lightbox
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && lightbox.classList.contains('active')) {
+                closeLightbox();
+            }
+        });
+    </script>
 </body>
 
 </html>
