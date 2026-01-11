@@ -300,6 +300,72 @@
             margin: 0 auto;
         }
 
+        /* Scroll Indicator */
+        .scroll-indicator {
+            position: absolute;
+            bottom: var(--space-xl);
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            opacity: 0;
+            animation: fadeIn 1s 2s forwards, bounce 2s 2s infinite;
+        }
+
+        .scroll-indicator::before {
+            content: '';
+            display: block;
+            width: 24px;
+            height: 40px;
+            border: 2px solid var(--accent-amber);
+            border-radius: 12px;
+            position: relative;
+        }
+
+        .scroll-indicator::after {
+            content: '';
+            position: absolute;
+            width: 4px;
+            height: 8px;
+            background: var(--accent-amber);
+            border-radius: 2px;
+            top: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: scrollDot 2s infinite;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 0.7;
+            }
+        }
+
+        @keyframes bounce {
+
+            0%,
+            100% {
+                transform: translateX(-50%) translateY(0);
+            }
+
+            50% {
+                transform: translateX(-50%) translateY(10px);
+            }
+        }
+
+        @keyframes scrollDot {
+
+            0%,
+            100% {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+
+            50% {
+                opacity: 0.3;
+                transform: translateX(-50%) translateY(12px);
+            }
+        }
+
         /* Navigation Buttons */
         .nav-buttons {
             display: flex;
@@ -915,6 +981,7 @@
                 Ordinary moments carry the same beauty principles. The world gains dimension.
             </p>
         </div>
+        <div class="scroll-indicator" aria-hidden="true"></div>
     </section>
 
     <!-- Combined Instruction Section with Jewish Bride -->
