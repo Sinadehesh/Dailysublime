@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>You Internalize What You Appreciate - Daily Sublime</title>
+    <meta name="description"
+        content="You internalize what you appreciate. Streets reveal composition. Faces show structure. The world gains dimension.">
+    <!-- Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #08080a;
+            --bg-surface: #0f1013;
+            --text-main: #f5ece0;
+            --text-secondary: #c8bfb0;
+            --accent-gold: #d4af37;
+            --accent-amber: #f59e0b;
+            --accent-purple: #9d7cff;
+            --space-lg: 2rem;
+            --space-xl: 3rem;
+            --radius-full: 100px;
+            --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: var(--space-lg);
+        }
+
+        h1,
+        h2 {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-weight: 400;
+        }
+
+        .coming-soon {
+            max-width: 600px;
+        }
+
+        .label {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: var(--space-lg);
+            padding: 0.5rem 1.5rem;
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--accent-amber);
+        }
+
+        .title {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--text-main) 0%, var(--accent-amber) 50%, var(--text-main) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+            font-style: italic;
+            color: var(--text-secondary);
+            margin-bottom: var(--space-xl);
+        }
+
+        .status {
+            padding: 1rem 2rem;
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.2);
+            border-radius: 1rem;
+            margin-bottom: var(--space-xl);
+        }
+
+        .status-text {
+            font-size: 0.875rem;
+            color: var(--accent-amber);
+        }
+
+        .nav-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            text-decoration: none;
+            border-radius: var(--radius-full);
+            transition: all 0.4s var(--ease-smooth);
+            color: var(--accent-purple);
+            background: rgba(157, 124, 255, 0.1);
+            border: 1px solid rgba(157, 124, 255, 0.3);
+        }
+
+        .nav-button:hover {
+            background: rgba(157, 124, 255, 0.2);
+            box-shadow: 0 0 40px rgba(157, 124, 255, 0.4);
+            transform: translateX(-4px);
+        }
+
+        .nav-button svg {
+            width: 18px;
+            height: 18px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="coming-soon">
+        <div class="label">
+            <span>🌟</span>
+            <span>Internalize Beauty</span>
+        </div>
+        <h1 class="title">You Internalize What You Appreciate</h1>
+        <p class="subtitle">
+            Streets reveal composition. Faces show structure.
+            Ordinary moments carry the same beauty principles. The world gains dimension.
+        </p>
+
+        <div class="status">
+            <p class="status-text">✨ This page is coming soon...</p>
+        </div>
+
+        <a href="you-appreciate-what-you-see.html" class="nav-button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <path d="M19 12H5M12 19l-7-7 7-7" />
+            </svg>
+            <span>Back to Recognize Patterns</span>
+        </a>
+    </div>
+</body>
+
+</html>

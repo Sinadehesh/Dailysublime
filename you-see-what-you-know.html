@@ -219,14 +219,25 @@
         ===================================================== */
     .hero-section {
       position: relative;
-      min-height: 50vh;
+      min-height: 70vh;
       display: flex;
       align-items: center;
       justify-content: center;
       padding: calc(5rem + var(--space-4xl)) var(--space-lg) var(--space-4xl);
-      background: linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-surface) 50%, var(--bg-primary) 100%);
       text-align: center;
       overflow: hidden;
+    }
+
+    .hero-background {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+      z-index: 0;
+      filter: brightness(0.4) saturate(0.8);
     }
 
     .hero-section::before {
@@ -237,10 +248,10 @@
       right: 0;
       bottom: 0;
       background:
-        radial-gradient(ellipse 80% 50% at 50% 0%, rgba(212, 175, 55, 0.08) 0%, transparent 60%),
-        radial-gradient(ellipse 60% 40% at 20% 80%, rgba(157, 124, 255, 0.05) 0%, transparent 50%),
-        radial-gradient(ellipse 60% 40% at 80% 80%, rgba(245, 158, 11, 0.05) 0%, transparent 50%);
+        linear-gradient(180deg, rgba(8, 8, 10, 0.7) 0%, rgba(8, 8, 10, 0.4) 40%, rgba(8, 8, 10, 0.85) 100%),
+        radial-gradient(ellipse 80% 50% at 50% 0%, rgba(212, 175, 55, 0.15) 0%, transparent 60%);
       pointer-events: none;
+      z-index: 1;
     }
 
     .hero-content {
@@ -291,6 +302,65 @@
       color: var(--text-secondary);
       max-width: 600px;
       margin: 0 auto;
+    }
+
+    /* Navigation Button */
+    .nav-buttons {
+      display: flex;
+      justify-content: center;
+      gap: var(--space-md);
+      margin-top: var(--space-xl);
+      flex-wrap: wrap;
+    }
+
+    .nav-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 1rem 2rem;
+      font-family: 'Inter', sans-serif;
+      font-size: var(--fs-sm);
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      text-decoration: none;
+      border-radius: var(--radius-full);
+      transition: all 0.4s var(--ease-smooth);
+    }
+
+    .nav-button-next {
+      color: var(--accent-purple);
+      background: rgba(157, 124, 255, 0.1);
+      border: 1px solid rgba(157, 124, 255, 0.3);
+    }
+
+    .nav-button-next:hover {
+      background: rgba(157, 124, 255, 0.2);
+      box-shadow: 0 0 40px rgba(157, 124, 255, 0.4);
+      transform: translateX(4px);
+    }
+
+    .nav-button svg {
+      width: 18px;
+      height: 18px;
+      transition: transform 0.3s var(--ease-smooth);
+    }
+
+    .nav-button-next:hover svg {
+      transform: translateX(4px);
+    }
+
+    @media (max-width: 768px) {
+      .nav-buttons {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .nav-button {
+        width: 100%;
+        max-width: 280px;
+        justify-content: center;
+      }
     }
 
     /* =====================================================
@@ -655,6 +725,9 @@
 
   <!-- Hero Section -->
   <section class="hero-section">
+    <img
+      src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0f/1665_Girl_with_a_Pearl_Earring.jpg/800px-1665_Girl_with_a_Pearl_Earring.jpg"
+      alt="Girl with a Pearl Earring by Johannes Vermeer" class="hero-background" loading="eager">
     <div class="hero-content">
       <div class="hero-label">
         <span class="hero-label-icon">👁</span>
@@ -665,6 +738,17 @@
         Painters are your teachers. They spent lifetimes mastering observation and perception.
         Study who they were and how they saw. Their visual logic becomes yours.
       </p>
+
+      <!-- Navigation Button -->
+      <div class="nav-buttons">
+        <a href="you-appreciate-what-you-see.html" class="nav-button nav-button-next">
+          <span>Recognize Patterns</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <path d="M5 12h14M12 5l7 7-7 7" />
+          </svg>
+        </a>
+      </div>
     </div>
   </section>
 
