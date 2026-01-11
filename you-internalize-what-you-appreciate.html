@@ -427,14 +427,70 @@
             font-weight: 500;
         }
 
-        /* Instruction Block */
-        .instruction-block {
+        /* Instruction Block - Side by Side Layout */
+        .instruction-section {
+            padding: var(--space-3xl) var(--space-lg);
+            background: var(--bg-primary);
+        }
+
+        .instruction-container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .instruction-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-xl);
+            align-items: center;
+            margin-bottom: var(--space-xl);
+        }
+
+        .instruction-artwork {
+            display: flex;
+            justify-content: flex-start;
+        }
+
+        .instruction-artwork-frame {
+            display: inline-block;
             background: var(--bg-card);
             border-radius: var(--radius-lg);
-            padding: var(--space-2xl);
-            margin: var(--space-2xl) 0;
+            overflow: hidden;
             border: var(--border-amber);
-            text-align: center;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .instruction-artwork-frame img {
+            max-width: 100%;
+            max-height: 400px;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            display: block;
+        }
+
+        .instruction-artwork-caption {
+            padding: var(--space-sm) var(--space-md);
+            background: var(--bg-elevated);
+            border-top: var(--border-subtle);
+        }
+
+        .instruction-artwork-title {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: var(--fs-base);
+            color: var(--text-main);
+            margin-bottom: 0.25rem;
+        }
+
+        .instruction-artwork-artist {
+            font-family: 'Inter', sans-serif;
+            font-size: var(--fs-xs);
+            color: var(--accent-amber);
+            font-weight: 500;
+        }
+
+        .instruction-content {
+            text-align: left;
         }
 
         .instruction-title {
@@ -448,16 +504,32 @@
             font-size: var(--fs-base);
             color: var(--text-secondary);
             line-height: 1.8;
-            max-width: 600px;
-            margin: 0 auto var(--space-lg);
+        }
+
+        .instruction-image-container {
+            text-align: center;
         }
 
         .instruction-image {
             max-width: 100%;
-            max-height: 180px;
+            max-height: 250px;
             border-radius: var(--radius-md);
             box-shadow: var(--shadow-md);
-            margin-top: var(--space-md);
+        }
+
+        @media (max-width: 768px) {
+            .instruction-layout {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .instruction-artwork {
+                justify-content: center;
+            }
+
+            .instruction-content {
+                text-align: center;
+            }
         }
 
         /* Zoom Showcase */
@@ -844,35 +916,36 @@
         </div>
     </section>
 
-    <!-- Opening Question Section -->
-    <section class="content-section">
-        <div class="content-container">
-            <div class="section-intro">
+    <!-- Combined Instruction Section with Jewish Bride -->
+    <section class="instruction-section">
+        <div class="instruction-container">
+            <!-- Question -->
+            <div class="section-intro" style="text-align: center; margin-bottom: var(--space-xl);">
                 <p class="section-question">When you look at a window, what do you see? Where do you look?</p>
             </div>
 
-            <!-- The Jewish Bride Artwork -->
-            <div class="artwork-container">
-                <div class="artwork-frame">
-                    <img src="internalize-jewish-bride.jpg" alt="The Jewish Bride by Rembrandt" class="zoomable"
-                        data-full="internalize-jewish-bride.jpg">
-                    <div class="artwork-caption">
-                        <h3 class="artwork-title">The Jewish Bride</h3>
-                        <p class="artwork-artist">Rembrandt van Rijn · c. 1665</p>
+            <!-- Side by Side: Artwork + Text -->
+            <div class="instruction-layout">
+                <div class="instruction-artwork">
+                    <div class="instruction-artwork-frame">
+                        <img src="internalize-jewish-bride.jpg" alt="The Jewish Bride by Rembrandt" class="zoomable"
+                            data-full="internalize-jewish-bride.jpg">
+                        <div class="instruction-artwork-caption">
+                            <h3 class="instruction-artwork-title">The Jewish Bride</h3>
+                            <p class="instruction-artwork-artist">Rembrandt van Rijn · c. 1665</p>
+                        </div>
                     </div>
                 </div>
+                <div class="instruction-content">
+                    <h2 class="instruction-title">We Don't Just Tell You Where to Look</h2>
+                    <p class="instruction-text">
+                        Not only where to look, but also how to see like a master of observation.
+                    </p>
+                </div>
             </div>
-        </div>
-    </section>
 
-    <!-- Instruction Block -->
-    <section class="content-section" style="padding-top: 0;">
-        <div class="content-container">
-            <div class="instruction-block">
-                <h2 class="instruction-title">We Don't Just Tell You Where to Look</h2>
-                <p class="instruction-text">
-                    Not only where to look, but also how to see like a master of observation.
-                </p>
+            <!-- Instruction Image Below -->
+            <div class="instruction-image-container">
                 <img src="internalize-instruction.png" alt="Instruction: Look at the hands" class="instruction-image">
             </div>
         </div>
