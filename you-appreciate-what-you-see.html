@@ -643,6 +643,61 @@
         }
 
         /* =====================================================
+        CTA SECTION
+        ===================================================== */
+        .cta-section {
+            padding: var(--space-3xl) var(--space-lg);
+            background: linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-surface) 100%);
+            text-align: center;
+        }
+
+        .cta-container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .cta-title {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: var(--fs-lg);
+            color: var(--text-main);
+            margin-bottom: var(--space-md);
+        }
+
+        .cta-text {
+            font-size: var(--fs-base);
+            color: var(--text-secondary);
+            margin-bottom: var(--space-xl);
+        }
+
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1.25rem 2.5rem;
+            font-family: 'Inter', sans-serif;
+            font-size: var(--fs-sm);
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            text-decoration: none;
+            color: var(--bg-primary);
+            background: linear-gradient(135deg, var(--accent-purple) 0%, #7c5ce7 100%);
+            border-radius: var(--radius-full);
+            box-shadow: var(--shadow-md), var(--glow-purple);
+            transition: all 0.4s var(--ease-smooth);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg), 0 0 60px rgba(157, 124, 255, 0.6);
+        }
+
+        .cta-button svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* =====================================================
         FOOTER
         ===================================================== */
         .site-footer {
@@ -924,6 +979,24 @@
             <img src="" alt="" class="lightbox-image" id="lightboxImage">
         </div>
     </div>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="cta-container">
+            <h2 class="cta-title">Ready to Transform How You See?</h2>
+            <p class="cta-text">
+                Join Daily Sublime and receive daily masterworks with guided observation, training your eye
+                to notice what others miss.
+            </p>
+            <a href="index.html#pricing" class="cta-button">
+                <span>Start Your Journey</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <path d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
+            </a>
+        </div>
+    </section>
 
     <!-- Footer -->
     <footer class="site-footer">
