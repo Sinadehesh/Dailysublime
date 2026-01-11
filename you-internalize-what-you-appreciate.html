@@ -380,12 +380,6 @@
             margin: 0 auto;
         }
 
-        /* Artwork Display */
-        .artwork-container {
-            position: relative;
-            margin: var(--space-2xl) 0;
-        }
-
         .artwork-frame {
             position: relative;
             background: var(--bg-card);
@@ -393,11 +387,21 @@
             overflow: hidden;
             border: var(--border-amber);
             box-shadow: var(--shadow-lg);
+            display: inline-block;
+            max-width: 100%;
+        }
+
+        .artwork-container {
+            position: relative;
+            margin: var(--space-2xl) 0;
+            text-align: center;
         }
 
         .artwork-frame img {
-            width: 100%;
-            max-height: 600px;
+            max-width: 100%;
+            max-height: 450px;
+            width: auto;
+            height: auto;
             object-fit: contain;
             display: block;
         }
@@ -449,6 +453,7 @@
 
         .instruction-image {
             max-width: 100%;
+            max-height: 120px;
             border-radius: var(--radius-md);
             box-shadow: var(--shadow-md);
             margin-top: var(--space-md);
@@ -534,6 +539,8 @@
 
         .comparison-image {
             width: 100%;
+            max-height: 350px;
+            object-fit: contain;
             border-radius: var(--radius-md);
             border: var(--border-subtle);
             box-shadow: var(--shadow-md);
@@ -841,10 +848,6 @@
         <div class="content-container">
             <div class="section-intro">
                 <p class="section-question">When you look at a window, what do you see? Where do you look?</p>
-                <p class="section-text">
-                    Most people see a window. But a trained eye sees light, shadow, reflection, and story.
-                    This is what we teach: not just where to look, but how to truly see.
-                </p>
             </div>
 
             <!-- The Jewish Bride Artwork -->
@@ -867,8 +870,7 @@
             <div class="instruction-block">
                 <h2 class="instruction-title">We Don't Just Tell You Where to Look</h2>
                 <p class="instruction-text">
-                    We teach you how to <strong>internalize</strong> the power of observation.
-                    Each edition guides your eye to specific details, teaching you to see what the masters saw.
+                    Not only where to look, but also how to see like a master of observation.
                 </p>
                 <img src="internalize-instruction.png" alt="Instruction: Look at the hands" class="instruction-image">
             </div>
