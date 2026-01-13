@@ -1210,6 +1210,31 @@
       font-style: italic;
     }
 
+    .hiw-subtitle-expanded {
+      max-width: 750px;
+      margin: -1rem auto var(--space-3xl);
+      text-align: center;
+    }
+
+    .hiw-subtitle-expanded p {
+      font-size: var(--fs-base);
+      color: var(--text-secondary);
+      line-height: 1.8;
+      margin-bottom: var(--space-md);
+    }
+
+    .hiw-subtitle-expanded p:first-child {
+      font-size: var(--fs-md);
+      color: var(--accent-gold);
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-weight: 500;
+    }
+
+    .hiw-subtitle-expanded p:last-child {
+      margin-bottom: 0;
+    }
+
     .hiw-steps-wrapper {
       display: flex;
       justify-content: space-between;
@@ -3427,7 +3452,14 @@
   <section class="how-it-works-section reveal-section" id="how-it-works">
     <div class="hiw-container">
       <h2 class="section-title">How It Works</h2>
-      <p class="hiw-subtitle">A daily ritual that rewires your eyes to see the world as painters do.</p>
+      <div class="hiw-subtitle-expanded">
+        <p>One email every morning. One painter. Five minutes of guided observation that trains your eye to see.</p>
+        <p>Within weeks, you notice what others miss. The colors. The shadows. The play of geometry that composes
+          reality itself. A concealed world that reveals itself only to those who look carefully. You see differently.
+          You will see the beauty and the beauty will see you. You understand aesthetics. You develop actual taste.</p>
+        <p>When someone mentions art or beauty, you have something interesting to say. You stand out in conversations.
+          In a world of distraction, depth is magnetic.</p>
+      </div>
 
       <div class="hiw-steps-wrapper">
         <div class="hiw-connector-line"></div>
