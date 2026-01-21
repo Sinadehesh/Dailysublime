@@ -1,0 +1,284 @@
+{
+    "name": "Daily Sublime Edition Generator v2",
+    "nodes": [
+        {
+            "parameters": {
+                "inputSource": "passthrough"
+            },
+            "id": "trigger-manual",
+            "name": "Start",
+            "type": "n8n-nodes-base.manualTrigger",
+            "typeVersion": 1,
+            "position": [
+                0,
+                0
+            ]
+        },
+        {
+            "parameters": {
+                "operation": "read",
+                "documentId": {
+                    "__rl": true,
+                    "mode": "id",
+                    "value": "YOUR_GOOGLE_SHEET_ID_HERE"
+                },
+                "sheetName": {
+                    "__rl": true,
+                    "mode": "list",
+                    "value": "lessonss"
+                },
+                "options": {}
+            },
+            "id": "read-all-lessons",
+            "name": "Read All Lessons",
+            "type": "n8n-nodes-base.googleSheets",
+            "typeVersion": 4.5,
+            "position": [
+                220,
+                0
+            ],
+            "credentials": {
+                "googleSheetsOAuth2Api": {
+                    "id": "YOUR_GOOGLE_CREDENTIALS_ID",
+                    "name": "Google Sheets"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "jsCode": "// ============================================\n// FIND TARGET ROW AND BUILD HISTORY\n// ============================================\n\n// SET THE DAY INDEX YOU WANT TO GENERATE HERE\nconst TARGET_DAY_INDEX = 8; // <-- CHANGE THIS NUMBER\n\nconst allRows = $input.all().map(item => item.json);\n\n// Find the target row (the one we want to generate)\nconst targetRow = allRows.find(row => \n  String(row.day_index) === String(TARGET_DAY_INDEX)\n);\n\nif (!targetRow) {\n  throw new Error(`No row found with day_index = ${TARGET_DAY_INDEX}`);\n}\n\n// Check if already completed (has exhibition_title)\nif (targetRow.exhibition_title && targetRow.exhibition_title.trim() !== '') {\n  throw new Error(`Day ${TARGET_DAY_INDEX} already has content. Change TARGET_DAY_INDEX or clear that row.`);\n}\n\n// Get all completed rows (for history/deduplication)\nconst completedRows = allRows.filter(row => \n  row.exhibition_title && row.exhibition_title.trim() !== ''\n);\n\n// Build deduplication lists\nconst usedPractices = completedRows\n  .map(r => (r.practice || '').substring(0, 100))\n  .filter(p => p)\n  .join('\\n- ');\n\nconst usedMusic = completedRows\n  .map(r => {\n    const music = r.cultural_music || '';\n    const match = music.match(/^([^(]+)/);\n    return match ? match[1].trim() : '';\n  })\n  .filter(m => m)\n  .join('\\n- ');\n\nconst usedPoems = completedRows\n  .map(r => `${r.poem_author || ''} - ${r.poem_work || ''}`)\n  .filter(p => p !== ' - ')\n  .join('\\n- ');\n\nreturn {\n  targetRow: targetRow,\n  dayIndex: TARGET_DAY_INDEX,\n  galleryTotal: targetRow.gallery_total || '111',\n  artistName: targetRow.artist_name || 'Unknown',\n  usedPractices: usedPractices,\n  usedMusic: usedMusic,\n  usedPoems: usedPoems,\n  rowNumber: targetRow.row_number || TARGET_DAY_INDEX + 1\n};"
+            },
+            "id": "find-target",
+            "name": "Find Target Row",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                440,
+                0
+            ]
+        },
+        {
+            "parameters": {
+                "jsCode": "// ============================================\n// BUILD THE AI PROMPT\n// ============================================\n\nconst data = $input.first().json;\nconst artistName = data.artistName;\nconst dayIndex = data.dayIndex;\nconst galleryTotal = data.galleryTotal;\nconst usedPractices = data.usedPractices;\nconst usedMusic = data.usedMusic;\nconst usedPoems = data.usedPoems;\n\nconst prompt = `CRITICAL INSTRUCTION: You do NOT have web search capability. Do not output any <search> tags or XML. Use your existing knowledge of art history. Output ONLY the two-line pipe-delimited format. Start your response IMMEDIATELY with the header line. No preamble, no explanation.\n\nYou are generating ONE edition of \"Daily Sublime\" (Gallery ${dayIndex} of ${galleryTotal}) for ${artistName} only. THIS MUST BE WORTH €19. This is not a lesson and not art trivia. It is a paid perceptual practice disguised as art.\nThe reader must feel:\nengaged and curious\nquietly smarter (better perception, better restraint, better self awareness)\nconfident in their intelligence (\"I can understand this; I'm the kind of person who notices\")\nmotivated to do a 2 to 7 minute meditative practice today\nTHREE GOALS (YOU MUST HIT ALL THREE)\nGOAL 1 ART FAMILIARITY\nShow the art and anchor the edition in specific works by the painter.\nMake the painter memorable through a TRUE sticky story (real, sourced).\nStrengthen association: artist, works, a memorable biographical handle.\nGOAL 2 ART APPRECIATION\nReveal the painter's distinctive style or technique in a way the reader can SEE immediately.\nExplain what makes the artist great without lecturing or sounding like a class.\nDelivered via: why_it_matters, five notice bullets focused on the paintings used, and style_art.\nGOAL 3 LIFE TRANSFER\nTranslate the artist's way of seeing into the reader's life.\nUse music and a poem snippet as an elegant bridge.\nProvide a meditative practice derived from the artist's perceptual method.\nONE PAINTER ONLY\nAll artworks must be by the same painter (artist_name) unless the input explicitly instructs otherwise.\nNO CURATION CLAIMS (CRITICAL)\nNever write \"Curated by\", \"Selected by\", \"Presented by\", \"Exhibition curated by\", or any curator style credit line anywhere.\nNever frame the edition as if the painter is curating the works or speaking in the first person.\nDo not use phrases like \"today's exhibition\" unless you mean the fictional label only via exhibition_title.\nIf any of these phrases appear in your draft, delete them and rewrite.\nMOST FAMOUS WORKS REQUIREMENT (CRITICAL)\nYou must prioritize the painter's most famous and widely recognized works for hero, art2, style_art, mini1, mini2.\nDefinition of most famous for this prompt:\nFrequently featured in major museum collections and exhibition histories\nRegularly cited in authoritative references (museum pages, catalogue raisonnés, major art history institutions)\nBroad public recognition (commonly reproduced and discussed)\nSelection rule:\nIdentify a shortlist of the painter's 8 to 12 most famous works from your knowledge.\nFrom that shortlist, choose hero, art2, style_art, mini1, mini2.\nIf a famous work cannot be matched with a stable, direct image URL that meets the URL requirements below, replace it with the next most famous work from the shortlist that can be verified.\nSOURCE ATTRIBUTION RULE (CRITICAL, NON NEGOTIABLE)\nDo not mention museums, transcripts, articles, catalogues, scholars, \"research says\", \"a source describes\", or any sourcing language inside any prose field.\nWrite verified facts directly in an authored voice: \"He was…\", \"She painted…\", \"In this work…\".\nOnly include source attribution as plain URLs in sticky_story_source_url and poem_source_url. Nowhere else.\nIf a fact cannot be verified, omit it or replace it. Never hedge with \"it is said\" or \"is believed\".\nEXPORT SAFETY RULE (CRITICAL)\nThe pipe character | is forbidden inside all text fields because it breaks the Excel row. Never use | except as the column delimiter in the final two output lines.\nMARKDOWN BAN (CRITICAL)\nNever output markdown anywhere. No bracketed links. No parenthesized links. Plain text only in every field.\nURL FIELD PURITY RULE (CRITICAL)\nIn any field ending with _url, output ONLY the URL and nothing else.\nDo not append any text after the URL.\nDo not include the artwork title, brand name, or any other words in the URL field.\nDo not include the pipe character or the encoded pipe string %7C in any URL field.\nIf a pipe appears inside a URL, delete it and rewrite the URL as plain text.\nIMAGE ROLE INTEGRITY AND UNIQUENESS (CRITICAL)\nAll artwork slots must be unique and must correspond to different works:\nhero_url, art2_url, style_art_url, mini1_url, mini2_url must all be different URLs and different artworks.\nMini gallery uniqueness: mini1 and mini2 must be different from each other and also different from hero, art2, and style_art.\nIf any two artwork URLs are identical or refer to the same work, replace the later one with the next most famous verified work from the shortlist until all five artworks are unique.\nDo not reuse hero_url for any other artwork slot.\nARTIST PICTURE REQUIREMENT (CRITICAL, NO EXCEPTIONS)\nartist_portrait_url must never be empty. It must always be a verified direct image URL.\nThere is no PORTRAIT_NOT_FOUND value. Never output PORTRAIT_NOT_FOUND.\nARTIST PICTURE SEARCH ORDER (MANDATORY)\nFirst use a verified self portrait by the painter if one exists and you know the URL.\nIf no self portrait exists, use a verified portrait of the painter made by someone else.\nIf neither can be verified, you MUST still fill artist_portrait_url by reusing ONE of the edition's verified artwork image URLs from the same painter, but it must be a different URL than hero_url. Use mini2_url first, then mini1_url, then art2_url, then style_art_url. Never use hero_url as the fallback portrait.\nARTIST PICTURE CONSTRAINTS\nIf artist_portrait_url is a true portrait (self portrait or portrait by others), it must depict the painter as a person and must not duplicate any artwork slot.\nIf artist_portrait_url is a fallback artwork image, it must be a different URL than hero_url and must still be a verified direct image URL.\nFIVE INTERNAL ITERATIONS (MANDATORY, DO NOT OUTPUT DRAFTS)\nRewrite internally 5 times. Each pass must improve:\nmicro tension in the opening\nreveal timing (delay explanation; deliver insight like a click)\nsensory specificity and perceptual precision\nsophistication plus accessibility (smart but readable, never pretentious)\nvoice (authored, non formulaic, no AI cadence)\nOnly output the final version after pass 5.\nSTYLE (NON NEGOTIABLE)\nAuthored, sophisticated, accessible. Never lecture. Never define basics.\nNo template headings inside prose fields. No \"In conclusion.\"\nNo clichés: avoid \"unlock\", \"transform\", \"journey\", \"game changer\", \"deep dive\", \"in today's world\".\nVary cadence. Use short sentences only at perceptual turns.\nMake the reader feel clever for noticing what you point to.\nForbidden punctuation style: do not use em dashes or double hyphens. Avoid long dash style breaks in prose fields. Use periods, commas, semicolons, or colons instead.\nAvoid \"AI tell\" signposting words such as: \"importantly\", \"notably\", \"it is worth noting\", \"this suggests\", \"it can be argued\", \"research shows\".\nPRACTICE REQUIREMENT (CRITICAL)\nThere IS a dedicated practice column in the output. Fill it every time.\nPractice must:\ntake 2 to 7 minutes\nfeel meditative and exploratory, not homework\nbe derived from the painter's seeing method (their technique translated into attention)\napply to real life (faces, objects, spaces, thoughts)\ncreate at least one \"I never noticed that\" moment\nthe practice never should be similar to the practice existing the in text file. it should be new.\nyou can search different meditation methods that could be translate to that painter style of observation.\nfor example when discussing the van Gogh you tell the person that today be on the look out to the tall trees, direct attention toward them and the point about the style of the painter which was discussed in why it matters should be practiced.\nanother example if da vinci so for davinci you have reached them about smook technic now in the practice you tell them too see in the world. how edges don't exist but we create them.\nremember that you should not tell people to look at the painting in practice part.\nobserving and studying the painting only happens in 5 notice part.\nso they learn the style in why it matters, they practice seeing it in the paintings in 5 key observation notice part and then they learn to generalize what they have learned to the real world by the practice part.  \nAdditionally, at least ONE notice_bullet must include a tiny micro experiment.\nThis is separate from the dedicated practice column. It acts like a teaser that makes the reader want the full practice.\nPOEM IS MANDATORY (NO EXCEPTIONS)\nYou MUST include a poem snippet every time and fill all poem fields.\nRules:\nUse exactly 1 to 2 lines of poetry only (very short excerpt).\nYou must provide poem_author and poem_work (title of the poem or collection) and poem_source_url.\nThe poem must be chosen because it reinforces today's perceptual theme and fits the artist or works emotionally or conceptually.\nYou must ensure the snippet is legally safe to quote briefly:\nPrefer public domain poems OR poems hosted by reputable sources that permit quotation.\nIf you cannot find a poem directly about the artist or artwork, find a poem that matches the theme (light, night, stillness, gaze, ambiguity, etc.) and is verifiable and safe to quote briefly.\nDo NOT fabricate poem lines. Must be found online with a source.\nURL REQUIREMENTS (FOR EMAIL RENDERING)\nDo NOT use poems which have been mentioned before in the text file.\nFill these with working, stable direct image links:\nhero_url, art2_url, style_art_url, mini1_url, mini2_url, artist_portrait_url.\nHard URL bans (CRITICAL):\nDo not use any URL containing Google_Art_Project.\nDo not use any URL containing googleusercontent or ggpht.\nDo not use any URL that is explicitly a download endpoint or frequently email-blocked, including:\nany URL containing /asset/download/\nany URL containing /download/\nany URL containing attachment_filename\nDo not use any URL that looks signed or session-bound, including URLs with parameters such as token=, signature=, expires=, X-Amz-*, or similar.\nAvoid URLs with long hash parameters that appear to be access keys.\nPreferred URL shapes (more reliable in email):\nPrefer IIIF image URLs that end with default.jpg or default.png and contain no query string.\nPrefer museum-owned static media that ends with .jpg .jpeg .png and contains no query string.\nPreferred sources, in order:\nMuseum IIIF image endpoints designed for embedding\nMuseum-owned static media URLs that directly serve jpg/png\nMajor national libraries or national collections that directly serve jpg/png\nWikimedia Commons URLs starting with https://upload.wikimedia.org/wikipedia/commons/\nURL VERIFICATION RULE (CRITICAL)\nBefore final output, verify each image URL from your knowledge (hero_url, art2_url, style_art_url, mini1_url, mini2_url, artist_portrait_url):\nMust be a known working URL\nMust not require sign-in, cookies, or special headers\nIf you are unsure about a URL, use a Wikimedia Commons URL instead.\nIMPORTANT LINK RULE\nOutput URLs as plain text only. Do not wrap URLs in brackets, parentheses, angle brackets, quotes, or any formatting characters. No leading or trailing punctuation.\nOUTPUT FORMAT (EXCEL PIPE ROW, TWO LINES ONLY)\nReturn exactly TWO lines and nothing else:\nLine 1: header (pipe delimited) exactly as provided below.\nLine 2: one data row (pipe delimited) with values for this edition.\nNo commentary. No markdown. No blank lines.\nCOLUMNS (EXACT ORDER, MUST MATCH)\nday_index|gallery_total|exhibition_title|artist_name|artist_portrait_url|brand_name|hero_url|hero_title|hero_year|hero_alt|hook_text|art2_url|art2_title|art2_year|art2_alt|why_it_matters|notice_bullet_1|notice_bullet_2|notice_bullet_3|notice_bullet_4|notice_bullet_5|practice|style_art_url|style_art_title|style_art_year|style_art_alt|sticky_story|cultural_music|philosophy|mini1_url|mini1_title|mini1_year|mini1_alt|mini2_url|mini2_title|mini2_year|mini2_alt|poem_line_1|poem_line_2|poem_author|poem_work|poem_source_url|sticky_story_source_url\nFIELD REQUIREMENTS (MAP TO THE THREE GOALS)\nbrand_name must be exactly: Daily Sublime\nexhibition_title: 3 to 6 words, memorable, museum label style.\nGOAL 1 emphasis:\nhook_text (40 to 90 words): micro tension first; immediate curiosity; naturally names the painter and hero work.\nsticky_story (100 to 180 words): TRUE biographical story that makes the painter unforgettable. MUST be sourced.\nsticky_story_source_url: URL used for sticky_story facts.\nGOAL 2 emphasis:\nwhy_it_matters (140 to 240 words): psychologically literate plus craft aware; shows what makes the painter distinct; no lecturing.\nnotice_bullet_1 to notice_bullet_5 (18 to 45 words each): five perceptual reveals that MUST be about observing the specific works used in this edition (hero, art2, style_art, mini1, mini2).\nEach must include:\na concrete visual anchor from one of those works\na mental effect (what it does to perception, restraint, emotion, or attention)\nAt least ONE bullet must include a tiny micro experiment plus a constraint (something NOT to do).\nGOAL 3 emphasis:\npractice (90 to 160 words): the full 2 to 7 minute meditative practice, derived from the painter's method, includes at least one explicit constraint, ends in a way that makes the reader want to try it today.\ncultural_music: Track - Artist (MUSIC OF THE DAY:)(one sentence reason in direct voice, tied to today's perceptual theme). URL only if verified. If you include a URL, it must be plain text.\nphilosophy (90 to 170 words): increases self awareness, nudges practice, ends with a memorable line (no neat moral).\nAlt text:\nhero_alt, art2_alt, style_art_alt, mini1_alt, mini2_alt: one sentence each, vivid but accurate.\nThe pipe character is forbidden inside alt text as well.\nCOHESION RULE\nPick ONE central perceptual theme and thread it through all fields.\nINPUT BLOCK\nINPUT:\nday_index = ${dayIndex}\ngallery_total = ${galleryTotal}\nartist_name = ${artistName}\n\nCRITICAL DEDUPLICATION REQUIREMENT:\nThe following practices have already been used. Your practice MUST be completely different:\n${usedPractices ? '- ' + usedPractices : 'None yet'}\n\nThe following music tracks have already been used. Choose a DIFFERENT track:\n${usedMusic ? '- ' + usedMusic : 'None yet'}\n\nThe following poems have already been used. Choose a DIFFERENT poem:\n${usedPoems ? '- ' + usedPoems : 'None yet'}\n\nNOW DO THE WORK\nIdentify a shortlist of the painter's 8 to 12 most famous works from your knowledge, then select hero, art2, style_art, mini1, mini2 from that shortlist.\nIndependently identify the artist picture using ARTIST PICTURE SEARCH ORDER and fill artist_portrait_url as required.\nUse known working image URLs that meet the URL REQUIREMENTS.\nWrite one memorable biographical story; store source in sticky_story_source_url.\nInclude a poem excerpt (1 to 2 lines) that matches the theme; store attribution and poem_source_url.\nWrite the prose fields to meet the three goals after five internal rewrites.\nFinal self-check before output: artist_portrait_url is not empty and not hero_url; artwork URLs are five different works; no URL contains a pipe or %7C; no markdown; no pipes inside fields.\nOutput only the two line pipe delimited result (header plus row).`;\n\nreturn {\n  prompt: prompt,\n  dayIndex: dayIndex,\n  artistName: artistName,\n  rowNumber: data.rowNumber\n};"
+            },
+            "id": "build-prompt",
+            "name": "Build AI Prompt",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                660,
+                0
+            ]
+        },
+        {
+            "parameters": {
+                "resource": "text",
+                "operation": "message",
+                "modelId": {
+                    "__rl": true,
+                    "mode": "list",
+                    "value": "claude-sonnet-4-20250514"
+                },
+                "messages": {
+                    "values": [
+                        {
+                            "role": "user",
+                            "content": "={{ $json.prompt }}"
+                        }
+                    ]
+                },
+                "options": {
+                    "maxTokensToSample": 8192
+                }
+            },
+            "id": "claude-generate",
+            "name": "Generate with Claude",
+            "type": "@n8n/n8n-nodes-langchain.anthropic",
+            "typeVersion": 1,
+            "position": [
+                880,
+                0
+            ],
+            "credentials": {
+                "anthropicApi": {
+                    "id": "YOUR_ANTHROPIC_CREDENTIALS_ID",
+                    "name": "Anthropic"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "jsCode": "// ============================================\n// PARSE AI RESPONSE\n// ============================================\n\nconst prevData = $('Build AI Prompt').first().json;\nconst response = $input.first().json.message?.content || $input.first().json.text || $input.first().json.content || '';\n\n// Split into lines and find the data row\nconst lines = response.trim().split('\\n').filter(l => l.trim() && l.includes('|'));\n\nlet dataRow = '';\nif (lines.length >= 2) {\n  // Second line is data (first is header)\n  dataRow = lines[1];\n} else if (lines.length === 1) {\n  dataRow = lines[0];\n}\n\nif (!dataRow) {\n  throw new Error('Could not parse AI response. No pipe-delimited data found.');\n}\n\n// Parse the pipe-delimited row\nconst columns = [\n  'day_index', 'gallery_total', 'exhibition_title', 'artist_name', 'artist_portrait_url',\n  'brand_name', 'hero_url', 'hero_title', 'hero_year', 'hero_alt', 'hook_text',\n  'art2_url', 'art2_title', 'art2_year', 'art2_alt', 'why_it_matters',\n  'notice_bullet_1', 'notice_bullet_2', 'notice_bullet_3', 'notice_bullet_4', 'notice_bullet_5',\n  'practice', 'style_art_url', 'style_art_title', 'style_art_year', 'style_art_alt',\n  'sticky_story', 'cultural_music', 'philosophy',\n  'mini1_url', 'mini1_title', 'mini1_year', 'mini1_alt',\n  'mini2_url', 'mini2_title', 'mini2_year', 'mini2_alt',\n  'poem_line_1', 'poem_line_2', 'poem_author', 'poem_work', 'poem_source_url',\n  'sticky_story_source_url'\n];\n\nconst values = dataRow.split('|');\nconst parsed = {};\n\ncolumns.forEach((col, idx) => {\n  parsed[col] = (values[idx] || '').trim();\n});\n\n// Override day_index with actual value\nparsed.day_index = String(prevData.dayIndex);\n\nreturn {\n  parsed: parsed,\n  dayIndex: prevData.dayIndex,\n  artistName: prevData.artistName,\n  rawResponse: response\n};"
+            },
+            "id": "parse-response",
+            "name": "Parse AI Response",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                1100,
+                0
+            ]
+        },
+        {
+            "parameters": {
+                "operation": "update",
+                "documentId": {
+                    "__rl": true,
+                    "mode": "id",
+                    "value": "YOUR_GOOGLE_SHEET_ID_HERE"
+                },
+                "sheetName": {
+                    "__rl": true,
+                    "mode": "list",
+                    "value": "lessonss"
+                },
+                "columns": {
+                    "mappingMode": "defineBelow",
+                    "value": {
+                        "exhibition_title": "={{ $json.parsed.exhibition_title }}",
+                        "artist_portrait_url": "={{ $json.parsed.artist_portrait_url }}",
+                        "brand_name": "={{ $json.parsed.brand_name }}",
+                        "hero_url": "={{ $json.parsed.hero_url }}",
+                        "hero_title": "={{ $json.parsed.hero_title }}",
+                        "hero_year": "={{ $json.parsed.hero_year }}",
+                        "hero_alt": "={{ $json.parsed.hero_alt }}",
+                        "hook_text": "={{ $json.parsed.hook_text }}",
+                        "art2_url": "={{ $json.parsed.art2_url }}",
+                        "art2_title": "={{ $json.parsed.art2_title }}",
+                        "art2_year": "={{ $json.parsed.art2_year }}",
+                        "art2_alt": "={{ $json.parsed.art2_alt }}",
+                        "why_it_matters": "={{ $json.parsed.why_it_matters }}",
+                        "notice_bullet_1": "={{ $json.parsed.notice_bullet_1 }}",
+                        "notice_bullet_2": "={{ $json.parsed.notice_bullet_2 }}",
+                        "notice_bullet_3": "={{ $json.parsed.notice_bullet_3 }}",
+                        "notice_bullet_4": "={{ $json.parsed.notice_bullet_4 }}",
+                        "notice_bullet_5": "={{ $json.parsed.notice_bullet_5 }}",
+                        "practice": "={{ $json.parsed.practice }}",
+                        "style_art_url": "={{ $json.parsed.style_art_url }}",
+                        "style_art_title": "={{ $json.parsed.style_art_title }}",
+                        "style_art_year": "={{ $json.parsed.style_art_year }}",
+                        "style_art_alt": "={{ $json.parsed.style_art_alt }}",
+                        "sticky_story": "={{ $json.parsed.sticky_story }}",
+                        "cultural_music": "={{ $json.parsed.cultural_music }}",
+                        "philosophy": "={{ $json.parsed.philosophy }}",
+                        "mini1_url": "={{ $json.parsed.mini1_url }}",
+                        "mini1_title": "={{ $json.parsed.mini1_title }}",
+                        "mini1_year": "={{ $json.parsed.mini1_year }}",
+                        "mini1_alt": "={{ $json.parsed.mini1_alt }}",
+                        "mini2_url": "={{ $json.parsed.mini2_url }}",
+                        "mini2_title": "={{ $json.parsed.mini2_title }}",
+                        "mini2_year": "={{ $json.parsed.mini2_year }}",
+                        "mini2_alt": "={{ $json.parsed.mini2_alt }}",
+                        "poem_line_1": "={{ $json.parsed.poem_line_1 }}",
+                        "poem_line_2": "={{ $json.parsed.poem_line_2 }}",
+                        "poem_author": "={{ $json.parsed.poem_author }}",
+                        "poem_work": "={{ $json.parsed.poem_work }}",
+                        "poem_source_url": "={{ $json.parsed.poem_source_url }}",
+                        "sticky_story_source_url": "={{ $json.parsed.sticky_story_source_url }}"
+                    },
+                    "matchingColumns": [
+                        "day_index"
+                    ],
+                    "schema": [
+                        {
+                            "id": "day_index",
+                            "displayName": "day_index",
+                            "type": "string",
+                            "canBeUsedToMatch": true,
+                            "defaultMatch": true
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "id": "update-sheet",
+            "name": "Update Lessons Sheet",
+            "type": "n8n-nodes-base.googleSheets",
+            "typeVersion": 4.5,
+            "position": [
+                1320,
+                0
+            ],
+            "credentials": {
+                "googleSheetsOAuth2Api": {
+                    "id": "YOUR_GOOGLE_CREDENTIALS_ID",
+                    "name": "Google Sheets"
+                }
+            }
+        }
+    ],
+    "connections": {
+        "Start": {
+            "main": [
+                [
+                    {
+                        "node": "Read All Lessons",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Read All Lessons": {
+            "main": [
+                [
+                    {
+                        "node": "Find Target Row",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Find Target Row": {
+            "main": [
+                [
+                    {
+                        "node": "Build AI Prompt",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Build AI Prompt": {
+            "main": [
+                [
+                    {
+                        "node": "Generate with Claude",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Generate with Claude": {
+            "main": [
+                [
+                    {
+                        "node": "Parse AI Response",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Parse AI Response": {
+            "main": [
+                [
+                    {
+                        "node": "Update Lessons Sheet",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    },
+    "settings": {
+        "executionOrder": "v1"
+    },
+    "staticData": null,
+    "tags": [],
+    "pinData": {}
+}

@@ -1,0 +1,506 @@
+{
+  "name": "Daily Sublime Edition Generator",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "trigger-manual",
+      "name": "Run Manually",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [0, 0]
+    },
+    {
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "__regex": "",
+          "mode": "id",
+          "value": "YOUR_ARTISTS_SHEET_ID_HERE"
+        },
+        "sheetName": {
+          "__rl": true,
+          "__regex": "",
+          "mode": "list",
+          "value": "Artists"
+        },
+        "options": {
+          "outputFormatting": {
+            "values": {
+              "general": "FORMATTED"
+            }
+          }
+        }
+      },
+      "id": "sheets-read-artists",
+      "name": "Read Artists Sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [220, 0],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YOUR_GOOGLE_CREDENTIALS_ID",
+          "name": "Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "filter-empty-status",
+              "leftValue": "={{ $json.status }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "filter-pending",
+      "name": "Filter Pending Artists",
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2,
+      "position": [440, 0]
+    },
+    {
+      "parameters": {
+        "maxItems": 1
+      },
+      "id": "limit-one",
+      "name": "Process One Artist",
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [660, 0]
+    },
+    {
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "__regex": "",
+          "mode": "id",
+          "value": "YOUR_ARTISTS_SHEET_ID_HERE"
+        },
+        "sheetName": {
+          "__rl": true,
+          "__regex": "",
+          "mode": "list",
+          "value": "History"
+        },
+        "options": {}
+      },
+      "id": "sheets-read-history",
+      "name": "Read Content History",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [880, 0],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YOUR_GOOGLE_CREDENTIALS_ID",
+          "name": "Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// ============================================\n// DAILY SUBLIME - AI PROMPT BUILDER\n// ============================================\n\nconst artist = $('Process One Artist').first().json;\nconst historyItems = $('Read Content History').all();\n\n// Build list of previously used practices and music\nconst usedPractices = historyItems.map(h => h.json.practice_keywords || '').filter(p => p).join('\\n- ');\nconst usedMusic = historyItems.map(h => h.json.music_track || '').filter(m => m).join('\\n- ');\nconst usedPoems = historyItems.map(h => `${h.json.poem_author || ''} - ${h.json.poem_work || ''}`).filter(p => p !== ' - ').join('\\n- ');\n\nconst prompt = `You are generating ONE edition of \"Daily Sublime\" (Gallery ${artist.day_index} of ${artist.gallery_total}) for ${artist.artist_name} only. THIS MUST BE WORTH €19. This is not a lesson and not art trivia. It is a paid perceptual practice disguised as art. The reader must feel: engaged and curious quietly smarter (better perception, better restraint, better self awareness) confident in their intelligence (\"I can understand this; I'm the kind of person who notices\") motivated to do a 2 to 7 minute meditative practice today THREE GOALS (YOU MUST HIT ALL THREE) GOAL 1 ART FAMILIARITY Show the art and anchor the edition in specific works by the painter. Make the painter memorable through a TRUE sticky story (real, sourced). Strengthen association: artist, works, a memorable biographical handle. GOAL 2 ART APPRECIATION Reveal the painter's distinctive style or technique in a way the reader can SEE immediately. Explain what makes the artist great without lecturing or sounding like a class. Delivered via: why_it_matters, five notice bullets focused on the paintings used, and style_art. GOAL 3 LIFE TRANSFER Translate the artist's way of seeing into the reader's life. Use music and a poem snippet as an elegant bridge. Provide a meditative practice derived from the artist's perceptual method. ONE PAINTER ONLY All artworks must be by the same painter (artist_name) unless the input explicitly instructs otherwise. NO CURATION CLAIMS (CRITICAL) Never write \"Curated by\", \"Selected by\", \"Presented by\", \"Exhibition curated by\", or any curator style credit line anywhere. Never frame the edition as if the painter is curating the works or speaking in the first person. Do not use phrases like \"today's exhibition\" unless you mean the fictional label only via exhibition_title. If any of these phrases appear in your draft, delete them and rewrite. MOST FAMOUS WORKS REQUIREMENT (CRITICAL) You must prioritize the painter's most famous and widely recognized works for hero, art2, style_art, mini1, mini2. Definition of most famous for this prompt: Frequently featured in major museum collections and exhibition histories Regularly cited in authoritative references (museum pages, catalogue raisonnés, major art history institutions) Broad public recognition (commonly reproduced and discussed) Selection rule: Use web search to identify a shortlist of the painter's 8 to 12 most famous works using authoritative sources. From that shortlist, choose hero, art2, style_art, mini1, mini2. If a famous work cannot be matched with a stable, direct image URL that meets the URL requirements below, replace it with the next most famous work from the shortlist that can be verified. MANDATORY WEB SEARCH (CRITICAL) You MUST search online to verify all of the following: At least one memorable, TRUE biographical story about the painter (for sticky_story) with a source URL. A poem snippet (MANDATORY) with attribution and a source URL. Working direct image URLs for hero, art2, style_art, mini1, mini2 and artist picture. If you cannot verify something, do not invent it. Replace it with something you CAN verify.\nMANDATORY RESEARCH-BASED CONTENT DEVELOPMENT (CRITICAL)\nWHY_IT_MATTERS RESEARCH REQUIREMENT: Before writing why_it_matters, you MUST search art criticism, scholarly sources, and museum interpretations: Search queries must include: \"[artist name] technique\", \"[artist name] distinctive style\", \"[artist name] what makes great\", \"[artist name] art criticism\", \"[artist name] [specific painting title] analysis\" Prioritize sources from: major museum websites (MoMA, Met, Tate, Louvre, Prado, National Gallery), art history journals, established art critics, academic art history sites, catalogue raisonné entries, curator essays Extract the technical and perceptual insights that art historians and critics identify as the painter's distinctive achievements Then translate these verified critical insights into clear, accessible prose that maintains sophistication while avoiding academic jargon Never invent technical claims; base every assertion about technique, innovation, or visual effect on what you find in credible art historical sources If sources disagree, synthesize the consensus view or acknowledge the distinctive interpretation that best serves today's perceptual theme\nCULTURAL_MUSIC RESEARCH REQUIREMENT: Before selecting music, you MUST search for verified connections: Search queries must include: \"[artist name] music\", \"[artist name] composer\", \"[artist name] musical influence\", \"[artist name] soundtrack\", \"music inspired by [artist name]\", \"[artist name] favorite music\", \"what music captures [artist name]\" Look for documented historical connections: composers the artist knew, music from their era, music they referenced, music that inspired them, or music explicitly written about their work If direct historical connections exist (e.g., the artist loved a specific composer or a piece was composed about their work), prioritize these and state the connection factually If no direct connection exists, search for music that matches the perceptual or emotional qualities you've identified in why_it_matters (e.g., \"music with stark light contrasts\", \"compositions with meditative stillness\", \"pieces with restrained intensity\") The one-sentence reason must either state the documented connection OR explain how the music's qualities mirror the artist's perceptual technique discussed in why_it_matters Never fabricate historical connections; if suggesting thematic music, frame it as resonance, not biography\nPHILOSOPHY RESEARCH REQUIREMENT: Before writing philosophy, you MUST search for philosophical and psychological concepts that connect to the artist's perceptual method: Search queries must include: \"[perceptual theme] philosophy\", \"[perceptual theme] psychology of perception\", \"phenomenology of [visual quality]\", \"[artist technique] cognitive effect\", \"attention and [perceptual quality]\" Look for: philosophical writing on perception, cognitive science of vision, phenomenology, attention studies, psychological research on visual awareness Extract concepts that deepen understanding of WHY the artist's seeing method matters for daily life Translate findings into accessible prose that increases self-awareness without academic terminology The memorable ending line should emerge from this research, not generic wisdom\nPRACTICE RESEARCH REQUIREMENT: Before finalizing practice, you MUST search for meditation and attention training methods that align with the artist's perceptual technique: Search queries must include: \"[perceptual quality] meditation\", \"mindfulness [visual technique]\", \"[specific visual attention type] practice\", \"contemplative seeing exercises\", \"attention training [perceptual theme]\" Look for: established meditation techniques, contemplative practices, attention training exercises, phenomenological observation methods Identify practices that can be adapted to embody the artist's way of seeing in daily life The 2-7 minute practice must feel like a real meditation derived from both the artist's technique AND established contemplative methods Include at least one explicit constraint (what NOT to do) to sharpen the practice\nPOEM RESEARCH REQUIREMENT: Before selecting a poem, you MUST search for poetry that authentically resonates with today's perceptual theme: Search queries must include: \"[perceptual theme] poetry\", \"poems about [visual quality]\", \"[artist name] poetry\", \"[emotional quality] poems\", \"[art movement] poetry\" Prioritize: poems that directly reference the artist or their work, OR poems whose imagery/perception matches today's theme Verify the excerpt (1-2 lines only) can be legally quoted and has a stable source URL The poem must feel like it belongs to this edition's perceptual journey, not randomly selected\nSOURCE INTEGRATION RULE: After conducting all required searches, you must synthesize findings into your own authored voice Never write \"according to the Met\" or \"critics note\" or \"research shows\" in prose fields Write verified facts directly: \"He layered pigment until...\", \"Light doesn't flood the canvas; it accumulates...\", \"The technique creates...\" All prose must read as sophisticated original writing informed by research, not summarized research The reader should feel they're learning from an expert author, not reading compiled sources\nSOURCE ATTRIBUTION RULE (CRITICAL, NON NEGOTIABLE) Do not mention museums, transcripts, articles, catalogues, scholars, \"research says\", \"a source describes\", or any sourcing language inside any prose field. Write verified facts directly in an authored voice: \"He was…\", \"She painted…\", \"In this work…\". Only include source attribution as plain URLs in sticky_story_source_url and poem_source_url. Nowhere else. If a fact cannot be verified, omit it or replace it. Never hedge with \"it is said\" or \"is believed\". EXPORT SAFETY RULE (CRITICAL) The pipe character | is forbidden inside all text fields because it breaks the Excel row. Never use | except as the column delimiter in the final two output lines. MARKDOWN BAN (CRITICAL) Never output markdown anywhere. No bracketed links. No parenthesized links. Plain text only in every field. URL FIELD PURITY RULE (CRITICAL) In any field ending with _url, output ONLY the URL and nothing else. Do not append any text after the URL. Do not include the artwork title, brand name, or any other words in the URL field. Do not include the pipe character or the encoded pipe string %7C in any URL field. If a pipe appears inside a URL, delete it and rewrite the URL as plain text. IMAGE ROLE INTEGRITY AND UNIQUENESS (CRITICAL) All artwork slots must be unique and must correspond to different works: hero_url, art2_url, style_art_url, mini1_url, mini2_url must all be different URLs and different artworks. Mini gallery uniqueness: mini1 and mini2 must be different from each other and also different from hero, art2, and style_art. If any two artwork URLs are identical or refer to the same work, replace the later one with the next most famous verified work from the shortlist until all five artworks are unique. Do not reuse hero_url for any other artwork slot. ARTIST PICTURE REQUIREMENT (CRITICAL, NO EXCEPTIONS) artist_portrait_url must never be empty. It must always be a verified direct image URL. There is no PORTRAIT_NOT_FOUND value. Never output PORTRAIT_NOT_FOUND. ARTIST PICTURE SEARCH ORDER (MANDATORY) First search for a verified self portrait by the painter. If found, use it. If no self portrait exists or none can be verified, search for a verified portrait of the painter made by someone else (painting, drawing, engraving, print, or photograph). If found, use it. If neither can be verified, you MUST still fill artist_portrait_url by reusing ONE of the edition's verified artwork image URLs from the same painter, but it must be a different URL than hero_url. Use mini2_url first, then mini1_url, then art2_url, then style_art_url. Never use hero_url as the fallback portrait. ARTIST PICTURE CONSTRAINTS If artist_portrait_url is a true portrait (self portrait or portrait by others), it must depict the painter as a person and must not duplicate any artwork slot. If artist_portrait_url is a fallback artwork image, it must be a different URL than hero_url and must still be a verified direct image URL. FIVE INTERNAL ITERATIONS (MANDATORY, DO NOT OUTPUT DRAFTS) Rewrite internally 5 times. Each pass must improve: micro tension in the opening reveal timing (delay explanation; deliver insight like a click) sensory specificity and perceptual precision sophistication plus accessibility (smart but readable, never pretentious) voice (authored, non formulaic, no AI cadence) Only output the final version after pass 5. STYLE (NON NEGOTIABLE) Authored, sophisticated, accessible. Never lecture. Never define basics. No template headings inside prose fields. No \"In conclusion.\" No clichés: avoid \"unlock\", \"transform\", \"journey\", \"game changer\", \"deep dive\", \"in today's world\". Vary cadence. Use short sentences only at perceptual turns. Make the reader feel clever for noticing what you point to. Forbidden punctuation style: do not use em dashes or double hyphens. Avoid long dash style breaks in prose fields. Use periods, commas, semicolons, or colons instead. Avoid \"AI tell\" signposting words such as: \"importantly\", \"notably\", \"it is worth noting\", \"this suggests\", \"it can be argued\", \"research shows\". PRACTICE REQUIREMENT (CRITICAL) There IS a dedicated practice column in the output. Fill it every time. Practice must: take 2 to 7 minutes feel meditative and exploratory, not homework be derived from the painter's seeing method (their technique translated into attention) apply to real life (faces, objects, spaces, thoughts) create at least one \"I never noticed that\" moment the practice never should be similar to the practice existing the in text file. it should be new. you can search different meditation methods that could be translate to that painter style of observation. for example when discussing the van Gogh you tell the person that today be on the look out to the tall trees, direct attention toward them and the point about the style of the painter which was discussed in why it matters should be practiced. another example if da vinci so for davinci you have reached them about smook technic now in the practice you tell them too see in the world. how edges don't exist but we create them. remember that you should not tell people to look at the painting in practice part. observing and studying the painting only happens in 5 notice part. so they learn the style in why it matters, they practice seeing it in the paintings in 5 key observation notice part and then they learn to generalize what they have learned to the real world by the practice part.\n Additionally, at least ONE notice_bullet must include a tiny micro experiment. This is separate from the dedicated practice column. It acts like a teaser that makes the reader want the full practice. POEM IS MANDATORY (NO EXCEPTIONS) You MUST include a poem snippet every time and fill all poem fields. Rules: Use exactly 1 to 2 lines of poetry only (very short excerpt). You must provide poem_author and poem_work (title of the poem or collection) and poem_source_url. The poem must be chosen because it reinforces today's perceptual theme and fits the artist or works emotionally or conceptually. You must ensure the snippet is legally safe to quote briefly: Prefer public domain poems OR poems hosted by reputable sources that permit quotation. If you cannot find a poem directly about the artist or artwork, find a poem that matches the theme (light, night, stillness, gaze, ambiguity, etc.) and is verifiable and safe to quote briefly. Do NOT fabricate poem lines. Must be found online with a source. URL REQUIREMENTS (FOR EMAIL RENDERING) Do NOT use poems which have been mentioned before in the text file. Fill these with working, stable direct image links: hero_url, art2_url, style_art_url, mini1_url, mini2_url, artist_portrait_url. Hard URL bans (CRITICAL): Do not use any URL containing Google_Art_Project. Do not use any URL containing googleusercontent or ggpht. Do not use any URL that is explicitly a download endpoint or frequently email-blocked, including: any URL containing /asset/download/ any URL containing /download/ any URL containing attachment_filename Do not use any URL that looks signed or session-bound, including URLs with parameters such as token=, signature=, expires=, X-Amz-*, or similar. Avoid URLs with long hash parameters that appear to be access keys. Preferred URL shapes (more reliable in email): Prefer IIIF image URLs that end with default.jpg or default.png and contain no query string. Prefer museum-owned static media that ends with .jpg .jpeg .png and contains no query string. Preferred sources, in order: Museum IIIF image endpoints designed for embedding Museum-owned static media URLs that directly serve jpg/png Major national libraries or national collections that directly serve jpg/png Mauritshuis rule: Mauritshuis /media/ URLs are allowed only if they pass URL VERIFICATION RULE. Avoid URLs containing _framed unless they are verified as working. If a Mauritshuis candidate fails verification, replace it. If a candidate artwork cannot be matched with a working direct image URL from the preferred sources and preferred URL shapes, replace it with the next most famous work that can. URL VERIFICATION RULE (CRITICAL) Before final output, verify each image URL (hero_url, art2_url, style_art_url, mini1_url, mini2_url, artist_portrait_url): Must return HTTP 200 Must return Content Type starting with image/ Must not require sign-in, cookies, or special headers If you cannot verify, do not use it. IMPORTANT LINK RULE Output URLs as plain text only. Do not wrap URLs in brackets, parentheses, angle brackets, quotes, or any formatting characters. No leading or trailing punctuation. OUTPUT FORMAT (EXCEL PIPE ROW, TWO LINES ONLY) Return exactly TWO lines and nothing else: Line 1: header (pipe delimited) exactly as provided below. Line 2: one data row (pipe delimited) with values for this edition. No commentary. No markdown. No blank lines. COLUMNS (EXACT ORDER, MUST MATCH) day_index|gallery_total|exhibition_title|artist_name|artist_portrait_url|brand_name|hero_url|hero_title|hero_year|hero_alt|hook_text|art2_url|art2_title|art2_year|art2_alt|why_it_matters|notice_bullet_1|notice_bullet_2|notice_bullet_3|notice_bullet_4|notice_bullet_5|practice|style_art_url|style_art_title|style_art_year|style_art_alt|sticky_story|cultural_music|philosophy|mini1_url|mini1_title|mini1_year|mini1_alt|mini2_url|mini2_title|mini2_year|mini2_alt|poem_line_1|poem_line_2|poem_author|poem_work|poem_source_url|sticky_story_source_url FIELD REQUIREMENTS (MAP TO THE THREE GOALS) brand_name must be exactly: Daily Sublime exhibition_title: 3 to 6 words, memorable, museum label style. GOAL 1 emphasis: hook_text (40 to 90 words): micro tension first; immediate curiosity; naturally names the painter and hero work. sticky_story (100 to 180 words): TRUE biographical story that makes the painter unforgettable. MUST be sourced. sticky_story_source_url: URL used for sticky_story facts. GOAL 2 emphasis: why_it_matters (140 to 240 words): psychologically literate plus craft aware; shows what makes the painter distinct; no lecturing. notice_bullet_1 to notice_bullet_5 (18 to 45 words each): five perceptual reveals that MUST be about observing the specific works used in this edition (hero, art2, style_art, mini1, mini2). Each must include: a concrete visual anchor from one of those works a mental effect (what it does to perception, restraint, emotion, or attention) At least ONE bullet must include a tiny micro experiment plus a constraint (something NOT to do). GOAL 3 emphasis: practice (90 to 160 words): the full 2 to 7 minute meditative practice, derived from the painter's method, includes at least one explicit constraint, ends in a way that makes the reader want to try it today. cultural_music: Track - Artist (MUSIC OF THE DAY:)(one sentence reason in direct voice, tied to today's perceptual theme). URL only if verified. If you include a URL, it must be plain text. philosophy (90 to 170 words): increases self awareness, nudges practice, ends with a memorable line (no neat moral). Alt text: hero_alt, art2_alt, style_art_alt, mini1_alt, mini2_alt: one sentence each, vivid but accurate. The pipe character is forbidden inside alt text as well. COHESION RULE Pick ONE central perceptual theme and thread it through all fields. INPUT BLOCK (YOU WILL RECEIVE THIS EACH RUN) Use the following input. If a field is missing, still output the column with an empty value. Do not add new columns. INPUT: day_index = ${artist.day_index} gallery_total = ${artist.gallery_total} artist_name = ${artist.artist_name} preferred_works = ${artist.preferred_works || ''} music_hint = ${artist.music_hint || ''} constraints = ${artist.constraints || ''}\n\nCRITICAL DEDUPLICATION REQUIREMENT:\nThe following practices have already been used. Your practice MUST be completely different:\n${usedPractices ? '- ' + usedPractices : 'None yet'}\n\nThe following music tracks have already been used. Choose a DIFFERENT track:\n${usedMusic ? '- ' + usedMusic : 'None yet'}\n\nThe following poems have already been used. Choose a DIFFERENT poem:\n${usedPoems ? '- ' + usedPoems : 'None yet'}`;\n\nreturn {\n  artistData: artist,\n  prompt: prompt\n};"
+      },
+      "id": "build-prompt",
+      "name": "Build AI Prompt",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1100, 0]
+    },
+    {
+      "parameters": {
+        "model": "gpt-4o",
+        "messages": {
+          "values": [
+            {
+              "content": "={{ $json.prompt }}"
+            }
+          ]
+        },
+        "options": {
+          "temperature": 0.7,
+          "maxTokens": 8000
+        }
+      },
+      "id": "openai-generate",
+      "name": "Generate Edition Content",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [1320, 0],
+      "credentials": {
+        "openAiApi": {
+          "id": "YOUR_OPENAI_CREDENTIALS_ID",
+          "name": "OpenAI"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Parse the AI response and extract the pipe-delimited content\nconst response = $input.first().json.message?.content || $input.first().json.text || '';\nconst artistData = $('Build AI Prompt').first().json.artistData;\n\n// Split into lines and find the data row (skip header)\nconst lines = response.trim().split('\\n').filter(l => l.trim());\nlet dataRow = '';\n\nif (lines.length >= 2) {\n  // Second line is the data\n  dataRow = lines[1];\n} else if (lines.length === 1) {\n  // Only one line, might be just data\n  dataRow = lines[0];\n}\n\n// Parse the pipe-delimited row\nconst columns = [\n  'day_index', 'gallery_total', 'exhibition_title', 'artist_name', 'artist_portrait_url',\n  'brand_name', 'hero_url', 'hero_title', 'hero_year', 'hero_alt', 'hook_text',\n  'art2_url', 'art2_title', 'art2_year', 'art2_alt', 'why_it_matters',\n  'notice_bullet_1', 'notice_bullet_2', 'notice_bullet_3', 'notice_bullet_4', 'notice_bullet_5',\n  'practice', 'style_art_url', 'style_art_title', 'style_art_year', 'style_art_alt',\n  'sticky_story', 'cultural_music', 'philosophy',\n  'mini1_url', 'mini1_title', 'mini1_year', 'mini1_alt',\n  'mini2_url', 'mini2_title', 'mini2_year', 'mini2_alt',\n  'poem_line_1', 'poem_line_2', 'poem_author', 'poem_work', 'poem_source_url',\n  'sticky_story_source_url'\n];\n\nconst values = dataRow.split('|');\nconst parsed = {};\n\ncolumns.forEach((col, idx) => {\n  parsed[col] = values[idx] || '';\n});\n\n// Extract URLs for validation\nconst urlsToValidate = [\n  { name: 'hero_url', url: parsed.hero_url },\n  { name: 'art2_url', url: parsed.art2_url },\n  { name: 'style_art_url', url: parsed.style_art_url },\n  { name: 'mini1_url', url: parsed.mini1_url },\n  { name: 'mini2_url', url: parsed.mini2_url },\n  { name: 'artist_portrait_url', url: parsed.artist_portrait_url }\n].filter(u => u.url && u.url.startsWith('http'));\n\n// Extract practice keywords for history tracking (first 50 chars)\nconst practiceKeywords = (parsed.practice || '').substring(0, 100).replace(/[^a-zA-Z0-9 ]/g, ' ').trim();\n\n// Extract music track name\nconst musicMatch = (parsed.cultural_music || '').match(/^([^(]+)/);\nconst musicTrack = musicMatch ? musicMatch[1].trim() : '';\n\nreturn {\n  rawResponse: response,\n  dataRow: dataRow,\n  parsed: parsed,\n  urlsToValidate: urlsToValidate,\n  artistData: artistData,\n  historyEntry: {\n    practice_keywords: practiceKeywords,\n    music_track: musicTrack,\n    poem_author: parsed.poem_author || '',\n    poem_work: parsed.poem_work || '',\n    artist_name: parsed.artist_name || '',\n    day_index: parsed.day_index || ''\n  }\n};"
+      },
+      "id": "parse-response",
+      "name": "Parse AI Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1540, 0]
+    },
+    {
+      "parameters": {
+        "batchSize": 1,
+        "options": {}
+      },
+      "id": "split-urls",
+      "name": "Split URLs for Validation",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [1760, -150]
+    },
+    {
+      "parameters": {
+        "method": "HEAD",
+        "url": "={{ $json.url }}",
+        "options": {
+          "redirect": {
+            "redirect": {
+              "followRedirects": true
+            }
+          },
+          "timeout": 10000
+        }
+      },
+      "id": "http-validate-url",
+      "name": "Validate URL",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1980, -150],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "jsCode": "// Check all URL validation results\nconst validationResults = $input.all();\nconst parseData = $('Parse AI Response').first().json;\n\nlet allValid = true;\nconst invalidUrls = [];\n\nvalidationResults.forEach((result, idx) => {\n  const statusCode = result.json.statusCode || result.json.status || 0;\n  const urlInfo = parseData.urlsToValidate[idx];\n  \n  if (statusCode < 200 || statusCode >= 400) {\n    allValid = false;\n    if (urlInfo) {\n      invalidUrls.push(urlInfo.name);\n    }\n  }\n});\n\nreturn {\n  allUrlsValid: allValid,\n  invalidUrls: invalidUrls,\n  parsed: parseData.parsed,\n  dataRow: parseData.dataRow,\n  artistData: parseData.artistData,\n  historyEntry: parseData.historyEntry\n};"
+      },
+      "id": "check-validation",
+      "name": "Check URL Validation Results",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [2200, -150]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "check-urls-valid",
+              "leftValue": "={{ $json.allUrlsValid }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "if-urls-valid",
+      "name": "All URLs Valid?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [2420, 0]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Prepare the final output\nconst data = $input.first().json;\nconst parsed = data.parsed;\nconst dataRow = data.dataRow;\nconst artistName = parsed.artist_name || data.artistData.artist_name;\n\n// Format filename\nconst safeArtistName = artistName.toLowerCase().replace(/[^a-z0-9]/g, '_');\nconst fileName = `${safeArtistName}_edition_output.txt`;\n\n// Create header and data rows\nconst header = 'day_index|gallery_total|exhibition_title|artist_name|artist_portrait_url|brand_name|hero_url|hero_title|hero_year|hero_alt|hook_text|art2_url|art2_title|art2_year|art2_alt|why_it_matters|notice_bullet_1|notice_bullet_2|notice_bullet_3|notice_bullet_4|notice_bullet_5|practice|style_art_url|style_art_title|style_art_year|style_art_alt|sticky_story|cultural_music|philosophy|mini1_url|mini1_title|mini1_year|mini1_alt|mini2_url|mini2_title|mini2_year|mini2_alt|poem_line_1|poem_line_2|poem_author|poem_work|poem_source_url|sticky_story_source_url';\n\nconst fileContent = header + '\\n' + dataRow + '\\n';\n\nreturn {\n  fileName: fileName,\n  fileContent: fileContent,\n  artistData: data.artistData,\n  historyEntry: data.historyEntry,\n  parsed: parsed\n};"
+      },
+      "id": "prepare-output",
+      "name": "Prepare Output File",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [2640, 0]
+    },
+    {
+      "parameters": {
+        "operation": "toFile",
+        "fileName": "={{ $json.fileName }}",
+        "options": {
+          "encoding": "utf8"
+        }
+      },
+      "id": "convert-to-file",
+      "name": "Convert to File",
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [2860, 0]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "__regex": "",
+          "mode": "id",
+          "value": "YOUR_ARTISTS_SHEET_ID_HERE"
+        },
+        "sheetName": {
+          "__rl": true,
+          "__regex": "",
+          "mode": "list",
+          "value": "History"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "practice_keywords": "={{ $('Prepare Output File').first().json.historyEntry.practice_keywords }}",
+            "music_track": "={{ $('Prepare Output File').first().json.historyEntry.music_track }}",
+            "poem_author": "={{ $('Prepare Output File').first().json.historyEntry.poem_author }}",
+            "poem_work": "={{ $('Prepare Output File').first().json.historyEntry.poem_work }}",
+            "artist_name": "={{ $('Prepare Output File').first().json.historyEntry.artist_name }}",
+            "day_index": "={{ $('Prepare Output File').first().json.historyEntry.day_index }}"
+          },
+          "schema": [
+            {
+              "id": "practice_keywords",
+              "displayName": "practice_keywords",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "music_track",
+              "displayName": "music_track",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "poem_author",
+              "displayName": "poem_author",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "poem_work",
+              "displayName": "poem_work",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "artist_name",
+              "displayName": "artist_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "day_index",
+              "displayName": "day_index",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "sheets-update-history",
+      "name": "Update Content History",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [3080, 0],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YOUR_GOOGLE_CREDENTIALS_ID",
+          "name": "Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "__regex": "",
+          "mode": "id",
+          "value": "YOUR_ARTISTS_SHEET_ID_HERE"
+        },
+        "sheetName": {
+          "__rl": true,
+          "__regex": "",
+          "mode": "list",
+          "value": "Artists"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "status": "COMPLETED"
+          },
+          "matchingColumns": ["artist_name"],
+          "schema": [
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "artist_name",
+              "displayName": "artist_name",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "sheets-mark-complete",
+      "name": "Mark Artist Completed",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [3300, 0],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YOUR_GOOGLE_CREDENTIALS_ID",
+          "name": "Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Handle invalid URLs - log error and stop\nconst data = $input.first().json;\nconst invalidUrls = data.invalidUrls || [];\n\nthrow new Error(`URL validation failed for: ${invalidUrls.join(', ')}. Please re-run the workflow to regenerate with new URLs.`);"
+      },
+      "id": "handle-invalid-urls",
+      "name": "Handle Invalid URLs",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [2640, 200]
+    }
+  ],
+  "connections": {
+    "Run Manually": {
+      "main": [
+        [{ "node": "Read Artists Sheet", "type": "main", "index": 0 }]
+      ]
+    },
+    "Read Artists Sheet": {
+      "main": [
+        [{ "node": "Filter Pending Artists", "type": "main", "index": 0 }]
+      ]
+    },
+    "Filter Pending Artists": {
+      "main": [
+        [{ "node": "Process One Artist", "type": "main", "index": 0 }]
+      ]
+    },
+    "Process One Artist": {
+      "main": [
+        [{ "node": "Read Content History", "type": "main", "index": 0 }]
+      ]
+    },
+    "Read Content History": {
+      "main": [
+        [{ "node": "Build AI Prompt", "type": "main", "index": 0 }]
+      ]
+    },
+    "Build AI Prompt": {
+      "main": [
+        [{ "node": "Generate Edition Content", "type": "main", "index": 0 }]
+      ]
+    },
+    "Generate Edition Content": {
+      "main": [
+        [{ "node": "Parse AI Response", "type": "main", "index": 0 }]
+      ]
+    },
+    "Parse AI Response": {
+      "main": [
+        [{ "node": "Split URLs for Validation", "type": "main", "index": 0 }]
+      ]
+    },
+    "Split URLs for Validation": {
+      "main": [
+        [{ "node": "Validate URL", "type": "main", "index": 0 }],
+        [{ "node": "Check URL Validation Results", "type": "main", "index": 0 }]
+      ]
+    },
+    "Validate URL": {
+      "main": [
+        [{ "node": "Split URLs for Validation", "type": "main", "index": 0 }]
+      ]
+    },
+    "Check URL Validation Results": {
+      "main": [
+        [{ "node": "All URLs Valid?", "type": "main", "index": 0 }]
+      ]
+    },
+    "All URLs Valid?": {
+      "main": [
+        [{ "node": "Prepare Output File", "type": "main", "index": 0 }],
+        [{ "node": "Handle Invalid URLs", "type": "main", "index": 0 }]
+      ]
+    },
+    "Prepare Output File": {
+      "main": [
+        [{ "node": "Convert to File", "type": "main", "index": 0 }]
+      ]
+    },
+    "Convert to File": {
+      "main": [
+        [{ "node": "Update Content History", "type": "main", "index": 0 }]
+      ]
+    },
+    "Update Content History": {
+      "main": [
+        [{ "node": "Mark Artist Completed", "type": "main", "index": 0 }]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "pinData": {}
+}
