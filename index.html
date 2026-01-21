@@ -856,25 +856,23 @@
 
     .rebel-text-center p {
       font-family: 'Cormorant Garamond', Georgia, serif;
-      font-size: clamp(1.15rem, 2.2vw, 1.45rem);
+      font-size: clamp(1.35rem, 2.6vw, 1.65rem);
       font-weight: 400;
-      color: #f0e8dc;
+      font-style: italic;
+      color: #ffffff;
       line-height: 2;
-      margin-bottom: var(--space-lg);
+      margin-bottom: var(--space-xl);
       transition: all 0.5s ease;
       letter-spacing: 0.02em;
+      text-shadow: 0 0 30px rgba(255, 255, 255, 0.08);
     }
 
     .rebel-text-center p:hover {
-      color: #ffffff;
+      text-shadow: 0 0 40px rgba(255, 255, 255, 0.15);
     }
 
     .rebel-text-center p:first-of-type {
       font-size: clamp(1.4rem, 2.8vw, 1.75rem);
-      font-style: italic;
-      color: #ffffff;
-      margin-bottom: var(--space-xl);
-      text-shadow: 0 0 30px rgba(255, 255, 255, 0.1);
     }
 
     .rebel-text-center p:nth-of-type(2) {
@@ -888,6 +886,7 @@
     .rebel-text-center p strong {
       color: #e5c866;
       font-weight: 600;
+      font-style: normal;
       position: relative;
       transition: all 0.3s ease;
     }
