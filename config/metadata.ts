@@ -3,7 +3,7 @@ import { Metadata } from "next";
 export const generateMetadata = ({
   title = "Daily Sublime - A daily reset for attention",
   description = "Daily Sublime is a 2 to 7 minute ritual that trains perception using masterworks. Not trivia. Not wellness noise. You leave with calmer focus, sharper taste, and a cleaner inner pace.",
-  image = "/images/hero-banner.jpg",
+  image = "/images/1920px-Sandro_Botticelli_-_La_nascita_di_Venere_-_Google_Art_Project_-_edited.webp",
   icons = [
     {
       rel: "apple-touch-icon",
