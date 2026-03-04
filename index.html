@@ -72,7 +72,7 @@
       --glow-amber: 0 0 40px rgba(245, 158, 11, 0.5);
 
       /* Typography Scale - Fluid */
-      --fs-hero: clamp(3rem, 8vw, 7rem);
+      --fs-hero: clamp(2rem, 5vw, 4rem);
       --fs-xl: clamp(2.5rem, 5vw, 4.5rem);
       --fs-lg: clamp(1.75rem, 3.5vw, 3rem);
       --fs-md: clamp(1.25rem, 2.5vw, 2rem);
@@ -182,13 +182,10 @@
 
     .site-logo {
       height: 3.5rem;
-      width: 3.5rem;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 2px solid var(--accent-gold);
+      width: auto;
+      object-fit: contain;
       transition: all 0.6s var(--ease-bounce);
       cursor: pointer;
-      box-shadow: var(--shadow-sm);
     }
 
     .site-logo:hover {
