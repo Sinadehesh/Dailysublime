@@ -1,0 +1,383 @@
+{
+    "name": "Daily Sublime - Sonnet + Wikimedia API",
+    "nodes": [
+        {
+            "parameters": {
+                "options": {}
+            },
+            "id": "chat-trigger",
+            "name": "Receive Day Number",
+            "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+            "typeVersion": 1.1,
+            "position": [
+                0,
+                0
+            ],
+            "webhookId": "daily-sublime-wiki"
+        },
+        {
+            "parameters": {
+                "operation": "read",
+                "documentId": {
+                    "__rl": true,
+                    "mode": "id",
+                    "value": "1FJt_0YhPhdsfURuufY0zVO_ULhCw1b41Kc2nbYukJu0"
+                },
+                "sheetName": {
+                    "__rl": true,
+                    "mode": "list",
+                    "value": "lessonss"
+                },
+                "options": {}
+            },
+            "id": "read-sheet",
+            "name": "Read All Lessons",
+            "type": "n8n-nodes-base.googleSheets",
+            "typeVersion": 4.5,
+            "position": [
+                220,
+                0
+            ],
+            "credentials": {
+                "googleSheetsOAuth2Api": {
+                    "id": "L582zHwoJIb41z4V",
+                    "name": "Google Sheets account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "jsCode": "const chatData = $('Receive Day Number').first().json;\nconst messageText = chatData.chatInput || chatData.message || chatData.text || '';\nconst numberMatch = messageText.match(/\\d+/);\nconst TARGET_DAY_INDEX = numberMatch ? parseInt(numberMatch[0]) : 8;\n\nconst allRows = $input.all().map(item => item.json);\nconst targetRow = allRows.find(row => String(row.day_index) === String(TARGET_DAY_INDEX));\n\nif (!targetRow) throw new Error(`No row found with day_index = ${TARGET_DAY_INDEX}`);\n\nconst artistName = targetRow.artist_name || 'Unknown Artist';\nconst galleryTotal = targetRow.gallery_total || '111';\nconst completedRows = allRows.filter(row => row.exhibition_title && row.exhibition_title.trim() !== '');\n\nconst usedPractices = completedRows.map(r => (r.practice || '').substring(0, 100)).filter(p => p).join('\\n- ');\nconst usedMusic = completedRows.map(r => { const m = r.cultural_music || ''; const match = m.match(/^([^(]+)/); return match ? match[1].trim() : ''; }).filter(m => m).join('\\n- ');\nconst usedPoems = completedRows.map(r => `${r.poem_author || ''} - ${r.poem_work || ''}`).filter(p => p !== ' - ').join('\\n- ');\n\nreturn {\n  dayIndex: TARGET_DAY_INDEX,\n  galleryTotal: galleryTotal,\n  artistName: artistName,\n  usedPractices: usedPractices,\n  usedMusic: usedMusic,\n  usedPoems: usedPoems\n};"
+            },
+            "id": "find-target",
+            "name": "Find Target Row",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                440,
+                0
+            ]
+        },
+        {
+            "parameters": {
+                "jsCode": "const data = $input.first().json;\nconst dayIndex = data.dayIndex;\nconst galleryTotal = data.galleryTotal;\nconst artistName = data.artistName;\nconst usedPractices = data.usedPractices;\nconst usedMusic = data.usedMusic;\nconst usedPoems = data.usedPoems;\n\nconst prompt = `You are generating ONE edition of \"Daily Sublime\" (Gallery ${dayIndex} of ${galleryTotal}) for ${artistName} only. THIS MUST BE WORTH €19.\n\nIMPORTANT: Do NOT include any image URLs. URLs will be fetched from Wikimedia API separately. Focus ONLY on written content and EXACT painting titles.\n\nThe reader must feel: engaged and curious, quietly smarter, confident in their intelligence, motivated to do a 2 to 7 minute meditative practice today.\n\nTHREE GOALS:\n1. ART FAMILIARITY - Show art, TRUE sticky story, memorable association\n2. ART APPRECIATION - Reveal style/technique, why_it_matters, five notice bullets\n3. LIFE TRANSFER - Music, poem, meditative practice\n\nMOST FAMOUS WORKS: Prioritize the painter's 5 most famous, widely recognized works for hero, art2, style_art, mini1, mini2. Use EXACT official painting titles as they appear on Wikimedia Commons.\n\nSTYLE: Authored, sophisticated, accessible. No clichés. No em dashes. No AI signposting words.\n\nPRACTICE: 2-7 minutes, meditative, derived from painter's technique, applies to real life. At least ONE notice_bullet must include a micro experiment.\n\nPOEM: MANDATORY. 1-2 lines only. Different from: ${usedPoems || 'None'}\n\nMUSIC: Different from: ${usedMusic || 'None'}\n\nDEDUPLICATION - Practice must be different from: ${usedPractices || 'None'}\n\nOUTPUT: Return ONLY a JSON object with these fields:\n{\n  \"exhibition_title\": \"3-6 words\",\n  \"hook_text\": \"40-90 words\",\n  \"why_it_matters\": \"140-240 words\",\n  \"notice_bullet_1\": \"18-45 words about hero\",\n  \"notice_bullet_2\": \"18-45 words about art2\",\n  \"notice_bullet_3\": \"18-45 words about style_art\",\n  \"notice_bullet_4\": \"18-45 words about mini1\",\n  \"notice_bullet_5\": \"18-45 words about mini2 with micro experiment\",\n  \"practice\": \"90-160 words\",\n  \"sticky_story\": \"100-180 words TRUE story\",\n  \"sticky_story_source_url\": \"URL\",\n  \"cultural_music\": \"Track - Artist (MUSIC OF THE DAY:) reason\",\n  \"philosophy\": \"90-170 words\",\n  \"poem_line_1\": \"first line\",\n  \"poem_line_2\": \"second line or empty\",\n  \"poem_author\": \"poet name\",\n  \"poem_work\": \"poem title\",\n  \"poem_source_url\": \"URL\",\n  \"hero_title\": \"EXACT Wikimedia Commons title\",\n  \"hero_year\": \"year\",\n  \"hero_alt\": \"one sentence\",\n  \"art2_title\": \"EXACT title\",\n  \"art2_year\": \"year\",\n  \"art2_alt\": \"description\",\n  \"style_art_title\": \"EXACT title\",\n  \"style_art_year\": \"year\",\n  \"style_art_alt\": \"description\",\n  \"mini1_title\": \"EXACT title\",\n  \"mini1_year\": \"year\",\n  \"mini1_alt\": \"description\",\n  \"mini2_title\": \"EXACT title\",\n  \"mini2_year\": \"year\",\n  \"mini2_alt\": \"description\"\n}\n\nReturn ONLY the JSON.`;\n\nreturn { prompt, dayIndex, galleryTotal, artistName };"
+            },
+            "id": "build-prompt",
+            "name": "Build Content Prompt",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                660,
+                0
+            ]
+        },
+        {
+            "parameters": {
+                "modelId": {
+                    "__rl": true,
+                    "mode": "list",
+                    "value": "claude-sonnet-4-20250514"
+                },
+                "messages": {
+                    "values": [
+                        {
+                            "content": "={{ $json.prompt }}"
+                        }
+                    ]
+                },
+                "options": {
+                    "maxTokens": 16000
+                }
+            },
+            "id": "sonnet",
+            "name": "Sonnet - Write Content",
+            "type": "@n8n/n8n-nodes-langchain.anthropic",
+            "typeVersion": 1,
+            "position": [
+                880,
+                0
+            ],
+            "credentials": {
+                "anthropicApi": {
+                    "id": "NIeDO1IsjKD9lDhi",
+                    "name": "Anthropic account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "jsCode": "const prevData = $('Build Content Prompt').first().json;\nconst inputData = $input.first().json;\n\nlet rawResponse = '';\nif (inputData.content && Array.isArray(inputData.content)) {\n  rawResponse = inputData.content.filter(i => i.type === 'text').map(i => i.text).join('');\n} else if (inputData.message && inputData.message.content) {\n  rawResponse = Array.isArray(inputData.message.content)\n    ? inputData.message.content.filter(i => i.type === 'text').map(i => i.text).join('')\n    : inputData.message.content;\n} else if (inputData.text) {\n  rawResponse = inputData.text;\n}\n\nif (!rawResponse) throw new Error('No response. Keys: ' + Object.keys(inputData).join(', '));\n\nlet content = {};\nconst jsonMatch = rawResponse.match(/\\{[\\s\\S]*\\}/);\nif (jsonMatch) content = JSON.parse(jsonMatch[0]);\nelse throw new Error('No JSON found');\n\nreturn {\n  content,\n  dayIndex: prevData.dayIndex,\n  galleryTotal: prevData.galleryTotal,\n  artistName: prevData.artistName\n};"
+            },
+            "id": "parse-content",
+            "name": "Parse Content",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                1100,
+                0
+            ]
+        },
+        {
+            "parameters": {
+                "jsCode": "const data = $input.first().json;\nconst content = data.content;\nconst artistName = data.artistName;\n\n// Create search queries for Wikimedia API\nconst paintings = [\n  { field: 'hero', title: content.hero_title },\n  { field: 'art2', title: content.art2_title },\n  { field: 'style_art', title: content.style_art_title },\n  { field: 'mini1', title: content.mini1_title },\n  { field: 'mini2', title: content.mini2_title },\n  { field: 'artist_portrait', title: artistName + ' self portrait' }\n];\n\nreturn paintings.map(p => ({\n  json: {\n    field: p.field,\n    searchQuery: p.title + ' ' + artistName,\n    content: content,\n    dayIndex: data.dayIndex,\n    galleryTotal: data.galleryTotal,\n    artistName: artistName\n  }\n}));"
+            },
+            "id": "prepare-searches",
+            "name": "Prepare Wikimedia Searches",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                1320,
+                0
+            ]
+        },
+        {
+            "parameters": {
+                "method": "GET",
+                "url": "=https://commons.wikimedia.org/w/api.php?action=query&list=search&srsearch={{ encodeURIComponent($json.searchQuery) }}&srnamespace=6&srlimit=1&format=json",
+                "options": {
+                    "timeout": 10000
+                }
+            },
+            "id": "wikimedia-search",
+            "name": "Search Wikimedia",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.2,
+            "position": [
+                1540,
+                0
+            ],
+            "continueOnFail": true
+        },
+        {
+            "parameters": {
+                "jsCode": "const allResults = $input.all();\nconst prepareData = $('Prepare Wikimedia Searches').all();\n\nconst urls = {};\n\nfor (let i = 0; i < allResults.length; i++) {\n  const result = allResults[i].json;\n  const field = prepareData[i].json.field;\n  \n  try {\n    const searchResults = result.query?.search || [];\n    if (searchResults.length > 0) {\n      // Get the file title\n      const fileTitle = searchResults[0].title;\n      // Convert to direct image URL\n      // Format: File:NAME.jpg -> https://upload.wikimedia.org/wikipedia/commons/X/XX/NAME.jpg\n      const fileName = fileTitle.replace('File:', '');\n      const encodedName = encodeURIComponent(fileName.replace(/ /g, '_'));\n      \n      // Use Wikimedia's special page to get direct URL\n      urls[field + '_url'] = `https://commons.wikimedia.org/wiki/Special:FilePath/${encodedName}?width=1000`;\n    } else {\n      urls[field + '_url'] = '';\n    }\n  } catch (e) {\n    urls[field + '_url'] = '';\n  }\n}\n\n// Get content from first item\nconst firstItem = prepareData[0].json;\nconst content = firstItem.content;\n\nconst combined = {\n  day_index: String(firstItem.dayIndex),\n  gallery_total: String(firstItem.galleryTotal),\n  artist_name: firstItem.artistName,\n  brand_name: 'Daily Sublime',\n  exhibition_title: content.exhibition_title || '',\n  hook_text: content.hook_text || '',\n  why_it_matters: content.why_it_matters || '',\n  notice_bullet_1: content.notice_bullet_1 || '',\n  notice_bullet_2: content.notice_bullet_2 || '',\n  notice_bullet_3: content.notice_bullet_3 || '',\n  notice_bullet_4: content.notice_bullet_4 || '',\n  notice_bullet_5: content.notice_bullet_5 || '',\n  practice: content.practice || '',\n  sticky_story: content.sticky_story || '',\n  sticky_story_source_url: content.sticky_story_source_url || '',\n  cultural_music: content.cultural_music || '',\n  philosophy: content.philosophy || '',\n  poem_line_1: content.poem_line_1 || '',\n  poem_line_2: content.poem_line_2 || '',\n  poem_author: content.poem_author || '',\n  poem_work: content.poem_work || '',\n  poem_source_url: content.poem_source_url || '',\n  hero_title: content.hero_title || '',\n  hero_year: content.hero_year || '',\n  hero_alt: content.hero_alt || '',\n  hero_url: urls.hero_url || '',\n  art2_title: content.art2_title || '',\n  art2_year: content.art2_year || '',\n  art2_alt: content.art2_alt || '',\n  art2_url: urls.art2_url || '',\n  style_art_title: content.style_art_title || '',\n  style_art_year: content.style_art_year || '',\n  style_art_alt: content.style_art_alt || '',\n  style_art_url: urls.style_art_url || '',\n  mini1_title: content.mini1_title || '',\n  mini1_year: content.mini1_year || '',\n  mini1_alt: content.mini1_alt || '',\n  mini1_url: urls.mini1_url || '',\n  mini2_title: content.mini2_title || '',\n  mini2_year: content.mini2_year || '',\n  mini2_alt: content.mini2_alt || '',\n  mini2_url: urls.mini2_url || '',\n  artist_portrait_url: urls.artist_portrait_url || ''\n};\n\nreturn {\n  combined,\n  dayIndex: firstItem.dayIndex,\n  artistName: firstItem.artistName\n};"
+            },
+            "id": "combine-urls",
+            "name": "Combine Content + URLs",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                1760,
+                0
+            ]
+        },
+        {
+            "parameters": {
+                "operation": "update",
+                "documentId": {
+                    "__rl": true,
+                    "mode": "id",
+                    "value": "1FJt_0YhPhdsfURuufY0zVO_ULhCw1b41Kc2nbYukJu0"
+                },
+                "sheetName": {
+                    "__rl": true,
+                    "mode": "list",
+                    "value": "lessonss"
+                },
+                "columns": {
+                    "mappingMode": "defineBelow",
+                    "value": {
+                        "exhibition_title": "={{ $json.combined.exhibition_title }}",
+                        "artist_portrait_url": "={{ $json.combined.artist_portrait_url }}",
+                        "brand_name": "={{ $json.combined.brand_name }}",
+                        "hero_url": "={{ $json.combined.hero_url }}",
+                        "hero_title": "={{ $json.combined.hero_title }}",
+                        "hero_year": "={{ $json.combined.hero_year }}",
+                        "hero_alt": "={{ $json.combined.hero_alt }}",
+                        "hook_text": "={{ $json.combined.hook_text }}",
+                        "art2_url": "={{ $json.combined.art2_url }}",
+                        "art2_title": "={{ $json.combined.art2_title }}",
+                        "art2_year": "={{ $json.combined.art2_year }}",
+                        "art2_alt": "={{ $json.combined.art2_alt }}",
+                        "why_it_matters": "={{ $json.combined.why_it_matters }}",
+                        "notice_bullet_1": "={{ $json.combined.notice_bullet_1 }}",
+                        "notice_bullet_2": "={{ $json.combined.notice_bullet_2 }}",
+                        "notice_bullet_3": "={{ $json.combined.notice_bullet_3 }}",
+                        "notice_bullet_4": "={{ $json.combined.notice_bullet_4 }}",
+                        "notice_bullet_5": "={{ $json.combined.notice_bullet_5 }}",
+                        "practice": "={{ $json.combined.practice }}",
+                        "style_art_url": "={{ $json.combined.style_art_url }}",
+                        "style_art_title": "={{ $json.combined.style_art_title }}",
+                        "style_art_year": "={{ $json.combined.style_art_year }}",
+                        "style_art_alt": "={{ $json.combined.style_art_alt }}",
+                        "sticky_story": "={{ $json.combined.sticky_story }}",
+                        "cultural_music": "={{ $json.combined.cultural_music }}",
+                        "philosophy": "={{ $json.combined.philosophy }}",
+                        "mini1_url": "={{ $json.combined.mini1_url }}",
+                        "mini1_title": "={{ $json.combined.mini1_title }}",
+                        "mini1_year": "={{ $json.combined.mini1_year }}",
+                        "mini1_alt": "={{ $json.combined.mini1_alt }}",
+                        "mini2_url": "={{ $json.combined.mini2_url }}",
+                        "mini2_title": "={{ $json.combined.mini2_title }}",
+                        "mini2_year": "={{ $json.combined.mini2_year }}",
+                        "mini2_alt": "={{ $json.combined.mini2_alt }}",
+                        "poem_line_1": "={{ $json.combined.poem_line_1 }}",
+                        "poem_line_2": "={{ $json.combined.poem_line_2 }}",
+                        "poem_author": "={{ $json.combined.poem_author }}",
+                        "poem_work": "={{ $json.combined.poem_work }}",
+                        "poem_source_url": "={{ $json.combined.poem_source_url }}",
+                        "sticky_story_source_url": "={{ $json.combined.sticky_story_source_url }}"
+                    },
+                    "matchingColumns": [
+                        "day_index"
+                    ],
+                    "schema": [
+                        {
+                            "id": "day_index",
+                            "displayName": "day_index",
+                            "type": "string",
+                            "canBeUsedToMatch": true,
+                            "defaultMatch": true
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "id": "update-sheet",
+            "name": "Update Sheet",
+            "type": "n8n-nodes-base.googleSheets",
+            "typeVersion": 4.5,
+            "position": [
+                1980,
+                0
+            ],
+            "credentials": {
+                "googleSheetsOAuth2Api": {
+                    "id": "L582zHwoJIb41z4V",
+                    "name": "Google Sheets account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "jsCode": "const data = $('Combine Content + URLs').first().json;\nreturn {\n  response: `✅ Edition generated for Day ${data.dayIndex}: ${data.artistName}\\n\\n📝 Content by Claude Sonnet 4\\n🖼️ URLs from Wikimedia Commons API\\n\\nSaved to Google Sheet.`\n};"
+            },
+            "id": "success",
+            "name": "Success Response",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                2200,
+                0
+            ]
+        }
+    ],
+    "connections": {
+        "Receive Day Number": {
+            "main": [
+                [
+                    {
+                        "node": "Read All Lessons",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Read All Lessons": {
+            "main": [
+                [
+                    {
+                        "node": "Find Target Row",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Find Target Row": {
+            "main": [
+                [
+                    {
+                        "node": "Build Content Prompt",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Build Content Prompt": {
+            "main": [
+                [
+                    {
+                        "node": "Sonnet - Write Content",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Sonnet - Write Content": {
+            "main": [
+                [
+                    {
+                        "node": "Parse Content",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Parse Content": {
+            "main": [
+                [
+                    {
+                        "node": "Prepare Wikimedia Searches",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Prepare Wikimedia Searches": {
+            "main": [
+                [
+                    {
+                        "node": "Search Wikimedia",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Search Wikimedia": {
+            "main": [
+                [
+                    {
+                        "node": "Combine Content + URLs",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Combine Content + URLs": {
+            "main": [
+                [
+                    {
+                        "node": "Update Sheet",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Update Sheet": {
+            "main": [
+                [
+                    {
+                        "node": "Success Response",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    },
+    "settings": {
+        "executionOrder": "v1"
+    },
+    "staticData": null,
+    "tags": [],
+    "pinData": {}
+}

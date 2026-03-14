@@ -1,0 +1,422 @@
+{
+    "name": "YouTube Scraper to Email Drafts - Daily Sublime",
+    "nodes": [
+        {
+            "parameters": {
+                "options": {}
+            },
+            "id": "chat-trigger",
+            "name": "Chat Trigger",
+            "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+            "typeVersion": 1.1,
+            "position": [
+                240,
+                300
+            ],
+            "webhookId": "youtube-scraper-chat"
+        },
+        {
+            "parameters": {
+                "method": "POST",
+                "url": "http://localhost:5000/scrape",
+                "sendBody": true,
+                "specifyBody": "json",
+                "jsonBody": "={{ JSON.stringify({ query: $json.chatInput, max_emails: 10 }) }}",
+                "options": {
+                    "timeout": 120000
+                }
+            },
+            "id": "http-scraper",
+            "name": "Scrape YouTube Emails",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.2,
+            "position": [
+                460,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "fieldToSplitOut": "={{ $json }}",
+                "options": {}
+            },
+            "id": "split-items",
+            "name": "Split Into Items",
+            "type": "n8n-nodes-base.splitOut",
+            "typeVersion": 1,
+            "position": [
+                680,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "operation": "append",
+                "documentId": {
+                    "__rl": true,
+                    "value": "YOUR_GOOGLE_SHEET_ID",
+                    "mode": "id"
+                },
+                "sheetName": {
+                    "__rl": true,
+                    "value": "Sheet1",
+                    "mode": "list"
+                },
+                "columns": {
+                    "mappingMode": "defineBelow",
+                    "value": {
+                        "Influencer_Name": "={{ $json.Influencer_Name }}",
+                        "Recipient_Email": "={{ $json.Recipient_Email }}",
+                        "Status": "Pending",
+                        "Source": "={{ $json.Source }}",
+                        "Instagram": "={{ $json.Instagram }}",
+                        "Website": "={{ $json.Website }}",
+                        "Subscriber_Count": "={{ $json.Subscriber_Count }}",
+                        "Description": "={{ $json.Description }}",
+                        "Channel_ID": "={{ $json.Channel_ID }}"
+                    },
+                    "matchingColumns": []
+                },
+                "options": {}
+            },
+            "id": "sheets-append",
+            "name": "Add to Google Sheet",
+            "type": "n8n-nodes-base.googleSheets",
+            "typeVersion": 4.4,
+            "position": [
+                900,
+                300
+            ],
+            "credentials": {
+                "googleSheetsOAuth2Api": {
+                    "id": "YOUR_SHEETS_CRED_ID",
+                    "name": "Google Sheets"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "jsCode": "// Store the row number from Google Sheets append response\nconst inputData = $input.item.json;\nconst rowNumber = inputData.row_number || inputData.updates?.updatedRows || $runIndex + 2; // +2 for header row\n\nreturn {\n  ...inputData,\n  row_number: rowNumber,\n  // Pass through original scraped data\n  Influencer_Name: inputData.Influencer_Name || $('Split Into Items').item.json.Influencer_Name,\n  Recipient_Email: inputData.Recipient_Email || $('Split Into Items').item.json.Recipient_Email,\n  Description: inputData.Description || $('Split Into Items').item.json.Description,\n  Website: inputData.Website || $('Split Into Items').item.json.Website,\n  Instagram: inputData.Instagram || $('Split Into Items').item.json.Instagram\n};"
+            },
+            "id": "store-row",
+            "name": "Store Row Number",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                1120,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "model": "gpt-4o-mini",
+                "options": {
+                    "temperature": 0.7
+                },
+                "messages": {
+                    "messageValues": [
+                        {
+                            "message": "You are a personalization expert for cold outreach emails. Given information about a YouTube influencer, generate personalized content for an email. Be specific, genuine, and not generic.\n\nOutput ONLY valid JSON with these exact fields:\n- specific_topic: What topic they focus on (2-4 words)\n- Recent_Work_Compliment: A genuine, specific compliment about their content (1-2 sentences)\n- common_approach: What most creators in their space typically do (brief phrase)\n- their_unique_angle: What makes this creator different/special (brief phrase)\n- their_domain: Their content area in full (e.g., \"personal finance\", \"morning routines\")\n- their_domain_short: Shortened reference (e.g., \"money\", \"productivity\")\n\nBe specific and personalized. If you don't have enough info, make educated guesses based on their niche."
+                        },
+                        {
+                            "type": "user",
+                            "message": "=Generate personalized email content for this influencer:\n\nName: {{ $json.Influencer_Name }}\nDescription: {{ $json.Description || 'No description available' }}\nWebsite: {{ $json.Website || 'None' }}\nInstagram: {{ $json.Instagram || 'None' }}"
+                        }
+                    ]
+                }
+            },
+            "id": "ai-personalize",
+            "name": "AI Generate Content",
+            "type": "@n8n/n8n-nodes-langchain.openAi",
+            "typeVersion": 1.4,
+            "position": [
+                1340,
+                300
+            ],
+            "credentials": {
+                "openAiApi": {
+                    "id": "YOUR_OPENAI_CRED_ID",
+                    "name": "OpenAI"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "jsCode": "// Parse AI response and merge with original data\nconst originalData = $('Store Row Number').item.json;\nconst aiResponse = $input.item.json.choices?.[0]?.message?.content || $input.item.json.message?.content || $input.item.json.text || '{}';\n\nlet aiContent;\ntry {\n  // Try to parse the JSON response\n  const cleanedResponse = aiResponse.replace(/```json\\n?|```\\n?/g, '').trim();\n  aiContent = JSON.parse(cleanedResponse);\n} catch (e) {\n  // Fallback defaults if parsing fails\n  aiContent = {\n    specific_topic: 'their content',\n    Recent_Work_Compliment: 'I really appreciate the quality and depth of your content',\n    common_approach: 'share surface-level tips',\n    their_unique_angle: 'go deeper and provide real value',\n    their_domain: 'content creation',\n    their_domain_short: 'content'\n  };\n}\n\nreturn {\n  ...originalData,\n  specific_topic: aiContent.specific_topic || 'their content',\n  Recent_Work_Compliment: aiContent.Recent_Work_Compliment || 'I really appreciate your content',\n  common_approach: aiContent.common_approach || 'share surface-level tips',\n  their_unique_angle: aiContent.their_unique_angle || 'go deeper',\n  their_domain: aiContent.their_domain || 'content creation',\n  their_domain_short: aiContent.their_domain_short || 'content'\n};"
+            },
+            "id": "parse-ai",
+            "name": "Parse AI Response",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                1560,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "jsCode": "// PERSONAL OUTREACH EMAIL - WITH DUAL CTA BUTTONS\n// Integrates with scraped data and AI-generated content\n\nfunction escapeHtml(text) {\n    if (!text) return '';\n    return String(text)\n        .replace(/&/g, '&amp;')\n        .replace(/</g, '&lt;')\n        .replace(/>/g, '&gt;')\n        .replace(/\"/g, '&quot;')\n        .replace(/'/g, '&#039;');\n}\n\n// Pull data from previous nodes\nconst data = $input.item.json;\nconst name = escapeHtml(data.Influencer_Name || 'there');\nconst email = data.Recipient_Email || '';\nconst topic = escapeHtml(data.specific_topic || '');\nconst compliment = escapeHtml(data.Recent_Work_Compliment || '');\nconst commonApproach = escapeHtml(data.common_approach || '');\nconst uniqueAngle = escapeHtml(data.their_unique_angle || '');\nconst domain = escapeHtml(data.their_domain || 'their field');\nconst domainShort = escapeHtml(data.their_domain_short || 'it');\nconst row = data.row_number || '';\n\n// Build HTML email\nconst htmlBody = `<!DOCTYPE html>\n<html lang=\"en\" xmlns:v=\"urn:schemas-microsoft-com:vml\" xmlns:o=\"urn:schemas-microsoft-com:office:office\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n    <meta name=\"x-apple-disable-message-reformatting\">\n    <meta name=\"format-detection\" content=\"telephone=no,address=no,email=no,date=no,url=no\">\n    <title>Daily Sublime Partnership</title>\n    <!--[if mso]>\n    <noscript>\n        <xml>\n            <o:OfficeDocumentSettings>\n                <o:PixelsPerInch>96</o:PixelsPerInch>\n            </o:OfficeDocumentSettings>\n        </xml>\n    </noscript>\n    <style>\n        table { border-collapse: collapse; }\n        td { font-family: Arial, sans-serif; }\n    </style>\n    <![endif]-->\n    <style>\n        body, table, td, p, a, li, blockquote {\n            -webkit-text-size-adjust: 100%;\n            -ms-text-size-adjust: 100%;\n        }\n        table, td {\n            mso-table-lspace: 0pt;\n            mso-table-rspace: 0pt;\n        }\n        img {\n            -ms-interpolation-mode: bicubic;\n            border: 0;\n            height: auto;\n            line-height: 100%;\n            outline: none;\n            text-decoration: none;\n        }\n        body {\n            margin: 0 !important;\n            padding: 0 !important;\n            width: 100% !important;\n            height: 100% !important;\n        }\n        a {\n            color: #2C5F4F;\n            text-decoration: none;\n        }\n        a:hover {\n            color: #1B4332;\n        }\n        @media screen and (max-width: 600px) {\n            .container-padding {\n                padding: 40px 20px !important;\n            }\n            .section-break {\n                width: 40px !important;\n            }\n            .body-text {\n                line-height: 1.7 !important;\n            }\n            .dual-btn {\n                display: block !important;\n                width: 100% !important;\n                margin-bottom: 12px !important;\n            }\n            .dual-btn-cell {\n                display: block !important;\n                padding: 0 0 12px 0 !important;\n            }\n        }\n    </style>\n</head>\n<body style=\"margin: 0; padding: 0; background-color: #F5F5F5; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;\">\n    <!-- Preheader -->\n    <div style=\"display: none; font-size: 1px; color: #F5F5F5; line-height: 1px; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden;\">\n        Been watching your work on ${topic}. Built something I think would click with your community.\n        &zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;\n    </div>\n\n    <table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"100%\" style=\"background-color: #F5F5F5;\">\n        <tr>\n            <td align=\"center\" style=\"padding: 40px 20px;\">\n                <!--[if mso]>\n                <table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"540\">\n                <tr>\n                <td>\n                <![endif]-->\n\n                <table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"100%\" style=\"max-width: 540px; background-color: #FFFFFF;\">\n                    <tr>\n                        <td class=\"container-padding\" style=\"padding: 60px 40px;\">\n\n                            <!-- Header Badge -->\n                            <table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"100%\">\n                                <tr>\n                                    <td align=\"center\" style=\"padding-bottom: 32px;\">\n                                        <span style=\"font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif; font-size: 9px; letter-spacing: 2.5px; text-transform: uppercase; color: #8B7F77; font-weight: 600;\">\n                                            ✦&nbsp; DAILY SUBLIME &nbsp;✦\n                                        </span>\n                                    </td>\n                                </tr>\n                            </table>\n\n                            <!-- Greeting -->\n                            <table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"100%\">\n                                <tr>\n                                    <td style=\"padding-bottom: 28px;\">\n                                        <p style=\"margin: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif; font-size: 18px; font-weight: 600; color: #1A1A1A; line-height: 1.4;\">\n                                            Hi ${name},\n                                        </p>\n                                    </td>\n                                </tr>\n                            </table>\n\n                            <!-- Body Content -->\n                            <table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"100%\">\n                                <tr>\n                                    <td class=\"body-text\" style=\"font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif; font-size: 16px; line-height: 1.65; color: #1A1A1A;\">\n                                        <p style=\"margin: 0 0 20px 0; max-width: 520px;\">I've been watching your work on ${topic}.</p>\n                                        <p style=\"margin: 0 0 20px 0; max-width: 520px;\">${compliment}.</p>\n                                        <p style=\"margin: 0 0 20px 0; max-width: 520px;\">That's rare. Most creators in your space just ${commonApproach}, but you actually ${uniqueAngle}.</p>\n                                        <p style=\"margin: 0; max-width: 520px;\">I built something I think would click with your audience. Wanted to run it by you.</p>\n                                    </td>\n                                </tr>\n                            </table>\n\n                            <!-- Section Break -->\n                            <table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"100%\">\n                                <tr>\n                                    <td align=\"center\" style=\"padding: 32px 0;\">\n                                        <div class=\"section-break\" style=\"width: 60px; height: 1px; background-color: #E0E0E0;\"></div>\n                                    </td>\n                                </tr>\n                            </table>\n\n                            <!-- Product Description -->\n                            <table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"100%\">\n                                <tr>\n                                    <td class=\"body-text\" style=\"font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif; font-size: 16px; line-height: 1.65; color: #1A1A1A;\">\n                                        <p style=\"margin: 0 0 20px 0; max-width: 520px;\">It's called Daily Sublime.</p>\n                                        <p style=\"margin: 0 0 20px 0; max-width: 520px;\">Every morning, your inbox gets one artwork with a guided 10-minute analysis.</p>\n                                        <p style=\"margin: 0 0 20px 0; max-width: 520px;\">Not art history lectures. Not fluffy \"appreciate beauty\" stuff.</p>\n                                        <p style=\"margin: 0 0 20px 0; max-width: 520px;\">Actual training in visual literacy. How to read composition, color theory, symbolism. The same way you teach people to read ${domain}.</p>\n                                        <p style=\"margin: 0; max-width: 520px;\">It's for people who want to see the world more clearly.</p>\n                                    </td>\n                                </tr>\n                            </table>\n\n                            <!-- Section Break -->\n                            <table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"100%\">\n                                <tr>\n                                    <td align=\"center\" style=\"padding: 32px 0;\">\n                                        <div class=\"section-break\" style=\"width: 60px; height: 1px; background-color: #E0E0E0;\"></div>\n                                    </td>\n                                </tr>\n                            </table>\n\n                            <!-- Why I'm Reaching Out -->\n                            <table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"100%\">\n                                <tr>\n                                    <td class=\"body-text\" style=\"font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif; font-size: 16px; line-height: 1.65; color: #1A1A1A;\">\n                                        <p style=\"margin: 0 0 20px 0; max-width: 520px;\">Here's why I'm reaching out.</p>\n                                        <p style=\"margin: 0 0 20px 0; max-width: 520px;\">I'm not doing a mass affiliate blast. I'm talking to maybe 10 creators whose audiences actually think deeply about things.</p>\n                                        <p style=\"margin: 0 0 20px 0; max-width: 520px;\">Your people care about understanding systems. About looking past surface narratives.</p>\n                                        <p style=\"margin: 0 0 20px 0; max-width: 520px;\">This trains the same muscle, just for visual culture instead of ${domainShort}.</p>\n                                        <p style=\"margin: 0; max-width: 520px;\">If your audience reads your stuff, they'd probably vibe with this.</p>\n                                    </td>\n                                </tr>\n                            </table>\n\n                            <!-- Section Break -->\n                            <table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"100%\">\n                                <tr>\n                                    <td align=\"center\" style=\"padding: 32px 0;\">\n                                        <div class=\"section-break\" style=\"width: 60px; height: 1px; background-color: #E0E0E0;\"></div>\n                                    </td>\n                                </tr>\n                            </table>\n\n                            <!-- Credibility Block -->\n                            <table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"100%\">\n                                <tr>\n                                    <td class=\"body-text\" style=\"font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif; font-size: 16px; line-height: 1.65; color: #1A1A1A;\">\n                                        <p style=\"margin: 0 0 20px 0; max-width: 520px;\">Quick context on me:</p>\n                                        <p style=\"margin: 0 0 20px 0; max-width: 520px;\">I've spent 3 years building this. Studied composition under practicing artists. Read 40+ books on aesthetics and visual theory.</p>\n                                        <p style=\"margin: 0 0 20px 0; max-width: 520px;\">This isn't a side hustle. It's the thing I'm building my life around.</p>\n                                        <p style=\"margin: 0; max-width: 520px;\">I'm obsessive about quality because I know if this sucks, it reflects on anyone who shares it.</p>\n                                    </td>\n                                </tr>\n                            </table>\n\n                            <!-- Section Break -->\n                            <table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"100%\">\n                                <tr>\n                                    <td align=\"center\" style=\"padding: 32px 0;\">\n                                        <div class=\"section-break\" style=\"width: 60px; height: 1px; background-color: #E0E0E0;\"></div>\n                                    </td>\n                                </tr>\n                            </table>\n\n                            <!-- The Ask -->\n                            <table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"100%\">\n                                <tr>\n                                    <td class=\"body-text\" style=\"font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif; font-size: 16px; line-height: 1.65; color: #1A1A1A;\">\n                                        <p style=\"margin: 0 0 24px 0; max-width: 520px; font-size: 17px; font-weight: 600;\">Want to try it for a week?</p>\n                                        <p style=\"margin: 0 0 20px 0; max-width: 520px;\">I'll send you free access. No commitment, no expectations.</p>\n                                        <p style=\"margin: 0 0 20px 0; max-width: 520px;\">If it clicks for you and you think your audience would actually use it, we can talk about what a partnership looks like.</p>\n                                        <p style=\"margin: 0; max-width: 520px;\">If not, no harm done. I'd still love to hear what you think.</p>\n                                    </td>\n                                </tr>\n                            </table>\n\n                            <!-- DUAL CTA BUTTONS -->\n                            <table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"100%\">\n                                <tr>\n                                    <td align=\"center\" style=\"padding: 32px 0;\">\n                                        <table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">\n                                            <tr>\n                                                <!-- Primary Button: Let's Talk -->\n                                                <td align=\"center\" valign=\"top\" class=\"dual-btn-cell\" style=\"padding: 0 8px;\">\n                                                    <table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" class=\"dual-btn\">\n                                                        <tr>\n                                                            <td align=\"center\" style=\"background-color: #3D5A47; border-radius: 6px; box-shadow: 0 2px 8px rgba(61, 90, 71, 0.25);\">\n                                                                <a href=\"mailto:sinadehesh@gmail.com?subject=Let's%20talk%20about%20Daily%20Sublime%20partnership&body=Hi%20Sina%2C%0D%0A%0D%0AI'm%20interested%20in%20discussing%20the%20Daily%20Sublime%20partnership.%0D%0A%0D%0AMy%20platform%3A%20%0D%0AAudience%20size%3A%20%0D%0A%0D%0ALooking%20forward%20to%20connecting!\" style=\"display: block; padding: 14px 28px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif; font-size: 14px; font-weight: 600; color: #FFFFFF; text-decoration: none; text-align: center;\">Let's Talk</a>\n                                                            </td>\n                                                        </tr>\n                                                        <tr>\n                                                            <td align=\"center\" style=\"padding-top: 6px;\">\n                                                                <span style=\"font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif; font-size: 12px; color: #888888;\">Ready to discuss</span>\n                                                            </td>\n                                                        </tr>\n                                                    </table>\n                                                </td>\n                                                <!-- Secondary Button: Try It First -->\n                                                <td align=\"center\" valign=\"top\" class=\"dual-btn-cell\" style=\"padding: 0 8px;\">\n                                                    <table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" class=\"dual-btn\">\n                                                        <tr>\n                                                            <td align=\"center\" style=\"background-color: #FFFFFF; border: 2px solid #3D5A47; border-radius: 6px;\">\n                                                                <a href=\"mailto:sinadehesh@gmail.com?subject=I'd%20like%20to%20try%20Daily%20Sublime%20first&body=Hi%20Sina%2C%0D%0A%0D%0AI'm%20interested%20in%20the%20partnership%20but%20would%20like%20to%20experience%20the%20magazine%20myself%20first.%0D%0A%0D%0APlease%20send%20me%20access!\" style=\"display: block; padding: 12px 28px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif; font-size: 14px; font-weight: 600; color: #3D5A47; text-decoration: none; text-align: center;\">Try It First</a>\n                                                            </td>\n                                                        </tr>\n                                                        <tr>\n                                                            <td align=\"center\" style=\"padding-top: 6px;\">\n                                                                <span style=\"font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif; font-size: 12px; color: #888888;\">Get free access</span>\n                                                            </td>\n                                                        </tr>\n                                                    </table>\n                                                </td>\n                                            </tr>\n                                        </table>\n                                        <!-- Website link -->\n                                        <table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"margin-top: 16px;\">\n                                            <tr>\n                                                <td align=\"center\" style=\"font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif; font-size: 13px; color: #666666;\">\n                                                    or explore <a href=\"https://daily.sinadehesh.com\" style=\"color: #2C5F4F; text-decoration: underline; font-weight: 500;\">daily.sinadehesh.com</a>\n                                                </td>\n                                            </tr>\n                                        </table>\n                                    </td>\n                                </tr>\n                            </table>\n\n                            <!-- Signature -->\n                            <table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"100%\">\n                                <tr>\n                                    <td style=\"padding-top: 40px;\">\n                                        <p style=\"margin: 0 0 4px 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif; font-size: 16px; font-weight: 500; color: #1A1A1A;\">Sina</p>\n                                        <p style=\"margin: 0 0 4px 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif; font-size: 14px; font-weight: 400; color: #6B6B6B;\">Creator, Daily Sublime</p>\n                                        <p style=\"margin: 0;\"><a href=\"https://daily.sinadehesh.com\" style=\"font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif; font-size: 14px; color: #2C5F4F; text-decoration: none;\">daily.sinadehesh.com</a></p>\n                                    </td>\n                                </tr>\n                            </table>\n\n                            <!-- P.S. Section -->\n                            <table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"100%\">\n                                <tr>\n                                    <td style=\"padding-top: 32px; border-top: 1px solid #E8E8E8; margin-top: 32px;\">\n                                        <p style=\"margin: 24px 0 0 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif; font-size: 15px; line-height: 1.6; color: #4A4A4A;\">\n                                            P.S. The partnership model is 50/50 revenue split on anyone who subscribes through you. Lifetime recurring. But that's only relevant if you actually like the product first.\n                                        </p>\n                                    </td>\n                                </tr>\n                            </table>\n\n                            <!-- Footer -->\n                            <table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"100%\">\n                                <tr>\n                                    <td style=\"padding-top: 40px; border-top: 1px solid #E8E8E8; margin-top: 40px;\">\n                                        <p style=\"margin: 24px 0 0 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif; font-size: 13px; line-height: 1.5; color: #999999; text-align: center;\">\n                                            You're receiving this because I thought Daily Sublime might interest you based on your content. Not your thing? Just reply and let me know—I won't follow up.\n                                        </p>\n                                    </td>\n                                </tr>\n                            </table>\n\n                        </td>\n                    </tr>\n                </table>\n\n                <!--[if mso]>\n                </td>\n                </tr>\n                </table>\n                <![endif]-->\n            </td>\n        </tr>\n    </table>\n</body>\n</html>`;\n\n// Build plain text version\nconst plainText = `Hi ${name},\n\nI've been watching your work on ${topic}.\n\n${compliment}.\n\nThat's rare. Most creators in your space just ${commonApproach}, but you actually ${uniqueAngle}.\n\nI built something I think would click with your audience. Wanted to run it by you.\n\n---\n\nIt's called Daily Sublime.\n\nEvery morning, your inbox gets one artwork with a guided 10-minute analysis.\n\nNot art history lectures. Not fluffy \"appreciate beauty\" stuff.\n\nActual training in visual literacy. How to read composition, color theory, symbolism. The same way you teach people to read ${domain}.\n\nIt's for people who want to see the world more clearly.\n\n---\n\nHere's why I'm reaching out.\n\nI'm not doing a mass affiliate blast. I'm talking to maybe 10 creators whose audiences actually think deeply about things.\n\nYour people care about understanding systems. About looking past surface narratives.\n\nThis trains the same muscle, just for visual culture instead of ${domainShort}.\n\nIf your audience reads your stuff, they'd probably vibe with this.\n\n---\n\nQuick context on me:\n\nI've spent 3 years building this. Studied composition under practicing artists. Read 40+ books on aesthetics and visual theory.\n\nThis isn't a side hustle. It's the thing I'm building my life around.\n\nI'm obsessive about quality because I know if this sucks, it reflects on anyone who shares it.\n\n---\n\nWant to try it for a week?\n\nI'll send you free access. No commitment, no expectations.\n\nIf it clicks for you and you think your audience would actually use it, we can talk about what a partnership looks like.\n\nIf not, no harm done. I'd still love to hear what you think.\n\n---\n\nReady to talk? Reply to this email with \"Let's talk\"\nWant to try it first? Reply with \"Send me access\"\n\nOr explore: daily.sinadehesh.com\n\n---\n\nSina\nCreator, Daily Sublime\ndaily.sinadehesh.com\n\nP.S. The partnership model is 50/50 revenue split on anyone who subscribes through you. Lifetime recurring. But that's only relevant if you actually like the product first.\n\n---\n\nYou're receiving this because I thought Daily Sublime might interest you based on your content. Not your thing? Just reply and let me know—I won't follow up.`;\n\nreturn {\n    email: email,\n    subject: `${name}, quick question about your audience`,\n    htmlBody: htmlBody,\n    plainText: plainText,\n    row_number: row\n};"
+            },
+            "id": "build-email",
+            "name": "Build Email",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                1780,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "resource": "draft",
+                "operation": "create",
+                "sendTo": "={{ $json.email }}",
+                "subject": "={{ $json.subject }}",
+                "emailType": "html",
+                "message": "={{ $json.htmlBody }}"
+            },
+            "id": "gmail-draft",
+            "name": "Create Draft",
+            "type": "n8n-nodes-base.gmail",
+            "typeVersion": 2.1,
+            "position": [
+                2000,
+                300
+            ],
+            "credentials": {
+                "gmailOAuth2": {
+                    "id": "YOUR_GMAIL_CRED_ID",
+                    "name": "Gmail"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "operation": "update",
+                "documentId": {
+                    "__rl": true,
+                    "value": "YOUR_GOOGLE_SHEET_ID",
+                    "mode": "id"
+                },
+                "sheetName": {
+                    "__rl": true,
+                    "value": "Sheet1",
+                    "mode": "list"
+                },
+                "columns": {
+                    "mappingMode": "defineBelow",
+                    "value": {
+                        "Status": "Drafted",
+                        "specific_topic": "={{ $('Parse AI Response').item.json.specific_topic }}",
+                        "Recent_Work_Compliment": "={{ $('Parse AI Response').item.json.Recent_Work_Compliment }}",
+                        "common_approach": "={{ $('Parse AI Response').item.json.common_approach }}",
+                        "their_unique_angle": "={{ $('Parse AI Response').item.json.their_unique_angle }}",
+                        "their_domain": "={{ $('Parse AI Response').item.json.their_domain }}",
+                        "their_domain_short": "={{ $('Parse AI Response').item.json.their_domain_short }}"
+                    },
+                    "matchingColumns": [
+                        "Recipient_Email"
+                    ]
+                },
+                "options": {
+                    "cellFormat": "USER_ENTERED"
+                }
+            },
+            "id": "sheets-update",
+            "name": "Update Status to Drafted",
+            "type": "n8n-nodes-base.googleSheets",
+            "typeVersion": 4.4,
+            "position": [
+                2220,
+                300
+            ],
+            "credentials": {
+                "googleSheetsOAuth2Api": {
+                    "id": "YOUR_SHEETS_CRED_ID",
+                    "name": "Google Sheets"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "aggregate": "aggregateAllItemData",
+                "options": {}
+            },
+            "id": "aggregate",
+            "name": "Aggregate Results",
+            "type": "n8n-nodes-base.aggregate",
+            "typeVersion": 1,
+            "position": [
+                2440,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "jsCode": "// Generate summary of the workflow execution\nconst items = $input.item.json.data || [];\nconst count = items.length;\n\nconst summary = `✅ Successfully created ${count} email draft${count !== 1 ? 's' : ''}!\n\nInfluencers processed:\n${items.map((item, i) => `${i + 1}. ${item.Influencer_Name || 'Unknown'} (${item.email || 'No email'})`).join('\\n')}\n\nAll leads have been:\n• Added to Google Sheet\n• Personalized with AI\n• Created as Gmail drafts\n• Status updated to \"Drafted\"\n\nCheck your Gmail Drafts folder to review and send!`;\n\nreturn {\n  summary: summary,\n  count: count,\n  items: items\n};"
+            },
+            "id": "summary",
+            "name": "Generate Summary",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                2660,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "respondWith": "text",
+                "responseText": "={{ $json.summary }}"
+            },
+            "id": "respond",
+            "name": "Respond to Chat",
+            "type": "n8n-nodes-base.respondToWebhook",
+            "typeVersion": 1.1,
+            "position": [
+                2880,
+                300
+            ]
+        }
+    ],
+    "connections": {
+        "Chat Trigger": {
+            "main": [
+                [
+                    {
+                        "node": "Scrape YouTube Emails",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Scrape YouTube Emails": {
+            "main": [
+                [
+                    {
+                        "node": "Split Into Items",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Split Into Items": {
+            "main": [
+                [
+                    {
+                        "node": "Add to Google Sheet",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Add to Google Sheet": {
+            "main": [
+                [
+                    {
+                        "node": "Store Row Number",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Store Row Number": {
+            "main": [
+                [
+                    {
+                        "node": "AI Generate Content",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "AI Generate Content": {
+            "main": [
+                [
+                    {
+                        "node": "Parse AI Response",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Parse AI Response": {
+            "main": [
+                [
+                    {
+                        "node": "Build Email",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Build Email": {
+            "main": [
+                [
+                    {
+                        "node": "Create Draft",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Create Draft": {
+            "main": [
+                [
+                    {
+                        "node": "Update Status to Drafted",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Update Status to Drafted": {
+            "main": [
+                [
+                    {
+                        "node": "Aggregate Results",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Aggregate Results": {
+            "main": [
+                [
+                    {
+                        "node": "Generate Summary",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Generate Summary": {
+            "main": [
+                [
+                    {
+                        "node": "Respond to Chat",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    },
+    "settings": {
+        "executionOrder": "v1"
+    },
+    "staticData": null,
+    "tags": [],
+    "pinData": {}
+}

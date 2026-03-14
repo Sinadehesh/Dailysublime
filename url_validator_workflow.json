@@ -1,0 +1,399 @@
+{
+    "name": "URL Validator for Daily Sublime",
+    "nodes": [
+        {
+            "parameters": {
+                "httpMethod": "POST",
+                "path": "validate-urls",
+                "responseMode": "lastNode",
+                "options": {}
+            },
+            "id": "webhook-trigger",
+            "name": "Trigger Validation",
+            "type": "n8n-nodes-base.webhook",
+            "typeVersion": 2,
+            "position": [
+                0,
+                0
+            ],
+            "webhookId": "validate-urls"
+        },
+        {
+            "parameters": {
+                "operation": "read",
+                "documentId": {
+                    "__rl": true,
+                    "mode": "id",
+                    "value": "1FJt_0YhPhdsfURuufY0zVO_ULhCw1b41Kc2nbYukJu0"
+                },
+                "sheetName": {
+                    "__rl": true,
+                    "mode": "list",
+                    "value": "lessonss"
+                },
+                "options": {}
+            },
+            "id": "read-sheet",
+            "name": "Read Lessons Sheet",
+            "type": "n8n-nodes-base.googleSheets",
+            "typeVersion": 4.5,
+            "position": [
+                220,
+                0
+            ],
+            "credentials": {
+                "googleSheetsOAuth2Api": {
+                    "id": "YOUR_GOOGLE_CREDENTIALS_ID",
+                    "name": "Google Sheets account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "jsCode": "// ============================================\n// FIND ROW AND EXTRACT URLS\n// ============================================\n\nconst webhookData = $('Trigger Validation').first().json;\nconst dayIndex = webhookData.body?.day_index || webhookData.day_index || 8;\n\nconst allRows = $input.all().map(item => item.json);\nconst targetRow = allRows.find(row => String(row.day_index) === String(dayIndex));\n\nif (!targetRow) {\n  throw new Error(`No row found with day_index = ${dayIndex}`);\n}\n\n// URL fields to validate\nconst urlFields = [\n  { field: 'artist_portrait_url', titleField: null },\n  { field: 'hero_url', titleField: 'hero_title' },\n  { field: 'art2_url', titleField: 'art2_title' },\n  { field: 'style_art_url', titleField: 'style_art_title' },\n  { field: 'mini1_url', titleField: 'mini1_title' },\n  { field: 'mini2_url', titleField: 'mini2_title' }\n];\n\nconst urlsToCheck = [];\nurlFields.forEach(({ field, titleField }) => {\n  const url = targetRow[field];\n  if (url && url.startsWith('http')) {\n    urlsToCheck.push({\n      field: field,\n      url: url,\n      title: titleField ? targetRow[titleField] : 'Artist Portrait',\n      artistName: targetRow.artist_name,\n      dayIndex: dayIndex\n    });\n  }\n});\n\nreturn urlsToCheck.map(item => ({ json: item }));"
+            },
+            "id": "extract-urls",
+            "name": "Extract URLs",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                440,
+                0
+            ]
+        },
+        {
+            "parameters": {
+                "method": "HEAD",
+                "url": "={{ $json.url }}",
+                "options": {
+                    "redirect": {
+                        "redirect": {
+                            "followRedirects": true,
+                            "maxRedirects": 5
+                        }
+                    },
+                    "timeout": 15000
+                }
+            },
+            "id": "check-url",
+            "name": "Check URL",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.2,
+            "position": [
+                660,
+                0
+            ],
+            "continueOnFail": true
+        },
+        {
+            "parameters": {
+                "jsCode": "// ============================================\n// COLLECT VALIDATION RESULTS\n// ============================================\n\nconst results = $input.all();\nconst failedUrls = [];\nconst passedUrls = [];\n\nresults.forEach((result, idx) => {\n  const originalData = $('Extract URLs').all()[idx]?.json || {};\n  const statusCode = result.json.statusCode || result.json.status || 0;\n  const error = result.json.error || null;\n  \n  const urlInfo = {\n    field: originalData.field,\n    url: originalData.url,\n    title: originalData.title,\n    artistName: originalData.artistName,\n    dayIndex: originalData.dayIndex,\n    statusCode: statusCode\n  };\n  \n  if (error || statusCode < 200 || statusCode >= 400) {\n    failedUrls.push(urlInfo);\n  } else {\n    passedUrls.push(urlInfo);\n  }\n});\n\nconst dayIndex = results[0]?.json?.dayIndex || $('Extract URLs').first().json.dayIndex;\nconst artistName = $('Extract URLs').first().json.artistName;\n\nreturn {\n  dayIndex: dayIndex,\n  artistName: artistName,\n  totalChecked: results.length,\n  passed: passedUrls.length,\n  failed: failedUrls.length,\n  failedUrls: failedUrls,\n  passedUrls: passedUrls,\n  allValid: failedUrls.length === 0\n};"
+            },
+            "id": "collect-results",
+            "name": "Collect Results",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                880,
+                0
+            ]
+        },
+        {
+            "parameters": {
+                "conditions": {
+                    "options": {
+                        "caseSensitive": true,
+                        "leftValue": "",
+                        "typeValidation": "strict"
+                    },
+                    "conditions": [
+                        {
+                            "id": "condition-1",
+                            "leftValue": "={{ $json.allValid }}",
+                            "rightValue": true,
+                            "operator": {
+                                "type": "boolean",
+                                "operation": "equals"
+                            }
+                        }
+                    ],
+                    "combinator": "and"
+                },
+                "options": {}
+            },
+            "id": "check-if-valid",
+            "name": "All URLs Valid?",
+            "type": "n8n-nodes-base.if",
+            "typeVersion": 2,
+            "position": [
+                1100,
+                0
+            ]
+        },
+        {
+            "parameters": {
+                "jsCode": "// All URLs passed validation\nconst data = $input.first().json;\nreturn {\n  success: true,\n  message: `✅ All ${data.totalChecked} URLs validated successfully for Day ${data.dayIndex}: ${data.artistName}`,\n  details: data\n};"
+            },
+            "id": "success-response",
+            "name": "All Valid Response",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                1320,
+                -100
+            ]
+        },
+        {
+            "parameters": {
+                "jsCode": "// ============================================\n// BUILD PROMPT TO FIX FAILED URLS\n// ============================================\n\nconst data = $input.first().json;\nconst failedUrls = data.failedUrls;\nconst artistName = data.artistName;\n\nlet prompt = `You need to find replacement Wikimedia Commons image URLs for the following failed URLs.\n\nArtist: ${artistName}\n\nFailed URLs that need replacement:\n`;\n\nfailedUrls.forEach((item, idx) => {\n  prompt += `\\n${idx + 1}. Field: ${item.field}\\n`;\n  prompt += `   Painting: ${item.title}\\n`;\n  prompt += `   Failed URL: ${item.url}\\n`;\n});\n\nprompt += `\\n\\nFor each failed URL, provide a working Wikimedia Commons URL for the same painting or a similar famous work by ${artistName}.\n\nRULES:\n- Use ONLY Wikimedia Commons URLs starting with https://upload.wikimedia.org/wikipedia/commons/\n- URLs must end with .jpg or .png\n- Do NOT use Google Art Project URLs\n- Each URL must be for a DIFFERENT painting\n\nRespond in this EXACT format (one line per replacement):\nfield_name|new_url\n\nExample:\nhero_url|https://upload.wikimedia.org/wikipedia/commons/example.jpg\n\nProvide ONLY the replacements, no other text.`;\n\nreturn {\n  prompt: prompt,\n  failedUrls: failedUrls,\n  dayIndex: data.dayIndex,\n  artistName: artistName\n};"
+            },
+            "id": "build-fix-prompt",
+            "name": "Build Fix Prompt",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                1320,
+                100
+            ]
+        },
+        {
+            "parameters": {
+                "modelId": {
+                    "__rl": true,
+                    "mode": "list",
+                    "value": "claude-sonnet-4-20250514"
+                },
+                "messages": {
+                    "values": [
+                        {
+                            "content": "={{ $json.prompt }}"
+                        }
+                    ]
+                },
+                "options": {
+                    "maxTokens": 2000
+                }
+            },
+            "id": "fix-urls-ai",
+            "name": "Find Replacement URLs",
+            "type": "@n8n/n8n-nodes-langchain.anthropic",
+            "typeVersion": 1,
+            "position": [
+                1540,
+                100
+            ],
+            "credentials": {
+                "anthropicApi": {
+                    "id": "YOUR_ANTHROPIC_CREDENTIALS_ID",
+                    "name": "Anthropic account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "jsCode": "// ============================================\n// PARSE REPLACEMENT URLS\n// ============================================\n\nconst prevData = $('Build Fix Prompt').first().json;\nconst rawResponse = $input.first().json.message?.content || $input.first().json.text || '';\n\nlet response = rawResponse;\nif (Array.isArray(rawResponse)) {\n  response = rawResponse.map(item => item.text || '').join('');\n}\n\nconst lines = response.trim().split('\\n').filter(l => l.includes('|'));\nconst replacements = {};\n\nlines.forEach(line => {\n  const parts = line.split('|');\n  if (parts.length >= 2) {\n    const field = parts[0].trim();\n    const url = parts[1].trim();\n    if (url.startsWith('http')) {\n      replacements[field] = url;\n    }\n  }\n});\n\nreturn {\n  replacements: replacements,\n  dayIndex: prevData.dayIndex,\n  artistName: prevData.artistName,\n  failedCount: prevData.failedUrls.length,\n  fixedCount: Object.keys(replacements).length\n};"
+            },
+            "id": "parse-replacements",
+            "name": "Parse Replacements",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                1760,
+                100
+            ]
+        },
+        {
+            "parameters": {
+                "operation": "update",
+                "documentId": {
+                    "__rl": true,
+                    "mode": "id",
+                    "value": "1FJt_0YhPhdsfURuufY0zVO_ULhCw1b41Kc2nbYukJu0"
+                },
+                "sheetName": {
+                    "__rl": true,
+                    "mode": "list",
+                    "value": "lessonss"
+                },
+                "columns": {
+                    "mappingMode": "defineBelow",
+                    "value": {
+                        "artist_portrait_url": "={{ $json.replacements.artist_portrait_url || '' }}",
+                        "hero_url": "={{ $json.replacements.hero_url || '' }}",
+                        "art2_url": "={{ $json.replacements.art2_url || '' }}",
+                        "style_art_url": "={{ $json.replacements.style_art_url || '' }}",
+                        "mini1_url": "={{ $json.replacements.mini1_url || '' }}",
+                        "mini2_url": "={{ $json.replacements.mini2_url || '' }}"
+                    },
+                    "matchingColumns": [
+                        "day_index"
+                    ],
+                    "schema": [
+                        {
+                            "id": "day_index",
+                            "displayName": "day_index",
+                            "type": "string",
+                            "canBeUsedToMatch": true,
+                            "defaultMatch": true
+                        }
+                    ]
+                },
+                "options": {
+                    "cellFormat": "USER_ENTERED"
+                }
+            },
+            "id": "update-fixed-urls",
+            "name": "Update Fixed URLs",
+            "type": "n8n-nodes-base.googleSheets",
+            "typeVersion": 4.5,
+            "position": [
+                1980,
+                100
+            ],
+            "credentials": {
+                "googleSheetsOAuth2Api": {
+                    "id": "YOUR_GOOGLE_CREDENTIALS_ID",
+                    "name": "Google Sheets account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "jsCode": "// Final response with fix summary\nconst data = $('Parse Replacements').first().json;\nreturn {\n  success: true,\n  message: `🔧 Fixed ${data.fixedCount} of ${data.failedCount} failed URLs for Day ${data.dayIndex}: ${data.artistName}`,\n  replacements: data.replacements\n};"
+            },
+            "id": "fixed-response",
+            "name": "Fixed Response",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                2200,
+                100
+            ]
+        }
+    ],
+    "connections": {
+        "Trigger Validation": {
+            "main": [
+                [
+                    {
+                        "node": "Read Lessons Sheet",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Read Lessons Sheet": {
+            "main": [
+                [
+                    {
+                        "node": "Extract URLs",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Extract URLs": {
+            "main": [
+                [
+                    {
+                        "node": "Check URL",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Check URL": {
+            "main": [
+                [
+                    {
+                        "node": "Collect Results",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Collect Results": {
+            "main": [
+                [
+                    {
+                        "node": "All URLs Valid?",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "All URLs Valid?": {
+            "main": [
+                [
+                    {
+                        "node": "All Valid Response",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "Build Fix Prompt",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Build Fix Prompt": {
+            "main": [
+                [
+                    {
+                        "node": "Find Replacement URLs",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Find Replacement URLs": {
+            "main": [
+                [
+                    {
+                        "node": "Parse Replacements",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Parse Replacements": {
+            "main": [
+                [
+                    {
+                        "node": "Update Fixed URLs",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Update Fixed URLs": {
+            "main": [
+                [
+                    {
+                        "node": "Fixed Response",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    },
+    "settings": {
+        "executionOrder": "v1"
+    },
+    "staticData": null,
+    "tags": [],
+    "pinData": {}
+}

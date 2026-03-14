@@ -1,0 +1,210 @@
+{
+    "name": "Daily Sublime Outreach System (Final)",
+    "nodes": [
+        {
+            "parameters": {},
+            "id": "trigger",
+            "name": "Manual Trigger",
+            "type": "n8n-nodes-base.manualTrigger",
+            "typeVersion": 1,
+            "position": [
+                240,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "documentId": {
+                    "__rl": true,
+                    "value": "YOUR_GOOGLE_SHEET_ID",
+                    "mode": "id"
+                },
+                "sheetName": {
+                    "__rl": true,
+                    "value": "Sheet1",
+                    "mode": "list"
+                }
+            },
+            "id": "sheets-read",
+            "name": "Read Influencers",
+            "type": "n8n-nodes-base.googleSheets",
+            "typeVersion": 4.4,
+            "position": [
+                460,
+                300
+            ],
+            "credentials": {
+                "googleSheetsOAuth2Api": {
+                    "id": "YOUR_CRED_ID",
+                    "name": "Google Sheets"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "conditions": {
+                    "options": {
+                        "caseSensitive": true,
+                        "leftValue": "",
+                        "typeValidation": "strict"
+                    },
+                    "conditions": [
+                        {
+                            "id": "pending",
+                            "leftValue": "={{ $json.Status }}",
+                            "rightValue": "Pending",
+                            "operator": {
+                                "type": "string",
+                                "operation": "equals"
+                            }
+                        }
+                    ],
+                    "combinator": "and"
+                }
+            },
+            "id": "filter",
+            "name": "Filter Pending",
+            "type": "n8n-nodes-base.filter",
+            "typeVersion": 2,
+            "position": [
+                680,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "jsCode": "// DAILY SUBLIME OUTREACH - HTML + PLAIN TEXT MAILTO LINKS\n\nfunction escapeHtml(t){if(!t)return '';return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\"/g,'&quot;').replace(/'/g,'&#039;');}\nfunction formatBreaks(t){if(!t)return '';return escapeHtml(t).replace(/\\n/g,'</p><p style=\"margin:0;padding-top:16px;\">');}\n\nvar d=$input.item.json;\nvar name=d.Influencer_Name||'Friend';\nvar pic=d.Profile_Pic_Url||'';\nvar body=d.Personal_Body||'';\nvar email=d.Recipient_Email||'';\nvar row=d.row_number||'';\n\nvar n=escapeHtml(name);\nvar b='<p style=\"margin:0;\">'+formatBreaks(body)+'</p>';\n\n// Avatar logic\nvar av='';\nif(pic&&pic.length>5){av='<img src=\"'+pic+'\" alt=\"'+n+'\" width=\"84\" height=\"84\" style=\"display:block;width:84px;height:84px;object-fit:cover;border-radius:50%;\"/>';}\nelse{av='<table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\"><tr><td align=\"center\" valign=\"middle\" bgcolor=\"#1B4332\" style=\"width:84px;height:84px;background:linear-gradient(135deg,#1B4332,#2D6A4F);border-radius:50%;font-family:Georgia,serif;font-size:28px;color:#D4A574;font-weight:600;\">DS</td></tr></table>';}\n\n// MAILTO LINKS (Plain Text Only)\n// Button 1: Start Partnership\nvar subject1 = encodeURIComponent(\"Let's start the Daily Sublime partnership\");\nvar body1 = encodeURIComponent(\"Hi Sina,\\n\\nI'm interested in starting the Daily Sublime partnership. Here are my details:\\n\\n1. Platform (YouTube/IG): \\n2. Audience Size: \\n3. Typical Rates: \\n4. Timeline: \\n\\nLooking forward to it!\");\nvar mailto1 = \"mailto:sinadehesh@gmail.com?subject=\" + subject1 + \"&body=\" + body1;\n\n// Button 2: Try Magazine First\nvar subject2 = encodeURIComponent(\"I'd like to try Daily Sublime first\");\nvar body2 = encodeURIComponent(\"Hi Sina,\\n\\nI'm interested in the partnership but would like to experience the magazine myself first.\\n\\nMy email for the trial: \\nPlatform: \\nAudience Size: \\n\\nLooking forward to the trial!\");\nvar mailto2 = \"mailto:sinadehesh@gmail.com?subject=\" + subject2 + \"&body=\" + body2;\n\n// HTML CONSTRUCTION\nvar h='<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1.0\"><title>Daily Sublime</title><style>body{margin:0!important;padding:0!important;-webkit-text-size-adjust:100%;}table{border-spacing:0!important;border-collapse:collapse!important;}.cardPad{padding:48px!important;}.heroName{font-size:44px!important;letter-spacing:0.5px!important;}.labelTrack{letter-spacing:2px!important;}.dualBtn{display:inline-block!important;}@media screen and (max-width:600px){.outerPad{padding:20px!important;}.cardPad{padding:24px!important;}.heroName{font-size:34px!important;letter-spacing:0.3px!important;}.propPad{padding:24px!important;}.labelTrack{letter-spacing:1.5px!important;}.dualBtn{display:block!important;width:100%!important;margin-bottom:16px!important;}.dualBtnCell{padding:0 0 16px 0!important;}}</style><!--[if mso]><style type=\"text/css\">body,table,td{font-family:Arial,sans-serif!important;}</style><![endif]--></head>';\nh+='<body style=\"margin:0;padding:0;background-color:#0D0D0D;font-family:Helvetica Neue,Arial,sans-serif;\" bgcolor=\"#0D0D0D\">';\nh+='<div style=\"display:none;font-size:1px;color:#0D0D0D;line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden;\">A personal invitation to partner with Daily Sublime — '+n+', I have been thinking about you.</div>';\nh+='<table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#0D0D0D\" style=\"background-color:#0D0D0D;\"><tr><td align=\"center\" valign=\"top\" class=\"outerPad\" style=\"padding:40px 20px;\">';\nh+='<!--[if mso]><table role=\"presentation\" width=\"600\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\"><tr><td><![endif]-->';\nh+='<div style=\"max-width:600px;margin:0 auto;\">';\nh+='<table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#FEFEFE\" style=\"max-width:600px;width:100%;background-color:#FEFEFE;border-radius:16px;box-shadow:0 2px 4px rgba(0,0,0,0.15),0 24px 48px rgba(0,0,0,0.35);overflow:hidden;\">';\nh+='<tr><td style=\"height:1px;background-color:rgba(255,255,255,0.6);font-size:0;line-height:0;\">&nbsp;</td></tr>';\nh+='<tr><td style=\"height:6px;background-color:#B76E79;background:linear-gradient(90deg,#B76E79 0%,#D4A574 35%,#2D6A4F 65%,#1B4332 100%);\" bgcolor=\"#B76E79\"></td></tr>';\nh+='<tr><td style=\"height:1px;background-color:rgba(183,110,121,0.15);font-size:0;line-height:0;\">&nbsp;</td></tr>';\nh+='<tr><td style=\"padding:8px 8px 0 8px;\"><table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"border:1px solid rgba(183,110,121,0.12);border-radius:12px;overflow:hidden;\"><tr><td>';\nh+='<table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#FEFEFE\" style=\"background-color:#FEFEFE;\"><tr><td align=\"center\" valign=\"top\" class=\"cardPad\" style=\"padding:48px 48px 40px 48px;\">';\nh+='<table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"margin-bottom:32px;\"><tr><td align=\"center\" class=\"labelTrack\" style=\"padding:10px 20px;background-color:#1B4332;background:linear-gradient(135deg,#1B4332 0%,#2D6A4F 100%);border-radius:24px;box-shadow:0 4px 12px rgba(27,67,50,0.25);\" bgcolor=\"#1B4332\"><span style=\"font-family:Helvetica Neue,Arial,sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#D4A574;font-weight:600;\">✦&nbsp;&nbsp;DAILY SUBLIME&nbsp;&nbsp;✦</span></td></tr></table>';\nh+='<table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"margin-bottom:32px;\"><tr><td align=\"center\"><table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\"><tr><td style=\"padding:4px;background-color:rgba(183,110,121,0.08);border-radius:50%;\"><table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\"><tr><td style=\"padding:4px;background-color:#B76E79;background:linear-gradient(145deg,#B76E79 0%,#D4A574 50%,#B76E79 100%);border-radius:50%;box-shadow:0 8px 20px rgba(183,110,121,0.35);\" bgcolor=\"#B76E79\"><table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\"><tr><td style=\"padding:4px;background-color:#FFFFFF;border-radius:50%;box-shadow:inset 0 2px 4px rgba(0,0,0,0.08);\" bgcolor=\"#FFFFFF\">'+av+'</td></tr></table></td></tr></table></td></tr></table></td></tr></table>';\nh+='<table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"margin-bottom:16px;\"><tr><td align=\"center\"><span style=\"font-family:Helvetica Neue,Arial,sans-serif;font-size:18px;color:#888888;font-weight:400;\">Hi</span><span style=\"display:inline-block;width:8px;\"></span><span class=\"heroName\" style=\"font-family:Georgia,serif;font-size:44px;font-weight:600;font-style:italic;color:#B76E79;letter-spacing:0.5px;\">'+n+'</span></td></tr></table>';\nh+='<table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\"><tr><td style=\"width:32px;height:2px;background:linear-gradient(90deg,transparent,#D4A574);\"></td><td style=\"width:8px;\"></td><td style=\"font-family:Georgia,serif;font-size:10px;color:#B76E79;\">✦</td><td style=\"width:8px;\"></td><td style=\"width:32px;height:2px;background:linear-gradient(90deg,#D4A574,transparent);\"></td></tr></table>';\nh+='</td></tr><tr><td style=\"font-size:0;line-height:0;height:8px;\">&nbsp;</td></tr>';\nh+='<tr><td style=\"padding:0 48px;\"><table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\"><tr><td style=\"height:1px;background:linear-gradient(90deg,transparent,rgba(45,106,79,0.3),transparent);\"></td></tr></table></td></tr>';\nh+='<tr><td style=\"font-size:0;line-height:0;height:8px;\">&nbsp;</td></tr>';\nh+='<tr><td style=\"padding:0 48px;\"><table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\"><tr><td style=\"height:1px;background:linear-gradient(90deg,transparent,rgba(45,106,79,0.15),transparent);\"></td></tr></table></td></tr></table>';\nh+='<table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#FEFEFE\" style=\"background-color:#FEFEFE;\"><tr><td align=\"center\" valign=\"top\" class=\"cardPad\" style=\"padding:32px 48px 24px 48px;\"><table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"margin-bottom:24px;\"><tr><td align=\"center\" style=\"font-family:Georgia,serif;font-size:12px;color:rgba(183,110,121,0.5);\">✦</td></tr></table><table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"max-width:480px;width:100%;\"><tr><td align=\"left\" valign=\"top\"><div style=\"font-family:Helvetica Neue,Arial,sans-serif;font-size:16px;line-height:1.85;color:#333333;text-align:left;\">'+b+'</div></td></tr></table></td></tr></table>';\nh+='<table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\"><tr><td style=\"font-size:0;line-height:0;height:16px;\">&nbsp;</td></tr></table>';\nh+='<table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#FEFEFE\" style=\"background-color:#FEFEFE;\"><tr><td align=\"center\" valign=\"top\" style=\"padding:8px 48px 24px 48px;\"><table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#FDF6F3\" style=\"background-color:#FDF6F3;border:1px solid rgba(183,110,121,0.2);border-radius:12px;overflow:hidden;\"><tr><td style=\"height:3px;background-color:#B76E79;background:linear-gradient(90deg,#D4A574 0%,#B76E79 50%,#D4A574 100%);\" bgcolor=\"#B76E79\"></td></tr><tr><td align=\"center\" valign=\"top\" style=\"padding:28px 32px;\"><div style=\"font-family:Helvetica Neue,Arial,sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#B76E79;margin-bottom:16px;\">✦&nbsp;&nbsp;WHY I\\'M REACHING OUT&nbsp;&nbsp;✦</div><div style=\"font-family:Georgia,serif;font-size:16px;line-height:1.8;color:#4A3F3A;max-width:440px;\">I built <strong style=\"color:#B76E79;\">Daily Sublime</strong>, a daily art magazine designed as a 10-minute morning ritual that deepens both art appreciation and knowledge while providing a mindfulness practice.</div></td></tr></table></td></tr></table>';\nh+='<table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\"><tr><td style=\"font-size:0;line-height:0;height:8px;\">&nbsp;</td></tr></table>';\nh+='<table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#FEFEFE\" style=\"background-color:#FEFEFE;\"><tr><td align=\"center\" valign=\"top\" class=\"cardPad\" style=\"padding:8px 48px 32px 48px;\"><table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"margin-bottom:8px;\"><tr><td style=\"height:1px;border-top:1px dotted rgba(183,110,121,0.35);\"></td></tr></table><table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#1B4332\" style=\"background-color:#1B4332;background:linear-gradient(160deg,#1B4332 0%,#2D6A4F 100%);border-radius:12px;box-shadow:0 8px 24px rgba(27,67,50,0.3);overflow:hidden;\"><tr><td style=\"height:1px;background-color:rgba(255,255,255,0.08);font-size:0;line-height:0;\">&nbsp;</td></tr><tr><td style=\"padding:2px;\"><table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"border:1px solid rgba(212,165,116,0.2);border-radius:10px;\"><tr><td align=\"center\" valign=\"top\" class=\"propPad\" style=\"padding:32px;\"><div class=\"labelTrack\" style=\"font-family:Helvetica Neue,Arial,sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#D4A574;margin-bottom:16px;\">✦&nbsp;&nbsp;THE PARTNERSHIP&nbsp;&nbsp;✦</div><div style=\"font-family:Georgia,serif;font-size:16px;line-height:1.75;color:#FFFFFF;margin-bottom:8px;max-width:420px;\">I\\'m looking to partner with the right community to share this philosophy, and I think you might be a great fit.</div><div style=\"font-family:Helvetica Neue,Arial,sans-serif;font-size:14px;line-height:1.6;color:rgba(255,255,255,0.8);margin-bottom:24px;\">Here\\'s what I\\'m offering:</div><table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"margin-bottom:12px;\"><tr><td align=\"center\"><table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#B76E79\" style=\"background-color:#B76E79;background:linear-gradient(135deg,#B76E79 0%,#D4A574 50%,#B76E79 100%);border-radius:8px;border:1px solid rgba(255,255,255,0.15);box-shadow:inset 0 1px 0 rgba(255,255,255,0.2),inset 0 -1px 0 rgba(0,0,0,0.15),0 4px 12px rgba(183,110,121,0.35);\"><tr><td style=\"padding:12px 24px;font-family:Georgia,serif;font-size:21px;font-weight:600;color:#FFFFFF;text-shadow:0 1px 1px rgba(0,0,0,0.1);\">50/50 Lifetime Split</td></tr></table></td></tr></table><div style=\"font-family:Helvetica Neue,Arial,sans-serif;font-size:13px;color:rgba(255,255,255,0.65);letter-spacing:0.3px;margin-bottom:12px;\">on any revenue generated through your channel or audience.</div><div style=\"font-family:Helvetica Neue,Arial,sans-serif;font-size:12px;color:rgba(255,255,255,0.5);line-height:1.7;\">$9.99/month, $53.99/6mo, or $99.99/year</div></td></tr></table></td></tr><tr><td style=\"height:2px;background-color:rgba(0,0,0,0.15);font-size:0;line-height:0;\">&nbsp;</td></tr></table><table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"margin-top:8px;\"><tr><td style=\"height:1px;border-top:1px dotted rgba(183,110,121,0.35);\"></td></tr></table></td></tr></table>';\nh+='<table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#FEFEFE\" style=\"background-color:#FEFEFE;\"><tr><td style=\"padding:0 48px;\"><table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\"><tr><td style=\"height:1px;background:linear-gradient(90deg,transparent,rgba(183,110,121,0.2),transparent);\"></td></tr></table></td></tr><tr><td align=\"center\" valign=\"top\" class=\"cardPad btnCell\" style=\"padding:32px 48px 24px 48px;\"><div style=\"font-family:Helvetica Neue,Arial,sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#B76E79;margin-bottom:24px;\">✦&nbsp;&nbsp;CHOOSE YOUR PATH&nbsp;&nbsp;✦</div><table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"margin:0 auto;\"><tr><td align=\"center\" valign=\"top\" class=\"dualBtnCell\" style=\"padding:0 8px 16px 8px;\"><table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" class=\"dualBtn\"><tr><td align=\"center\" valign=\"middle\" bgcolor=\"#1B4332\" style=\"background-color:#1B4332;background:linear-gradient(135deg,#1B4332 0%,#2D6A4F 100%);border-radius:50px;border:1px solid rgba(255,255,255,0.1);box-shadow:inset 0 1px 0 rgba(255,255,255,0.2),0 8px 20px rgba(27,67,50,0.4);\"><a href=\"'+mailto1+'\" style=\"display:block;padding:16px 32px;font-family:Helvetica Neue,Arial,sans-serif;font-size:13px;font-weight:700;color:#FFFFFF;text-decoration:none;letter-spacing:1.5px;text-transform:uppercase;text-align:center;\">Start Partnership</a></td></tr><tr><td align=\"center\" style=\"padding-top:8px;\"><span style=\"font-family:Helvetica Neue,Arial,sans-serif;font-size:11px;color:#888888;\">Ready to collaborate now</span></td></tr></table></td><td align=\"center\" valign=\"top\" class=\"dualBtnCell\" style=\"padding:0 8px 16px 8px;\"><table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" class=\"dualBtn\"><tr><td align=\"center\" valign=\"middle\" bgcolor=\"#FEFEFE\" style=\"background-color:#FEFEFE;border:2px solid #B76E79;border-radius:50px;box-shadow:0 4px 12px rgba(183,110,121,0.25);\"><a href=\"'+mailto2+'\" style=\"display:block;padding:14px 32px;font-family:Helvetica Neue,Arial,sans-serif;font-size:13px;font-weight:700;color:#B76E79;text-decoration:none;letter-spacing:1.5px;text-transform:uppercase;text-align:center;\">Try Magazine First</a></td></tr><tr><td align=\"center\" style=\"padding-top:8px;\"><span style=\"font-family:Helvetica Neue,Arial,sans-serif;font-size:11px;color:#888888;\">Experience it yourself</span></td></tr></table></td></tr></table><table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"margin-top:20px;\"><tr><td align=\"center\" style=\"font-family:Helvetica Neue,Arial,sans-serif;font-size:13px;color:#666666;line-height:1.6;\">or explore <a href=\"https://daily.sinadehesh.com\" style=\"color:#2D6A4F;text-decoration:underline;font-weight:600;\">daily.sinadehesh.com</a></td></tr></table></td></tr></table>';\nh+='<table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#FEFEFE\" style=\"background-color:#FEFEFE;\"><tr><td style=\"padding:0 48px;\"><table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\"><tr><td style=\"height:1px;background:linear-gradient(90deg,transparent,rgba(45,106,79,0.2),transparent);\"></td></tr></table></td></tr><tr><td align=\"center\" valign=\"top\" style=\"padding:32px 48px;\"><div style=\"font-family:Georgia,serif;font-size:24px;font-style:italic;color:rgba(26,26,26,0.85);margin-bottom:6px;\">Sina</div><div class=\"labelTrack\" style=\"font-family:Helvetica Neue,Arial,sans-serif;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:#B76E79;font-weight:600;\">Creator of Daily Sublime</div></td></tr></table>';\nh+='</td></tr></table></td></tr>';\nh+='<tr><td style=\"padding:0 8px 8px 8px;\"><table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#1B4332\" style=\"background-color:#1B4332;background:linear-gradient(180deg,#1B4332 0%,#0D0D0D 100%);border-radius:12px;overflow:hidden;\"><tr><td style=\"height:1px;background-color:rgba(212,165,116,0.15);font-size:0;line-height:0;\">&nbsp;</td></tr><tr><td align=\"center\" valign=\"top\" style=\"padding:24px 32px;\"><div style=\"font-family:Helvetica Neue,Arial,sans-serif;font-size:12px;color:rgba(255,255,255,0.6);line-height:1.8;letter-spacing:0.3px;\">If you\\'d like a newsletter like this for your audience, contact <a href=\"mailto:sinadehesh@gmail.com\" style=\"color:#D4A574;text-decoration:underline;\">sinadehesh@gmail.com</a><br><br><a href=\"https://daily.sinadehesh.com\" style=\"color:#D4A574;text-decoration:underline;font-weight:500;\">daily.sinadehesh.com</a></div></td></tr></table></td></tr>';\nh+='<tr><td style=\"height:2px;background-color:rgba(0,0,0,0.08);border-radius:0 0 16px 16px;font-size:0;line-height:0;\">&nbsp;</td></tr></table></div><!--[if mso]></td></tr></table><![endif]--></td></tr></table></body></html>';\n\nreturn {email:email,subject:n+', a thought for you ✦',htmlBody:h,row_number:row};"
+            },
+            "id": "code",
+            "name": "Build Email",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                900,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "sendTo": "={{ $json.email }}",
+                "subject": "={{ $json.subject }}",
+                "emailType": "html",
+                "message": "={{ $json.htmlBody }}"
+            },
+            "id": "gmail",
+            "name": "Create Draft",
+            "type": "n8n-nodes-base.gmail",
+            "typeVersion": 2.1,
+            "position": [
+                1120,
+                300
+            ],
+            "credentials": {
+                "gmailOAuth2": {
+                    "id": "YOUR_GMAIL_CRED_ID",
+                    "name": "Gmail"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "documentId": {
+                    "__rl": true,
+                    "value": "YOUR_GOOGLE_SHEET_ID",
+                    "mode": "id"
+                },
+                "sheetName": {
+                    "__rl": true,
+                    "value": "Sheet1",
+                    "mode": "list"
+                },
+                "columns": {
+                    "mappingMode": "defineBelow",
+                    "value": {
+                        "Status": "Sent"
+                    }
+                },
+                "options": {
+                    "cellFormat": "USER_ENTERED"
+                }
+            },
+            "id": "sheets-update",
+            "name": "Update Status",
+            "type": "n8n-nodes-base.googleSheets",
+            "typeVersion": 4.4,
+            "position": [
+                1340,
+                300
+            ],
+            "credentials": {
+                "googleSheetsOAuth2Api": {
+                    "id": "YOUR_CRED_ID",
+                    "name": "Google Sheets"
+                }
+            }
+        }
+    ],
+    "connections": {
+        "Manual Trigger": {
+            "main": [
+                [
+                    {
+                        "node": "Read Influencers",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Read Influencers": {
+            "main": [
+                [
+                    {
+                        "node": "Filter Pending",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Filter Pending": {
+            "main": [
+                [
+                    {
+                        "node": "Build Email",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Build Email": {
+            "main": [
+                [
+                    {
+                        "node": "Create Draft",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Create Draft": {
+            "main": [
+                [
+                    {
+                        "node": "Update Status",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    },
+    "settings": {
+        "executionOrder": "v1"
+    },
+    "staticData": null,
+    "tags": [],
+    "pinData": {}
+}

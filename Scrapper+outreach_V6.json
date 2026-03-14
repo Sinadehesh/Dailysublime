@@ -1,0 +1,375 @@
+{
+    "name": "YouTube Scraper to Email Drafts - Daily Sublime V3",
+    "nodes": [
+        {
+            "parameters": {
+                "options": {}
+            },
+            "id": "chat-trigger",
+            "name": "When Chat Message Received",
+            "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+            "typeVersion": 1.1,
+            "position": [
+                240,
+                300
+            ],
+            "webhookId": "youtube-scraper-chat"
+        },
+        {
+            "parameters": {
+                "method": "POST",
+                "url": "http://172.17.0.1:5000/scrape",
+                "sendBody": true,
+                "specifyBody": "json",
+                "jsonBody": "={{ JSON.stringify({ query: $json.chatInput, max_emails: 10 }) }}",
+                "options": {
+                    "timeout": 120000
+                }
+            },
+            "id": "http-scraper",
+            "name": "Scrape YouTube Emails",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.2,
+            "position": [
+                460,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "mode": "runOnceForEachItem"
+            },
+            "id": "loop-items",
+            "name": "Loop Over Items",
+            "type": "n8n-nodes-base.splitInBatches",
+            "typeVersion": 3,
+            "position": [
+                680,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "operation": "append",
+                "documentId": {
+                    "__rl": true,
+                    "value": "YOUR_GOOGLE_SHEET_ID",
+                    "mode": "id"
+                },
+                "sheetName": {
+                    "__rl": true,
+                    "value": "Sheet1",
+                    "mode": "list"
+                },
+                "columns": {
+                    "mappingMode": "defineBelow",
+                    "value": {
+                        "Influencer_Name": "={{ $json.Influencer_Name }}",
+                        "Recipient_Email": "={{ $json.Recipient_Email }}",
+                        "Status": "Pending",
+                        "Source": "={{ $json.Source }}",
+                        "Instagram": "={{ $json.Instagram }}",
+                        "Website": "={{ $json.Website }}",
+                        "Subscriber_Count": "={{ $json.Subscriber_Count }}",
+                        "Description": "={{ $json.Description }}",
+                        "Channel_ID": "={{ $json.Channel_ID }}"
+                    },
+                    "matchingColumns": []
+                },
+                "options": {}
+            },
+            "id": "sheets-append",
+            "name": "Add to Google Sheet",
+            "type": "n8n-nodes-base.googleSheets",
+            "typeVersion": 4.4,
+            "position": [
+                900,
+                300
+            ],
+            "credentials": {
+                "googleSheetsOAuth2Api": {
+                    "id": "YOUR_SHEETS_CRED_ID",
+                    "name": "Google Sheets"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "jsCode": "// Store original data for later use\nconst data = $input.item.json;\nreturn {\n  Influencer_Name: data.Influencer_Name || '',\n  Recipient_Email: data.Recipient_Email || '',\n  Description: data.Description || '',\n  Website: data.Website || '',\n  Instagram: data.Instagram || '',\n  Subscriber_Count: data.Subscriber_Count || '',\n  Source: data.Source || '',\n  Channel_ID: data.Channel_ID || ''\n};"
+            },
+            "id": "store-data",
+            "name": "Store Influencer Data",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                1120,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "modelId": {
+                    "__rl": true,
+                    "mode": "list",
+                    "value": "claude-sonnet-4-20250514"
+                },
+                "messages": {
+                    "values": [
+                        {
+                            "content": "=You are writing a personalized cold outreach email for Daily Sublime. You need to write a GENUINE, SPECIFIC email to a YouTube creator.\n\nIMPORTANT RULES:\n- Be conversational and peer-to-peer, NOT salesy\n- Reference SPECIFIC things about their channel (from their description)\n- Make the connection between their content and mindfulness/visual training feel natural\n- Keep it concise (4-5 short paragraphs max for the body)\n- Sound like a real person, not a template\n- NEVER use em dashes (—). Use commas, periods, or rewrite the sentence instead.\n\nHere's what Daily Sublime is:\n- A daily meditative art magazine delivered to your inbox\n- Premium, beautifully designed experience\n- Each edition features one artwork with a guided 10-minute analysis\n- Teaches visual literacy: composition, color theory, symbolism\n- Reading it increases mindfulness and helps you see the world more clearly\n- It's a daily practice for training attention and presence\n- Partnership: 50/50 lifetime recurring revenue split\n\nWrite the EMAIL BODY ONLY (no greeting, no signature - those are added separately).\n\nThe email body should:\n1. Open with something specific you noticed about their content\n2. Make a genuine observation about what sets them apart\n3. Briefly introduce Daily Sublime as a meditative art magazine and why it fits their audience\n4. Mention you're reaching out to ~10 creators whose audiences value depth and mindfulness\n5. End with offering a free trial week, no strings attached\n\nOutput ONLY valid JSON with these fields:\n- email_body: The full email body text (plain text, use \\n for line breaks between paragraphs)\n- subject_hook: A 2-4 word hook specific to their content (for the subject line)\n- their_niche: Their content area in 2-3 words\n\nYouTube Creator Info:\nName: {{ $json.Influencer_Name }}\nChannel Description: {{ $json.Description || 'No description available' }}\nSubscribers: {{ $json.Subscriber_Count || 'Unknown' }}\nWebsite: {{ $json.Website || 'None' }}\nInstagram: {{ $json.Instagram || 'None' }}"
+                        }
+                    ]
+                },
+                "options": {
+                    "maxTokens": 1500
+                }
+            },
+            "id": "claude-personalize",
+            "name": "Generate with Claude",
+            "type": "@n8n/n8n-nodes-langchain.anthropic",
+            "typeVersion": 1,
+            "position": [
+                1340,
+                300
+            ],
+            "credentials": {
+                "anthropicApi": {
+                    "id": "YOUR_ANTHROPIC_CRED_ID",
+                    "name": "Anthropic account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "jsCode": "// Parse Claude response and merge with original data\nconst originalData = $('Store Influencer Data').item.json;\nconst claudeResponse = $input.item.json;\n\nlet aiContent;\ntry {\n  // Get the content from Claude response\n  let content = '';\n  if (claudeResponse.message && claudeResponse.message.content) {\n    if (Array.isArray(claudeResponse.message.content)) {\n      content = claudeResponse.message.content.map(item => item.text || '').join('');\n    } else {\n      content = claudeResponse.message.content;\n    }\n  } else if (claudeResponse.content) {\n    if (Array.isArray(claudeResponse.content)) {\n      content = claudeResponse.content.map(item => item.text || '').join('');\n    } else {\n      content = claudeResponse.content;\n    }\n  } else if (claudeResponse.text) {\n    content = claudeResponse.text;\n  }\n  \n  // Clean and parse the JSON\n  const cleanedResponse = content.replace(/```json\\n?|```\\n?/g, '').trim();\n  aiContent = JSON.parse(cleanedResponse);\n} catch (e) {\n  // Fallback defaults if parsing fails\n  console.log('Parse error:', e.message);\n  aiContent = {\n    email_body: `I've been following your channel and really appreciate the depth of your content.\\n\\nWhat stands out is how you go beyond surface-level takes to give your audience real insight.\\n\\nI created something called Daily Sublime. It's a daily meditative art magazine, beautifully designed. Each morning features one artwork with a guided 10-minute analysis. It teaches visual literacy (composition, color theory, symbolism) and increases mindfulness. The same deep-thinking approach you bring to your content, applied to visual culture.\\n\\nI'm reaching out to about 10 creators whose audiences genuinely value depth and presence. Your community seems like exactly that kind of people.\\n\\nWant to try it for a week? Free access, no commitment. If it clicks, we can talk about a partnership. If not, I'd still love your honest feedback.`,\n    subject_hook: 'your content',\n    their_niche: 'content creation'\n  };\n}\n\n// IMPORTANT: Explicitly pass through Recipient_Email and all original data\nreturn {\n  Influencer_Name: originalData.Influencer_Name || '',\n  Recipient_Email: originalData.Recipient_Email || '',\n  Description: originalData.Description || '',\n  Website: originalData.Website || '',\n  Instagram: originalData.Instagram || '',\n  Subscriber_Count: originalData.Subscriber_Count || '',\n  Source: originalData.Source || '',\n  Channel_ID: originalData.Channel_ID || '',\n  email_body: aiContent.email_body || '',\n  subject_hook: aiContent.subject_hook || 'your content',\n  their_niche: aiContent.their_niche || 'content creation'\n};"
+            },
+            "id": "parse-ai",
+            "name": "Parse AI Response",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                1560,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "jsCode": "// DYNAMIC OUTREACH EMAIL - AI writes the body, static header/CTA/signature\n\nfunction escapeHtml(text) {\n    if (!text) return '';\n    return String(text)\n        .replace(/&/g, '&amp;')\n        .replace(/</g, '&lt;')\n        .replace(/>/g, '&gt;')\n        .replace(/\"/g, '&quot;')\n        .replace(/'/g, '&#039;');\n}\n\n// Convert plain text with newlines to HTML paragraphs\nfunction textToHtmlParagraphs(text) {\n    if (!text) return '';\n    return text\n        .split(/\\n\\n|\\n/)\n        .filter(p => p.trim())\n        .map(p => `<p style=\"font-size: 16px; line-height: 1.65; color: #1A1A1A;\">${escapeHtml(p.trim())}</p>`)\n        .join('\\n                            ');\n}\n\nconst data = $input.item.json;\nconst name = escapeHtml(data.Influencer_Name || 'there');\nconst recipientEmail = data.Recipient_Email || '';\nconst emailBody = data.email_body || '';\nconst subjectHook = data.subject_hook || 'your content';\nconst niche = data.their_niche || 'content creation';\n\n// Convert AI-written body to HTML paragraphs\nconst bodyHtml = textToHtmlParagraphs(emailBody);\n\nconst htmlBody = `<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Daily Sublime Partnership</title>\n    <style>\n        body { margin: 0; padding: 0; background-color: #F5F5F5; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif; }\n        a { color: #2C5F4F; text-decoration: none; }\n    </style>\n</head>\n<body style=\"margin: 0; padding: 0; background-color: #F5F5F5;\">\n    <div style=\"display: none;\">Quick question about ${escapeHtml(subjectHook)} and your audience.</div>\n    <table role=\"presentation\" width=\"100%\" style=\"background-color: #F5F5F5;\">\n        <tr>\n            <td align=\"center\" style=\"padding: 40px 20px;\">\n                <table role=\"presentation\" width=\"100%\" style=\"max-width: 540px; background-color: #FFFFFF;\">\n                    <tr>\n                        <td style=\"padding: 60px 40px;\">\n                            <!-- STATIC: Header -->\n                            <p style=\"text-align: center; font-size: 9px; letter-spacing: 2.5px; text-transform: uppercase; color: #8B7F77; font-weight: 600;\">✦ DAILY SUBLIME ✦</p>\n                            \n                            <!-- STATIC: Greeting -->\n                            <p style=\"font-size: 18px; font-weight: 600; color: #1A1A1A;\">Hi ${name},</p>\n                            \n                            <!-- DYNAMIC: AI-written email body -->\n                            ${bodyHtml}\n                            \n                            <!-- STATIC: CTA Buttons -->\n                            <table role=\"presentation\" style=\"margin: 32px auto;\">\n                                <tr>\n                                    <td style=\"padding: 0 8px;\">\n                                        <a href=\"mailto:sinadehesh@gmail.com?subject=Let's%20talk%20about%20Daily%20Sublime\" style=\"display: block; padding: 14px 28px; background-color: #3D5A47; border-radius: 6px; font-size: 14px; font-weight: 600; color: #FFFFFF; text-align: center;\">Let's Talk</a>\n                                    </td>\n                                    <td style=\"padding: 0 8px;\">\n                                        <a href=\"mailto:sinadehesh@gmail.com?subject=I'd%20like%20to%20try%20Daily%20Sublime\" style=\"display: block; padding: 12px 28px; background-color: #FFFFFF; border: 2px solid #3D5A47; border-radius: 6px; font-size: 14px; font-weight: 600; color: #3D5A47; text-align: center;\">Try It First</a>\n                                    </td>\n                                </tr>\n                            </table>\n                            <p style=\"text-align: center; font-size: 13px; color: #666666;\">or explore <a href=\"https://daily.sinadehesh.com\" style=\"color: #2C5F4F; text-decoration: underline;\">daily.sinadehesh.com</a></p>\n                            \n                            <!-- STATIC: Signature -->\n                            <hr style=\"border: none; height: 1px; background-color: #E0E0E0; margin: 32px 0;\">\n                            <p style=\"font-size: 16px; font-weight: 500; color: #1A1A1A; margin-bottom: 4px;\">Sina</p>\n                            <p style=\"font-size: 14px; color: #6B6B6B; margin: 0 0 4px 0;\">Creator, Daily Sublime</p>\n                            <p style=\"margin: 0;\"><a href=\"https://daily.sinadehesh.com\" style=\"font-size: 14px; color: #2C5F4F;\">daily.sinadehesh.com</a></p>\n                            \n                            <!-- STATIC: P.S. -->\n                            <p style=\"font-size: 15px; line-height: 1.6; color: #4A4A4A; margin-top: 32px; padding-top: 24px; border-top: 1px solid #E8E8E8;\">P.S. The partnership model is 50/50 revenue split on anyone who subscribes through you. Lifetime recurring. But that's only relevant if you actually like the product first.</p>\n                            \n                            <!-- STATIC: Footer -->\n                            <p style=\"font-size: 13px; line-height: 1.5; color: #999999; text-align: center; margin-top: 32px; padding-top: 24px; border-top: 1px solid #E8E8E8;\">You're receiving this because I thought Daily Sublime might interest you based on your content. Not your thing? Just reply and let me know.</p>\n                        </td>\n                    </tr>\n                </table>\n            </td>\n        </tr>\n    </table>\n</body>\n</html>`;\n\nreturn {\n    email: recipientEmail,\n    subject: `${name}, quick question about ${subjectHook}`,\n    htmlBody: htmlBody,\n    Influencer_Name: data.Influencer_Name,\n    Recipient_Email: recipientEmail,\n    email_body: emailBody,\n    subject_hook: subjectHook,\n    their_niche: niche\n};"
+            },
+            "id": "build-email",
+            "name": "Build Email",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                1780,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "resource": "draft",
+                "operation": "create",
+                "sendTo": "={{ $json.email }}",
+                "subject": "={{ $json.subject }}",
+                "emailType": "html",
+                "message": "={{ $json.htmlBody }}"
+            },
+            "id": "gmail-draft",
+            "name": "Create Draft",
+            "type": "n8n-nodes-base.gmail",
+            "typeVersion": 2.1,
+            "position": [
+                2000,
+                300
+            ],
+            "credentials": {
+                "gmailOAuth2": {
+                    "id": "YOUR_GMAIL_CRED_ID",
+                    "name": "Gmail"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "operation": "update",
+                "documentId": {
+                    "__rl": true,
+                    "value": "YOUR_GOOGLE_SHEET_ID",
+                    "mode": "id"
+                },
+                "sheetName": {
+                    "__rl": true,
+                    "value": "Sheet1",
+                    "mode": "list"
+                },
+                "columns": {
+                    "mappingMode": "defineBelow",
+                    "value": {
+                        "Status": "Drafted",
+                        "email_body": "={{ $json.email_body }}",
+                        "subject_hook": "={{ $json.subject_hook }}",
+                        "their_niche": "={{ $json.their_niche }}"
+                    },
+                    "matchingColumns": [
+                        "Recipient_Email"
+                    ]
+                },
+                "options": {
+                    "cellFormat": "USER_ENTERED"
+                }
+            },
+            "id": "sheets-update",
+            "name": "Update Status to Drafted",
+            "type": "n8n-nodes-base.googleSheets",
+            "typeVersion": 4.4,
+            "position": [
+                2220,
+                300
+            ],
+            "credentials": {
+                "googleSheetsOAuth2Api": {
+                    "id": "YOUR_SHEETS_CRED_ID",
+                    "name": "Google Sheets"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "jsCode": "// Generate summary of the workflow execution\nconst data = $input.item.json;\nreturn {\n  response: `✅ Email draft created for ${data.Influencer_Name || 'influencer'}\\n\\nEmail: ${data.email}\\nSubject: ${data.subject}\\n\\nThe draft has been saved to Gmail and status updated in Google Sheets.`\n};"
+            },
+            "id": "summary",
+            "name": "Generate Summary",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                2440,
+                300
+            ]
+        }
+    ],
+    "connections": {
+        "When Chat Message Received": {
+            "main": [
+                [
+                    {
+                        "node": "Scrape YouTube Emails",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Scrape YouTube Emails": {
+            "main": [
+                [
+                    {
+                        "node": "Loop Over Items",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Loop Over Items": {
+            "main": [
+                [
+                    {
+                        "node": "Add to Google Sheet",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "Generate Summary",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Add to Google Sheet": {
+            "main": [
+                [
+                    {
+                        "node": "Store Influencer Data",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Store Influencer Data": {
+            "main": [
+                [
+                    {
+                        "node": "Generate with Claude",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Generate with Claude": {
+            "main": [
+                [
+                    {
+                        "node": "Parse AI Response",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Parse AI Response": {
+            "main": [
+                [
+                    {
+                        "node": "Build Email",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Build Email": {
+            "main": [
+                [
+                    {
+                        "node": "Create Draft",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Create Draft": {
+            "main": [
+                [
+                    {
+                        "node": "Update Status to Drafted",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Update Status to Drafted": {
+            "main": [
+                [
+                    {
+                        "node": "Loop Over Items",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    },
+    "settings": {
+        "executionOrder": "v1"
+    },
+    "staticData": null,
+    "tags": [],
+    "pinData": {}
+}
